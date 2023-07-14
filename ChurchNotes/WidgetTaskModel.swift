@@ -8,9 +8,11 @@
 import SwiftUI
 import SwiftData
 
-class ChurchDataModel {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [InviteToChurchItem]
+struct ChurchDataModel: Identifiable{
+    var id: ObjectIdentifier
+    
+    @Environment(\.modelContext) var modelContext
+    @Query var items: [ItemsTitle]
     
     
 }

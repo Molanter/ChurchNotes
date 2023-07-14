@@ -42,6 +42,7 @@ struct SimpleEntry: TimelineEntry {
 
 struct WidgetEntryView : View {
     var entry: Provider.Entry
+    
 
     var body: some View {
         VStack {
@@ -55,7 +56,7 @@ struct WidgetEntryView : View {
     }
 }
 
-struct WidgetNote: WidgetNote {
+struct WidgetNotes: Widget {
     let kind: String = "Widget"
 
     var body: some WidgetConfiguration {
@@ -68,7 +69,7 @@ struct WidgetNote: WidgetNote {
 }
 
 #Preview(as: .systemSmall) {
-    WidgetNote()
+    WidgetNotes()
 } timeline: {
     SimpleEntry(date: .now, emoji: "😀")
     SimpleEntry(date: .now, emoji: "🤩")

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 import SwiftData
 
 @Model
@@ -15,13 +16,19 @@ final class Items{
     var isCheked: Bool
     var isLiked: Bool
     var notes: String
+    var imageData: Data?
+    var email: String
+    var birthDay: Date
     
-    init(name: String, isLiked: Bool, isCheked: Bool, notes: String) {
+    init(name: String, isLiked: Bool, isCheked: Bool, notes: String, imageData: Data? = nil, email: String, birthDay: Date) {
         self.timestamp = .now
         self.name = name
         self.isLiked = isLiked
         self.isCheked = isCheked
         self.notes = notes
+        self.imageData = imageData
+        self.email = email
+        self.birthDay = birthDay
     }
     
     

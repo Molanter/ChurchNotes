@@ -7,20 +7,69 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9E44BEFC2A58E09F0059C56C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9E44BEFB2A58E09F0059C56C /* GoogleService-Info.plist */; };
+		9E44BEFE2A5A0D6D0059C56C /* LoginPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E44BEFD2A5A0D6D0059C56C /* LoginPage.swift */; };
+		9E4FD3C42A4C92FB00D46FB8 /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4FD3C32A4C92FB00D46FB8 /* AppView.swift */; };
+		9E5671632A619290002FCFC5 /* CoreAudioTypes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E5671612A6190E5002FCFC5 /* CoreAudioTypes.framework */; };
+		9E5671642A619290002FCFC5 /* CoreAudioTypes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9E5671612A6190E5002FCFC5 /* CoreAudioTypes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9E6830A22A5F0B09000AB299 /* iPhoneNumberField in Frameworks */ = {isa = PBXBuildFile; productRef = 9E6830A12A5F0B09000AB299 /* iPhoneNumberField */; };
 		9E6F9DFB2A4BC435009B72DC /* ChurchNotesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6F9DFA2A4BC435009B72DC /* ChurchNotesApp.swift */; };
-		9E6F9DFD2A4BC435009B72DC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6F9DFC2A4BC435009B72DC /* ContentView.swift */; };
 		9E6F9DFF2A4BC436009B72DC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E6F9DFE2A4BC436009B72DC /* Assets.xcassets */; };
 		9E6F9E022A4BC436009B72DC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E6F9E012A4BC436009B72DC /* Preview Assets.xcassets */; };
 		9E6F9E042A4BC436009B72DC /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6F9E032A4BC436009B72DC /* Item.swift */; };
+		9E6F9E0B2A4BC994009B72DC /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6F9E0A2A4BC994009B72DC /* Constants.swift */; };
+		9E6F9E132A4C6C33009B72DC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6F9E122A4C6C33009B72DC /* ContentView.swift */; };
+		9E7282C82A5235D3004D6483 /* ItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7282C72A5235D3004D6483 /* ItemView.swift */; };
+		9E7282D12A574399004D6483 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EA7AB952A508D20004DB3BA /* WidgetKit.framework */; };
+		9E7282D22A574399004D6483 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EA7AB972A508D20004DB3BA /* SwiftUI.framework */; };
+		9E7282D52A574399004D6483 /* WidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7282D42A574399004D6483 /* WidgetBundle.swift */; };
+		9E7282D72A574399004D6483 /* WidgetNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7282D62A574399004D6483 /* WidgetNote.swift */; };
+		9E7282D92A57439A004D6483 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E7282D82A57439A004D6483 /* Assets.xcassets */; };
+		9E7282E52A57BB6D004D6483 /* ItemPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7282E42A57BB6D004D6483 /* ItemPersonView.swift */; };
+		9ED6F2EE2A5093DE002568DF /* WidgetTaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ED6F2ED2A5093DE002568DF /* WidgetTaskModel.swift */; };
+		E144702C1C07938D3169463A /* Pods_ChurchNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 359489A0CB187CF1DD7C3238 /* Pods_ChurchNotes.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		9E5671652A619290002FCFC5 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				9E5671642A619290002FCFC5 /* CoreAudioTypes.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		1C78EE6BAC6DDC6A8A124D5F /* Pods-ChurchNotes.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChurchNotes.debug.xcconfig"; path = "Target Support Files/Pods-ChurchNotes/Pods-ChurchNotes.debug.xcconfig"; sourceTree = "<group>"; };
+		359489A0CB187CF1DD7C3238 /* Pods_ChurchNotes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChurchNotes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		43AE1F4A98A64DDA7A4A95DB /* Pods-ChurchNotes.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChurchNotes.release.xcconfig"; path = "Target Support Files/Pods-ChurchNotes/Pods-ChurchNotes.release.xcconfig"; sourceTree = "<group>"; };
+		9E44BEFB2A58E09F0059C56C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		9E44BEFD2A5A0D6D0059C56C /* LoginPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPage.swift; sourceTree = "<group>"; };
+		9E4FD3C32A4C92FB00D46FB8 /* AppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppView.swift; sourceTree = "<group>"; };
+		9E4FD3C72A4D2C2500D46FB8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		9E5671612A6190E5002FCFC5 /* CoreAudioTypes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioTypes.framework; path = System/Library/Frameworks/CoreAudioTypes.framework; sourceTree = SDKROOT; };
 		9E6F9DF72A4BC435009B72DC /* ChurchNotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChurchNotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E6F9DFA2A4BC435009B72DC /* ChurchNotesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChurchNotesApp.swift; sourceTree = "<group>"; };
-		9E6F9DFC2A4BC435009B72DC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9E6F9DFE2A4BC436009B72DC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9E6F9E012A4BC436009B72DC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9E6F9E032A4BC436009B72DC /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		9E6F9E0A2A4BC994009B72DC /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		9E6F9E122A4C6C33009B72DC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		9E7282C72A5235D3004D6483 /* ItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemView.swift; sourceTree = "<group>"; };
+		9E7282D02A574399004D6483 /* WidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		9E7282D42A574399004D6483 /* WidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBundle.swift; sourceTree = "<group>"; };
+		9E7282D62A574399004D6483 /* WidgetNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetNote.swift; sourceTree = "<group>"; };
+		9E7282D82A57439A004D6483 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9E7282DA2A57439A004D6483 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9E7282E42A57BB6D004D6483 /* ItemPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemPersonView.swift; sourceTree = "<group>"; };
+		9EA7AB952A508D20004DB3BA /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		9EA7AB972A508D20004DB3BA /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		9ED6F2ED2A5093DE002568DF /* WidgetTaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTaskModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -28,17 +77,41 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E144702C1C07938D3169463A /* Pods_ChurchNotes.framework in Frameworks */,
+				9E5671632A619290002FCFC5 /* CoreAudioTypes.framework in Frameworks */,
+				9E6830A22A5F0B09000AB299 /* iPhoneNumberField in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9E7282CD2A574399004D6483 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9E7282D22A574399004D6483 /* SwiftUI.framework in Frameworks */,
+				9E7282D12A574399004D6483 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		59D04428DEAD9445BC5F17CD /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				1C78EE6BAC6DDC6A8A124D5F /* Pods-ChurchNotes.debug.xcconfig */,
+				43AE1F4A98A64DDA7A4A95DB /* Pods-ChurchNotes.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		9E6F9DEE2A4BC435009B72DC = {
 			isa = PBXGroup;
 			children = (
 				9E6F9DF92A4BC435009B72DC /* ChurchNotes */,
+				9E7282D32A574399004D6483 /* Widget */,
 				9E6F9DF82A4BC435009B72DC /* Products */,
+				59D04428DEAD9445BC5F17CD /* Pods */,
+				BDB0A59DBE031AA6D1133182 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -46,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				9E6F9DF72A4BC435009B72DC /* ChurchNotes.app */,
+				9E7282D02A574399004D6483 /* WidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -53,11 +127,15 @@
 		9E6F9DF92A4BC435009B72DC /* ChurchNotes */ = {
 			isa = PBXGroup;
 			children = (
+				9E4FD3C72A4D2C2500D46FB8 /* Info.plist */,
 				9E6F9DFA2A4BC435009B72DC /* ChurchNotesApp.swift */,
-				9E6F9DFC2A4BC435009B72DC /* ContentView.swift */,
+				9E6F9E0C2A4C6B50009B72DC /* Views */,
 				9E6F9DFE2A4BC436009B72DC /* Assets.xcassets */,
-				9E6F9E032A4BC436009B72DC /* Item.swift */,
+				9E44BEFB2A58E09F0059C56C /* GoogleService-Info.plist */,
+				9E6F9E0D2A4C6B5E009B72DC /* Models */,
+				9ED6F2ED2A5093DE002568DF /* WidgetTaskModel.swift */,
 				9E6F9E002A4BC436009B72DC /* Preview Content */,
+				9E6F9E0A2A4BC994009B72DC /* Constants.swift */,
 			);
 			path = ChurchNotes;
 			sourceTree = "<group>";
@@ -70,6 +148,48 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		9E6F9E0C2A4C6B50009B72DC /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9E6F9E122A4C6C33009B72DC /* ContentView.swift */,
+				9E4FD3C32A4C92FB00D46FB8 /* AppView.swift */,
+				9E7282C72A5235D3004D6483 /* ItemView.swift */,
+				9E7282E42A57BB6D004D6483 /* ItemPersonView.swift */,
+				9E44BEFD2A5A0D6D0059C56C /* LoginPage.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		9E6F9E0D2A4C6B5E009B72DC /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				9E6F9E032A4BC436009B72DC /* Item.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		9E7282D32A574399004D6483 /* Widget */ = {
+			isa = PBXGroup;
+			children = (
+				9E7282D42A574399004D6483 /* WidgetBundle.swift */,
+				9E7282D62A574399004D6483 /* WidgetNote.swift */,
+				9E7282D82A57439A004D6483 /* Assets.xcassets */,
+				9E7282DA2A57439A004D6483 /* Info.plist */,
+			);
+			path = Widget;
+			sourceTree = "<group>";
+		};
+		BDB0A59DBE031AA6D1133182 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9E5671612A6190E5002FCFC5 /* CoreAudioTypes.framework */,
+				359489A0CB187CF1DD7C3238 /* Pods_ChurchNotes.framework */,
+				9EA7AB952A508D20004DB3BA /* WidgetKit.framework */,
+				9EA7AB972A508D20004DB3BA /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -77,18 +197,40 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9E6F9E072A4BC436009B72DC /* Build configuration list for PBXNativeTarget "ChurchNotes" */;
 			buildPhases = (
+				B5AA41C7D23701E8406B9655 /* [CP] Check Pods Manifest.lock */,
 				9E6F9DF32A4BC435009B72DC /* Sources */,
 				9E6F9DF42A4BC435009B72DC /* Frameworks */,
 				9E6F9DF52A4BC435009B72DC /* Resources */,
+				9E5671652A619290002FCFC5 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = ChurchNotes;
+			packageProductDependencies = (
+				9E6830A12A5F0B09000AB299 /* iPhoneNumberField */,
+			);
 			productName = ChurchNotes;
 			productReference = 9E6F9DF72A4BC435009B72DC /* ChurchNotes.app */;
 			productType = "com.apple.product-type.application";
+		};
+		9E7282CF2A574399004D6483 /* WidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9E7282DE2A57439A004D6483 /* Build configuration list for PBXNativeTarget "WidgetExtension" */;
+			buildPhases = (
+				9E7282CC2A574399004D6483 /* Sources */,
+				9E7282CD2A574399004D6483 /* Frameworks */,
+				9E7282CE2A574399004D6483 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WidgetExtension;
+			productName = WidgetExtension;
+			productReference = 9E7282D02A574399004D6483 /* WidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -103,6 +245,9 @@
 					9E6F9DF62A4BC435009B72DC = {
 						CreatedOnToolsVersion = 15.0;
 					};
+					9E7282CF2A574399004D6483 = {
+						CreatedOnToolsVersion = 15.0;
+					};
 				};
 			};
 			buildConfigurationList = 9E6F9DF22A4BC435009B72DC /* Build configuration list for PBXProject "ChurchNotes" */;
@@ -114,11 +259,16 @@
 				Base,
 			);
 			mainGroup = 9E6F9DEE2A4BC435009B72DC;
+			packageReferences = (
+				9E6830A02A5F0B09000AB299 /* XCRemoteSwiftPackageReference "iPhoneNumberField" */,
+				9E99AF4E2A5F5E9800806282 /* XCRemoteSwiftPackageReference "iPhoneNumberField" */,
+			);
 			productRefGroup = 9E6F9DF82A4BC435009B72DC /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				9E6F9DF62A4BC435009B72DC /* ChurchNotes */,
+				9E7282CF2A574399004D6483 /* WidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -130,19 +280,68 @@
 			files = (
 				9E6F9E022A4BC436009B72DC /* Preview Assets.xcassets in Resources */,
 				9E6F9DFF2A4BC436009B72DC /* Assets.xcassets in Resources */,
+				9E44BEFC2A58E09F0059C56C /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9E7282CE2A574399004D6483 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9E7282D92A57439A004D6483 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B5AA41C7D23701E8406B9655 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ChurchNotes-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		9E6F9DF32A4BC435009B72DC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9E6F9DFD2A4BC435009B72DC /* ContentView.swift in Sources */,
+				9E7282E52A57BB6D004D6483 /* ItemPersonView.swift in Sources */,
+				9E44BEFE2A5A0D6D0059C56C /* LoginPage.swift in Sources */,
 				9E6F9E042A4BC436009B72DC /* Item.swift in Sources */,
+				9E4FD3C42A4C92FB00D46FB8 /* AppView.swift in Sources */,
+				9E7282C82A5235D3004D6483 /* ItemView.swift in Sources */,
+				9E6F9E132A4C6C33009B72DC /* ContentView.swift in Sources */,
 				9E6F9DFB2A4BC435009B72DC /* ChurchNotesApp.swift in Sources */,
+				9E6F9E0B2A4BC994009B72DC /* Constants.swift in Sources */,
+				9ED6F2EE2A5093DE002568DF /* WidgetTaskModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9E7282CC2A574399004D6483 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9E7282D52A574399004D6483 /* WidgetBundle.swift in Sources */,
+				9E7282D72A574399004D6483 /* WidgetNote.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,6 +469,7 @@
 		};
 		9E6F9E082A4BC436009B72DC /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1C78EE6BAC6DDC6A8A124D5F /* Pods-ChurchNotes.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -278,12 +478,18 @@
 				DEVELOPMENT_ASSET_PATHS = "\"ChurchNotes/Preview Content\"";
 				DEVELOPMENT_TEAM = Z2WGFBM7LC;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ChurchNotes/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ChurchNotes;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -291,35 +497,112 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.molanter.ChurchNotes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		9E6F9E092A4BC436009B72DC /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 43AE1F4A98A64DDA7A4A95DB /* Pods-ChurchNotes.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ChurchNotes/Preview Content\"";
+				DEVELOPMENT_TEAM = Z2WGFBM7LC;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ChurchNotes/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ChurchNotes;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.molanter.ChurchNotes;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		9E7282DF2A57439A004D6483 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Z2WGFBM7LC;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Widget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Widget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.molanter.ChurchNotes.Widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		9E6F9E092A4BC436009B72DC /* Release */ = {
+		9E7282E02A57439A004D6483 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"ChurchNotes/Preview Content\"";
 				DEVELOPMENT_TEAM = Z2WGFBM7LC;
-				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_FILE = Widget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Widget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.molanter.ChurchNotes;
+				PRODUCT_BUNDLE_IDENTIFIER = com.molanter.ChurchNotes.Widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -347,7 +630,43 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		9E7282DE2A57439A004D6483 /* Build configuration list for PBXNativeTarget "WidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9E7282DF2A57439A004D6483 /* Debug */,
+				9E7282E02A57439A004D6483 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9E6830A02A5F0B09000AB299 /* XCRemoteSwiftPackageReference "iPhoneNumberField" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MojtabaHs/iPhoneNumberField";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.10.1;
+			};
+		};
+		9E99AF4E2A5F5E9800806282 /* XCRemoteSwiftPackageReference "iPhoneNumberField" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MojtabaHs/iPhoneNumberField";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.10.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9E6830A12A5F0B09000AB299 /* iPhoneNumberField */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9E6830A02A5F0B09000AB299 /* XCRemoteSwiftPackageReference "iPhoneNumberField" */;
+			productName = iPhoneNumberField;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9E6F9DEF2A4BC435009B72DC /* Project object */;
 }
