@@ -8,10 +8,10 @@ target 'ChurchNotes' do
   # Pods for ChurchNotes
 
 
-#pod 'FirebaseFirestore'	
-#pod 'FirebaseAuth'	
-#pod 'FirebaseStorage'	
-#pod 'FirebaseDatabase'	
+pod 'FirebaseFirestore'	
+pod 'FirebaseAuth'	
+pod 'FirebaseStorage'	
+pod 'FirebaseDatabase'	
 
 
 end

@@ -10,8 +10,6 @@
 		9E44BEFC2A58E09F0059C56C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9E44BEFB2A58E09F0059C56C /* GoogleService-Info.plist */; };
 		9E44BEFE2A5A0D6D0059C56C /* LoginPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E44BEFD2A5A0D6D0059C56C /* LoginPage.swift */; };
 		9E4FD3C42A4C92FB00D46FB8 /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4FD3C32A4C92FB00D46FB8 /* AppView.swift */; };
-		9E5671632A619290002FCFC5 /* CoreAudioTypes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E5671612A6190E5002FCFC5 /* CoreAudioTypes.framework */; };
-		9E5671642A619290002FCFC5 /* CoreAudioTypes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9E5671612A6190E5002FCFC5 /* CoreAudioTypes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9E6830A22A5F0B09000AB299 /* iPhoneNumberField in Frameworks */ = {isa = PBXBuildFile; productRef = 9E6830A12A5F0B09000AB299 /* iPhoneNumberField */; };
 		9E6F9DFB2A4BC435009B72DC /* ChurchNotesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6F9DFA2A4BC435009B72DC /* ChurchNotesApp.swift */; };
 		9E6F9DFF2A4BC436009B72DC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E6F9DFE2A4BC436009B72DC /* Assets.xcassets */; };
@@ -29,20 +27,6 @@
 		9ED6F2EE2A5093DE002568DF /* WidgetTaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ED6F2ED2A5093DE002568DF /* WidgetTaskModel.swift */; };
 		E144702C1C07938D3169463A /* Pods_ChurchNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 359489A0CB187CF1DD7C3238 /* Pods_ChurchNotes.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		9E5671652A619290002FCFC5 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				9E5671642A619290002FCFC5 /* CoreAudioTypes.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1C78EE6BAC6DDC6A8A124D5F /* Pods-ChurchNotes.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChurchNotes.debug.xcconfig"; path = "Target Support Files/Pods-ChurchNotes/Pods-ChurchNotes.debug.xcconfig"; sourceTree = "<group>"; };
@@ -78,7 +62,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E144702C1C07938D3169463A /* Pods_ChurchNotes.framework in Frameworks */,
-				9E5671632A619290002FCFC5 /* CoreAudioTypes.framework in Frameworks */,
 				9E6830A22A5F0B09000AB299 /* iPhoneNumberField in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -201,7 +184,7 @@
 				9E6F9DF32A4BC435009B72DC /* Sources */,
 				9E6F9DF42A4BC435009B72DC /* Frameworks */,
 				9E6F9DF52A4BC435009B72DC /* Resources */,
-				9E5671652A619290002FCFC5 /* Embed Frameworks */,
+				19FCC0912CC87A37C5789B0B /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -295,6 +278,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		19FCC0912CC87A37C5789B0B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ChurchNotes/Pods-ChurchNotes-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ChurchNotes/Pods-ChurchNotes-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChurchNotes/Pods-ChurchNotes-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		B5AA41C7D23701E8406B9655 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
