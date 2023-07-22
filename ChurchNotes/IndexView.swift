@@ -8,9 +8,19 @@
 import SwiftUI
 
 struct IndexView: View {
+    @EnvironmentObject var viewModel: AppViewModel
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
+        ZStack{
+            if viewModel.signedIn{
+                AppView()
+            }else{
+                LoginPage()
+            }
+        }
+        .onAppear{
+            viewModel.signedIn = viewModel.isSignedIn
+        }    }
 }
 
 #Preview {

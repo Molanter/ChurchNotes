@@ -49,17 +49,28 @@ final class ItemsTitle{
 
 @Model
 final class UserProfile {
-    var name: String
-    var phoneNumber: String
-    var email: String
     var cristian: Bool
-    var notes = ""
+    var name: String
+    var phone: String
+    var email: String
+    var country: String
+    var notes: String
+    var profileImage: String
+    var username: String
+    var uid: String
+    var timeStamp = Date.now
     
-    init(name: String, phoneNumber: String, email: String, cristian: Bool, notes: String) {
+    init(name: String, phoneNumber: String, email: String, cristian: Bool, notes: String, country: String, profileImage: String, username: String, uid : String) {
         self.name = name
-        self.phoneNumber = phoneNumber
+        self.phone = phoneNumber
         self.email = email
         self.cristian = cristian
         self.notes = notes
+        self.country = country
+        self.profileImage = profileImage
+        self.username = username
+        self.uid = uid
     }
 }
+
+

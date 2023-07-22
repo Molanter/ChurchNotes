@@ -7,9 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9E3CFF1C2A6875A90087AFD0 /* BottomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF1B2A6875A90087AFD0 /* BottomTabBar.swift */; };
+		9E3CFF1E2A6878EB0087AFD0 /* TopTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF1D2A6878EB0087AFD0 /* TopTabBar.swift */; };
+		9E3CFF212A688E5C0087AFD0 /* CurrentPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF202A688E5C0087AFD0 /* CurrentPersonView.swift */; };
+		9E3CFF242A68981E0087AFD0 /* AllPeopleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF232A68981E0087AFD0 /* AllPeopleView.swift */; };
 		9E44BEFC2A58E09F0059C56C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9E44BEFB2A58E09F0059C56C /* GoogleService-Info.plist */; };
 		9E44BEFE2A5A0D6D0059C56C /* LoginPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E44BEFD2A5A0D6D0059C56C /* LoginPage.swift */; };
 		9E4FD3C42A4C92FB00D46FB8 /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4FD3C32A4C92FB00D46FB8 /* AppView.swift */; };
+		9E563AD32A61A90900F5E52B /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E563AD22A61A90900F5E52B /* ImagePicker.swift */; };
+		9E65DA772A64F017000C87FB /* IndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E65DA762A64F017000C87FB /* IndexView.swift */; };
+		9E65DA792A658965000C87FB /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E65DA782A658965000C87FB /* AppViewModel.swift */; };
 		9E6830A22A5F0B09000AB299 /* iPhoneNumberField in Frameworks */ = {isa = PBXBuildFile; productRef = 9E6830A12A5F0B09000AB299 /* iPhoneNumberField */; };
 		9E6F9DFB2A4BC435009B72DC /* ChurchNotesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6F9DFA2A4BC435009B72DC /* ChurchNotesApp.swift */; };
 		9E6F9DFF2A4BC436009B72DC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E6F9DFE2A4BC436009B72DC /* Assets.xcassets */; };
@@ -32,11 +39,18 @@
 		1C78EE6BAC6DDC6A8A124D5F /* Pods-ChurchNotes.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChurchNotes.debug.xcconfig"; path = "Target Support Files/Pods-ChurchNotes/Pods-ChurchNotes.debug.xcconfig"; sourceTree = "<group>"; };
 		359489A0CB187CF1DD7C3238 /* Pods_ChurchNotes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChurchNotes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		43AE1F4A98A64DDA7A4A95DB /* Pods-ChurchNotes.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChurchNotes.release.xcconfig"; path = "Target Support Files/Pods-ChurchNotes/Pods-ChurchNotes.release.xcconfig"; sourceTree = "<group>"; };
+		9E3CFF1B2A6875A90087AFD0 /* BottomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomTabBar.swift; sourceTree = "<group>"; };
+		9E3CFF1D2A6878EB0087AFD0 /* TopTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopTabBar.swift; sourceTree = "<group>"; };
+		9E3CFF202A688E5C0087AFD0 /* CurrentPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentPersonView.swift; sourceTree = "<group>"; };
+		9E3CFF232A68981E0087AFD0 /* AllPeopleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllPeopleView.swift; sourceTree = "<group>"; };
 		9E44BEFB2A58E09F0059C56C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9E44BEFD2A5A0D6D0059C56C /* LoginPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPage.swift; sourceTree = "<group>"; };
 		9E4FD3C32A4C92FB00D46FB8 /* AppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppView.swift; sourceTree = "<group>"; };
 		9E4FD3C72A4D2C2500D46FB8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		9E563AD22A61A90900F5E52B /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		9E5671612A6190E5002FCFC5 /* CoreAudioTypes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioTypes.framework; path = System/Library/Frameworks/CoreAudioTypes.framework; sourceTree = SDKROOT; };
+		9E65DA762A64F017000C87FB /* IndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexView.swift; sourceTree = "<group>"; };
+		9E65DA782A658965000C87FB /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
 		9E6F9DF72A4BC435009B72DC /* ChurchNotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChurchNotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E6F9DFA2A4BC435009B72DC /* ChurchNotesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChurchNotesApp.swift; sourceTree = "<group>"; };
 		9E6F9DFE2A4BC436009B72DC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -87,6 +101,25 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		9E3CFF1F2A688BB70087AFD0 /* ItemViews */ = {
+			isa = PBXGroup;
+			children = (
+				9E6F9E122A4C6C33009B72DC /* ContentView.swift */,
+				9E7282C72A5235D3004D6483 /* ItemView.swift */,
+				9E7282E42A57BB6D004D6483 /* ItemPersonView.swift */,
+				9E3CFF232A68981E0087AFD0 /* AllPeopleView.swift */,
+			);
+			path = ItemViews;
+			sourceTree = "<group>";
+		};
+		9E3CFF222A688E620087AFD0 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				9E3CFF202A688E5C0087AFD0 /* CurrentPersonView.swift */,
+			);
+			path = User;
+			sourceTree = "<group>";
+		};
 		9E6F9DEE2A4BC435009B72DC = {
 			isa = PBXGroup;
 			children = (
@@ -119,6 +152,7 @@
 				9ED6F2ED2A5093DE002568DF /* WidgetTaskModel.swift */,
 				9E6F9E002A4BC436009B72DC /* Preview Content */,
 				9E6F9E0A2A4BC994009B72DC /* Constants.swift */,
+				9E65DA762A64F017000C87FB /* IndexView.swift */,
 			);
 			path = ChurchNotes;
 			sourceTree = "<group>";
@@ -134,11 +168,10 @@
 		9E6F9E0C2A4C6B50009B72DC /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				9E6F9E122A4C6C33009B72DC /* ContentView.swift */,
 				9E4FD3C32A4C92FB00D46FB8 /* AppView.swift */,
-				9E7282C72A5235D3004D6483 /* ItemView.swift */,
-				9E7282E42A57BB6D004D6483 /* ItemPersonView.swift */,
+				9E3CFF1F2A688BB70087AFD0 /* ItemViews */,
 				9E44BEFD2A5A0D6D0059C56C /* LoginPage.swift */,
+				9E3CFF222A688E620087AFD0 /* User */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -147,6 +180,10 @@
 			isa = PBXGroup;
 			children = (
 				9E6F9E032A4BC436009B72DC /* Item.swift */,
+				9E563AD22A61A90900F5E52B /* ImagePicker.swift */,
+				9E65DA782A658965000C87FB /* AppViewModel.swift */,
+				9E3CFF1B2A6875A90087AFD0 /* BottomTabBar.swift */,
+				9E3CFF1D2A6878EB0087AFD0 /* TopTabBar.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -326,11 +363,18 @@
 			files = (
 				9E7282E52A57BB6D004D6483 /* ItemPersonView.swift in Sources */,
 				9E44BEFE2A5A0D6D0059C56C /* LoginPage.swift in Sources */,
+				9E3CFF1C2A6875A90087AFD0 /* BottomTabBar.swift in Sources */,
+				9E65DA792A658965000C87FB /* AppViewModel.swift in Sources */,
 				9E6F9E042A4BC436009B72DC /* Item.swift in Sources */,
+				9E65DA772A64F017000C87FB /* IndexView.swift in Sources */,
 				9E4FD3C42A4C92FB00D46FB8 /* AppView.swift in Sources */,
+				9E3CFF242A68981E0087AFD0 /* AllPeopleView.swift in Sources */,
+				9E3CFF1E2A6878EB0087AFD0 /* TopTabBar.swift in Sources */,
 				9E7282C82A5235D3004D6483 /* ItemView.swift in Sources */,
 				9E6F9E132A4C6C33009B72DC /* ContentView.swift in Sources */,
 				9E6F9DFB2A4BC435009B72DC /* ChurchNotesApp.swift in Sources */,
+				9E563AD32A61A90900F5E52B /* ImagePicker.swift in Sources */,
+				9E3CFF212A688E5C0087AFD0 /* CurrentPersonView.swift in Sources */,
 				9E6F9E0B2A4BC994009B72DC /* Constants.swift in Sources */,
 				9ED6F2EE2A5093DE002568DF /* WidgetTaskModel.swift in Sources */,
 			);

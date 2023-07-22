@@ -100,7 +100,7 @@ struct ItemView: View {
                                     }
                                     .sheet(isPresented: $sheetPesonInfo){
                                         NavigationStack{
-                                            ItemPersonView(item: item, itemTitle: self.itemTitles)
+                                            ItemPersonView(item: item)
                                                 .toolbar{
                                                     ToolbarItem(placement: .topBarTrailing){
                                                         Button(action: {
@@ -193,21 +193,23 @@ struct ItemView: View {
                         .padding(15)
                     }
                     VStack(alignment: .leading, spacing: 20){
-                        Text("Write Person Name")
-                            .font(.title2)
-                            .fontWeight(.medium)
-                        HStack{
-                            TextField("Name", text: $name)
-                                .onSubmit {
-                                    if !name.isEmpty{
-                                       addItem()
+                        VStack{
+                            Text("Write Person Name")
+                                .font(.title2)
+                                .fontWeight(.medium)
+                            HStack{
+                                TextField("Name", text: $name)
+                                    .onSubmit {
+                                        if !name.isEmpty{
+                                           addItem()
+                                        }
                                     }
-                                }
+                            }
+                            .padding(10)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.darkGray), lineWidth: 1)
+                            )
                         }
-                        .padding(10)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.darkGray), lineWidth: 1)
-                        )
                         Button(action: {
                             if !name.isEmpty{
                                 addItem()
@@ -215,11 +217,11 @@ struct ItemView: View {
                         }){
                             Text("Add")
                                 .foregroundColor(Color.white)
+                                .padding(.vertical, 10)
+                                .frame(maxWidth: .infinity)
+                                .background(Color(K.Colors.mainColor))
+                                .cornerRadius(7)
                         }
-                        .padding(.vertical, 10)
-                        .frame(maxWidth: .infinity)
-                        .background(Color(K.Colors.mainColor))
-                        .cornerRadius(7)
                     }
                     .padding(15)
                 }

@@ -10,7 +10,6 @@ import SwiftData
 
 struct ItemPersonView: View {
     @Bindable var item: Items
-    @Bindable var itemTitle: ItemsTitle
     @State var edit = false
     @Query (sort: \ItemsTitle.timeStamp, order: .forward, animation: .spring) var titles: [ItemsTitle]
     @State var selectedTheme = ""
@@ -344,7 +343,7 @@ struct ItemPersonView: View {
                                         .foregroundStyle(Color(K.Colors.mainColor))
                                         .fontWeight(.light)
                                 }
-                                Text(itemTitle.name)
+                                Text("itemTitle.name")
                                     .font(.title3)
                                     .fontWeight(.light)
                                     .font(.system(size: 18))

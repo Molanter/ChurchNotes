@@ -11,7 +11,7 @@ import FirebaseCore
 import FirebaseAuth
 
 class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
-
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         FirebaseApp.configure()
         
@@ -25,14 +25,12 @@ struct ChurchNotesApp: App {
 
     var body: some Scene {
         WindowGroup {
-            
-//            if Auth.auth().currentUser?.uid != nil{
-                ContentView()
-//            }else{
-//                LoginPage()
-//            }
+            let viewModel = AppViewModel()
+                IndexView()
+                .environmentObject(viewModel)
         }
+        
         .modelContainer(for: [UserProfile.self, Items.self, ItemsTitle.self])
-
+        
     }
 }
