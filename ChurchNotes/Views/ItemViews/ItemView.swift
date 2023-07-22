@@ -23,12 +23,17 @@ struct ItemView: View {
     @State var finishImage: Data?
     @State var sheetPesonInfo = false
     @State var email = ""
+    
+    private var sortedItems: [Items] {
+        itemTitles.items.sorted(by: { $0.timestamp < $1.timestamp })
+    }
+    
     var body: some View {
         ZStack(alignment: .bottom){
             List{
                 if !itemTitles.items.isEmpty{
                     
-                    ForEach(itemTitles.items){item in
+                    ForEach(sortedItems) { item in
                             Button(action: {self.sheetPesonInfo.toggle()}){
                                     HStack{
                                         ZStack(alignment: .bottomTrailing){
@@ -37,15 +42,17 @@ struct ItemView: View {
                                                     Image(uiImage: UIImage(data: img)!)
                                                         .resizable()
                                                         .aspectRatio(contentMode: .fill)
-                                                        .frame(width: 50, height: 50)
-                                                        .cornerRadius(25)
-
+                                                        .frame(width: 40, height: 40)
+                                                        .cornerRadius(20)
+                                                        .overlay(
+                                                            Circle().stroke(.gray.opacity(0.6), lineWidth: 1)
+                                                        )
                                                 }
                                             }else{
                                                 ZStack(alignment: .center){
                                                     Circle()
                                                         .foregroundColor(Color(K.Colors.darkGray))
-                                                        .frame(width: 50, height: 50)
+                                                        .frame(width: 40, height: 40)
                                                     Text(String(item.name.components(separatedBy: " ").compactMap { $0.first }).count >= 3 ? String(String(item.name.components(separatedBy: " ").compactMap { $0.first }).prefix(2)) : String(item.name.components(separatedBy: " ").compactMap { $0.first }))
                                                         .textCase(.uppercase)
                                                         .foregroundColor(Color.white)
@@ -59,33 +66,38 @@ struct ItemView: View {
                                                 .frame(width: 15)
                                                 .foregroundColor(Color(K.Colors.green))
                                         }
-                                        VStack(alignment: .leading){
+                                        VStack(alignment: .leading, spacing: 3){
                                             Text(item.name.capitalized)
+                                                .padding(.vertical, 3)
                                                 .fontWeight(.medium)
                                                 .foregroundStyle(.primary)
-                                                .font(.system(size: 17))
+                                                .font(.system(size: 13))
                                             HStack(spacing: 1){
                                                 Text(item.timestamp, format: .dateTime.month(.wide))
                                                 Text(item.timestamp, format: .dateTime.day())
                                                 Text(", \(item.timestamp, format: .dateTime.year()), ")
                                                 Text(item.timestamp, style: .time)
                                             }
-                                            .font(.system(size: 15))
-                                            .foregroundStyle(.secondary)
+                                            .font(.system(size: 11))
+                                            .foregroundStyle(Color(K.Colors.lightGray))
                                         }
                                     }
-//                                    .swipeActions(edge: .trailing) {
-//                                        Button(role: .destructive, action: { modelContext.delete(item) } ) {
-//                                            Label("Delete", systemImage: "trash")
-//                                        }
-//                                    }
-//                                    .contextMenu {
-//                                        Button(role: .destructive) {
-//                                            modelContext.delete(item)
-//                                        } label: {
-//                                            Label("Delete", systemImage: "trash")
-//                                        }
-//                                    }
+                                    .swipeActions(edge: .trailing) {
+                                        Button(role: .destructive, action: {
+                                            modelContext.delete(item)
+                                            try? modelContext.save()
+                                        } ) {
+                                            Label("Delete", systemImage: "trash")
+                                        }
+                                    }
+                                    .contextMenu {
+                                        Button(role: .destructive) {
+                                            modelContext.delete(item)
+                                            try? modelContext.save()
+                                        } label: {
+                                            Label("Delete", systemImage: "trash")
+                                        }
+                                    }
                                     .sheet(isPresented: $sheetPesonInfo){
                                         NavigationStack{
                                             ItemPersonView(item: item, itemTitle: self.itemTitles)
@@ -104,11 +116,12 @@ struct ItemView: View {
                                     }
                                 }
                         }
-//                        .onDelete(perform: delete)
+                        .onDelete(perform: delete)
                     .onDelete { indexes in
                         for index in indexes {
 //                            deleteItem(itemTitles.items[index])
                             modelContext.delete(itemTitles.items[index])
+                            try? modelContext.save()
                         }
                     }
                 }else{
@@ -133,15 +146,18 @@ struct ItemView: View {
             .frame(maxHeight: .infinity)
             HStack{
                 EditButton()
+                    .foregroundStyle(Color(K.Colors.mainColor))
+                    .padding(.horizontal, 15)
                 Spacer()
                 Image(systemName: "note.text.badge.plus")
+                    .padding(15)
                     .onTapGesture(perform: {
                         self.presentSheet.toggle()
                     })
-                    .padding(15)
                     .font(.title2)
-                    .foregroundColor(Color(K.Colors.bluePurple))
+                    .foregroundColor(Color(K.Colors.mainColor))
             }
+            .padding(.bottom, 15)
 
         }
         .sheet(isPresented: $presentSheet){
@@ -157,7 +173,7 @@ struct ItemView: View {
                                     .frame(width: 100, height: 100)
                                     .cornerRadius(50)
                                     .overlay(
-                                        Circle().stroke(Color(K.Colors.bluePurple), lineWidth: 2)
+                                        Circle().stroke(Color(K.Colors.mainColor), lineWidth: 2)
                                     )
                                     .padding(15)
                                 
@@ -165,14 +181,14 @@ struct ItemView: View {
                                 Image(systemName: "person.fill.viewfinder")
                                     .resizable()
                                     .frame(width: 100, height: 100)
-                                    .foregroundColor(Color(K.Colors.bluePurple))
+                                    .foregroundColor(Color(K.Colors.mainColor))
                                     .padding(15)
                                 
                                 
                             }
                             Text("tap to change Image")
                                 .foregroundStyle(.secondary)
-                                .foregroundStyle(Color(K.Colors.bluePurple))
+                                .foregroundStyle(Color(K.Colors.mainColor))
                         }
                         .padding(15)
                     }
@@ -202,7 +218,7 @@ struct ItemView: View {
                         }
                         .padding(.vertical, 10)
                         .frame(maxWidth: .infinity)
-                        .background(Color(K.Colors.bluePurple))
+                        .background(Color(K.Colors.mainColor))
                         .cornerRadius(7)
                     }
                     .padding(15)
@@ -241,10 +257,6 @@ struct ItemView: View {
         .frame(maxHeight: .infinity)
     }
     
-    private func ischked(){
-        
-    }
-    
     private func addItem() {
         withAnimation {
             if image != nil{
@@ -279,11 +291,13 @@ struct ItemView: View {
         withAnimation {
             for index in offsets {
                 itemTitles.items.remove(at: index)
+                try? modelContext.save()
             }
         }
     }
     func deleteItem(_ item: Items) {
         modelContext.delete(item)
+        try? modelContext.save()
     }
 }
 
@@ -294,46 +308,4 @@ struct ItemView: View {
 //
 //}
 
-struct ImagePicker: UIViewControllerRepresentable{
-    @Binding var image: UIImage?
-    
-    
-    func makeUIViewController(context: Context) -> UIImagePickerController {
-        let picker = UIImagePickerController()
-        picker.allowsEditing = true
-        picker.delegate = context.coordinator
-        return picker
-    }
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
-    
-    
-    func makeCoordinator() -> Coordinator {
-        return Coordinator(parent: self)
-    }
-    
-    
-    //    private let controler = UIImagePickerController()
-    
-    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate{
-        
-        
-        let parent: ImagePicker
-        init(parent: ImagePicker) {
-            self.parent = parent
-        }
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            if let image = info[.editedImage] as? UIImage{
-                parent.image = image
-                picker.dismiss(animated: true)
-            }else{
-                //Error
-                
-            }
-        }
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            picker.dismiss(animated: true)
-        }
-    }
-    
-    
-}
+

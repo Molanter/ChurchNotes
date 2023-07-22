@@ -23,12 +23,12 @@ struct ItemPersonView: View {
                     ZStack(alignment: .bottom){
                         ZStack(alignment: .top){
                             Ellipse()
-                                .foregroundColor(Color(K.Colors.bluePurple))
+                                .foregroundColor(Color(K.Colors.mainColor))
                                 .frame(width: 557.89917, height: 206.48558)
                                 .cornerRadius(500)
                                 .shadow( radius: 30)
                             Rectangle()
-                                .foregroundColor(Color(K.Colors.bluePurple))
+                                .foregroundColor(Color(K.Colors.mainColor))
                                 .frame(width: 557.89917, height: 90)
                         }
                         VStack(alignment: .center){
@@ -100,7 +100,7 @@ struct ItemPersonView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 20)
-                                    .foregroundStyle(Color(K.Colors.bluePurple))
+                                    .foregroundStyle(Color(K.Colors.mainColor))
                                     .fontWeight(.light)
                             }
                             HStack{
@@ -165,7 +165,7 @@ struct ItemPersonView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 20)
-                                    .foregroundStyle(Color(K.Colors.bluePurple))
+                                    .foregroundStyle(Color(K.Colors.mainColor))
                                     .fontWeight(.light)
                             }
                             HStack{
@@ -193,7 +193,7 @@ struct ItemPersonView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 20)
-                                    .foregroundStyle(Color(K.Colors.bluePurple))
+                                    .foregroundStyle(Color(K.Colors.mainColor))
                                     .fontWeight(.light)
                             }
                             HStack{
@@ -231,7 +231,7 @@ struct ItemPersonView: View {
                                     .padding()
                             }
                             .frame(maxWidth: .infinity)
-                            .background(Color(K.Colors.bluePurple))
+                            .background(Color(K.Colors.mainColor))
                             .cornerRadius(7)
                         }
                         .frame(maxWidth: .infinity)
@@ -246,12 +246,12 @@ struct ItemPersonView: View {
                         ZStack(alignment: .bottom){
                             ZStack(alignment: .top){
                                 Ellipse()
-                                    .foregroundColor(Color(K.Colors.bluePurple))
+                                    .foregroundColor(Color(K.Colors.mainColor))
                                     .frame(width: 557.89917, height: 206.48558)
                                     .cornerRadius(500)
                                     .shadow( radius: 30)
                                 Rectangle()
-                                    .foregroundColor(Color(K.Colors.bluePurple))
+                                    .foregroundColor(Color(K.Colors.mainColor))
                                     .frame(width: 557.89917, height: 90)
                             }
                             VStack(alignment: .center){
@@ -323,7 +323,7 @@ struct ItemPersonView: View {
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: 20)
-                                        .foregroundStyle(Color(K.Colors.bluePurple))
+                                        .foregroundStyle(Color(K.Colors.mainColor))
                                         .fontWeight(.light)
                                 }
                                 Text(item.name.isEmpty ? "Name" : item.name)
@@ -341,7 +341,7 @@ struct ItemPersonView: View {
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: 20)
-                                        .foregroundStyle(Color(K.Colors.bluePurple))
+                                        .foregroundStyle(Color(K.Colors.mainColor))
                                         .fontWeight(.light)
                                 }
                                 Text(itemTitle.name)
@@ -359,7 +359,7 @@ struct ItemPersonView: View {
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: 20)
-                                        .foregroundStyle(Color(K.Colors.bluePurple))
+                                        .foregroundStyle(Color(K.Colors.mainColor))
                                         .fontWeight(.light)
                                 }
                                 HStack(spacing: 1){
@@ -381,7 +381,7 @@ struct ItemPersonView: View {
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: 20)
-                                        .foregroundStyle(Color(K.Colors.bluePurple))
+                                        .foregroundStyle(Color(K.Colors.mainColor))
                                         .fontWeight(.light)
                                 }
                                 Text(item.notes.isEmpty ? "Notes" : item.notes)
