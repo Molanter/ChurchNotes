@@ -22,10 +22,10 @@ struct TopBarView: View {
             HStack(spacing: 0) {
                 if itemTitles.isEmpty{
                     Button(action: {presentSheet.toggle()}){
-                        Image(systemName: "plus")
+                        Image(systemName: "plus.rectangle.on.folder")
                     }
                     .foregroundColor(Color(K.Colors.mainColor))
-                    .padding(.top, 50)
+                    .padding(.top, 45)
                     .padding(.bottom, 10)
                 }else{
                     ForEach(Array(zip(
@@ -39,7 +39,8 @@ struct TopBarView: View {
                                    tab: index)
                     })
                     Button(action: {presentSheet.toggle()}){
-                        Image(systemName: "plus")
+                        Image(systemName: "plus.rectangle.on.folder")
+                            .padding(.horizontal)
                     }
                     .foregroundColor(Color(K.Colors.mainColor))
                 }

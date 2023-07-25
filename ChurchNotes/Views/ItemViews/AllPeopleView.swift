@@ -10,13 +10,14 @@ import SwiftData
 
 struct AllPeopleView: View {
     @SwiftData.Query (sort: \Items.timestamp, order: .forward, animation: .spring) var items: [Items]
+    @SwiftData.Query (sort: \ItemsTitle.timeStamp, order: .forward, animation: .spring) var itemTitles: [ItemsTitle]
     @State var sheetPesonInfo = false
     
     var body: some View {
         NavigationStack{
             VStack(alignment: .leading){
                 List{
-                    ForEach(items){item in
+                    ForEach(items){ item in
                         Button(action: {self.sheetPesonInfo.toggle()}){
                                 HStack{
                                     ZStack(alignment: .bottomTrailing){

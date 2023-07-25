@@ -37,48 +37,56 @@ struct AppView: View {
     var db = Firestore.firestore()
     var auth = Auth.auth()
     @EnvironmentObject var viewModel: AppViewModel
-    
+    @State private var selection: Int = 0 // 1
+
     var body: some View {
-        NavigationStack{
-            if !width{
-                VStack(spacing: 0){
-                    TabView(selection: self.$currentTab) {
-                        ContentView().tag(0)
-                        settings.tag(1)
-                            .toolbar{
-                                if !width{
-                                    ToolbarItemGroup(placement: .topBarLeading) {
-                                        Button(action: {
-                                            self.showingEditingProfile.toggle()
-                                        }){
-                                            Image(systemName: "square.and.pencil")
-                                                .foregroundColor(Color(K.Colors.mainColor))
-                                        }
-                                    }
-                                    ToolbarItemGroup(placement: .topBarTrailing) {
-                                        Button(action: {viewModel.logOut()}){
-                                            Image(systemName: "network")
-                                                .disabled(true)
-                                                .foregroundColor(Color(K.Colors.mainColor))
-                                        }
-                                    }
-                                }
-                            }
-                    }
-                    .tabViewStyle(.page(indexDisplayMode: .never))
-                    VStack{
-                        BottomBarView(currentTab: self.$currentTab)
-                            .padding(.top, 10)
-                            .frame(height: 30)
-                            .background(Color(K.Colors.background).offset(y: -18))
-                            .background(Color(K.Colors.background))
-                    }
-                    .offset(y: width ? 100 : 0)
-                }
-            }else{
-                settings
+        VStack(alignment: .center, spacing: 0) { // 2
+                    ZStack { // 3
+                        if (selection == 0) {
+                            ItemView()
+                        } else if (selection == 1) {
+                            settings
+                        }// else if (selection == 2) {
+//                            contactsContent()
+//                        } else if (selection == 3) {
+//                            keypadContent()
+//                        } else if (selection == 4) {
+//                            voicemailContent()
+//                        }
+                    }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            HStack(alignment: .lastTextBaseline) {
+                CustomTabBarItem(iconName: "note.text",
+                                 label: "Notes",
+                                 selection: $selection,
+                                 tag: 0)
+                CustomTabBarItem(iconName: "gearshape",
+                                 label: "Settings",
+                                 selection: $selection,
+                                 tag: 1)
+//                CustomTabBarItem(iconName: "person.crop.circle",
+//                                 label: "Contacts",
+//                                 selection: $selection,
+//                                 tag: 2)
+//                CustomTabBarItem(iconName: "circle.grid.3x3.fill",
+//                                 label: "Keypad",
+//                                 selection: $selection,
+//                                 tag: 3)
+//                CustomTabBarItem(iconName: "recordingtape",
+//                                 label: "Voicemail",
+//                                 selection: $selection,
+//                                 tag: 4)
             }
-        }
+                    .frame(maxWidth: .infinity)
+                    .background(
+                        GeometryReader { parentGeometry in
+                            Rectangle()
+                                .fill(Color(K.Colors.background))
+                                .frame(width: parentGeometry.size.width, height: 0.5)
+                                .position(x: parentGeometry.size.width / 2, y: 0)
+                        }
+                    )
+                    .background(Color(UIColor.systemGray6))
+                }.frame(maxHeight: .infinity, alignment: .bottom)
         .onAppear(){
             if itemTitles.isEmpty{
                 addFirst()
@@ -287,6 +295,7 @@ struct AppView: View {
                         
                         Button(action: {
                             updateFunc()
+                            fetchDictionary()
                         }){
                             Text("Update Profile")
                                 .foregroundStyle(Color.white)
@@ -386,7 +395,7 @@ struct AppView: View {
                     .padding(.horizontal, 25)
                     VStack(alignment: .leading, spacing: 20){
                         VStack{
-                            NavigationLink(destination: CurrentPersonView(user: .init(name: name, phoneNumber: phone, email: email, cristian: cristian, notes: notes, country: country, profileImage: profileImage, username: username, uid: auth.currentUser!.uid))        .accentColor(Color(K.Colors.darkGray))){
+                            NavigationLink(destination: CurrentPersonView(user: .init(name: name, phoneNumber: phone, email: email, cristian: cristian, notes: notes, country: country, profileImage: profileImage, username: username))        .accentColor(Color(K.Colors.darkGray))){
                                 HStack(spacing: 29){
                                     Image(systemName: "person")
                                         .font(.system(size: 29))
@@ -414,7 +423,7 @@ struct AppView: View {
                                     Image(systemName: "person.3")
                                         .font(.system(size: 25))
                                         .fontWeight(.light)
-                                    VStack(alignment: .leading, spacing: 5){
+                                VStack(alignment: .leading, spacing: 5){
                                         Text("People")
                                             .font(.system(size: 15))
                                             .fontWeight(.semibold)
@@ -433,7 +442,7 @@ struct AppView: View {
                             Divider()
                         }
                         VStack{
-                            NavigationLink(destination: Text("Notifications")){
+                            NavigationLink(destination: SearchView()){
                                 HStack(spacing: 29){
                                     Image(systemName: "bell.badge")
                                         .font(.system(size: 29))
@@ -555,6 +564,20 @@ struct AppView: View {
                         }
                 }
             }
+            .toolbar(content: {
+                ToolbarItem(placement: .topBarTrailing, content: {
+                    Button(action: {viewModel.logOut()}){
+                        Image(systemName: "square.and.pencil")
+                            .foregroundStyle(Color(K.Colors.mainColor))
+                    }
+                })
+                ToolbarItem(placement: .topBarLeading, content: {
+                    Button(action: {self.showingEditingProfile.toggle()}){
+                        Image(systemName: "square.and.pencil")
+                            .foregroundStyle(Color(K.Colors.mainColor))
+                    }
+                })
+            })
             .frame(maxWidth: .infinity)
         }
         .onAppear{
@@ -623,4 +646,55 @@ struct AppView: View {
     AppView()
         .environmentObject(AppViewModel())
         .modelContainer(for: [UserProfile.self, Items.self, ItemsTitle.self])
+}
+
+
+struct SearchView: View {
+    @State private var searchText = ""
+    let allNames = ["Subh", "Vina", "Melvin", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie", "Sefanie"]
+    var body: some View {
+        NavigationView {
+            List(filteredNames, id: \.self) { name in
+                Text(name)
+            }
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Look for something")
+            .navigationTitle("Searching")
+        }
+    }
+
+    var filteredNames: [String] {
+        if searchText.isEmpty {
+            return allNames
+        } else {
+            return allNames.filter { $0.localizedCaseInsensitiveContains(searchText) }
+        }
+    }
+}
+
+
+struct CustomTabBarItem: View {
+    let iconName: String
+    let label: String
+    let selection: Binding<Int> // 1
+    let tag: Int // 2
+    
+    var body: some View {
+        VStack(alignment: .center) {
+            Image(systemName: iconName)
+                .frame(minWidth: 25, minHeight: 25)
+            Text(label)
+                .font(.caption)
+        }
+        .padding([.top, .bottom], 5)
+        .foregroundColor(fgColor()) // 4
+        .frame(maxWidth: .infinity)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            self.selection.wrappedValue = self.tag // 3
+        }
+    }
+    
+    private func fgColor() -> Color {
+        return selection.wrappedValue == tag ? Color(K.Colors.mainColor) : Color(K.Colors.gray)
+    }
 }

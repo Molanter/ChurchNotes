@@ -10,6 +10,7 @@ import SwiftData
 
 struct ItemPersonView: View {
     @Bindable var item: Items
+//    @Bindable var itemTitles: ItemsTitle
     @State var edit = false
     @Query (sort: \ItemsTitle.timeStamp, order: .forward, animation: .spring) var titles: [ItemsTitle]
     @State var selectedTheme = ""
@@ -31,7 +32,7 @@ struct ItemPersonView: View {
                                 .frame(width: 557.89917, height: 90)
                         }
                         VStack(alignment: .center){
-                            Text(item.name)
+                            Text(item.name == "" ? "Name" : item.name)
                                 .foregroundColor(.white)
                                 .multilineTextAlignment(.center)
                                 .font(.title2)
@@ -343,7 +344,7 @@ struct ItemPersonView: View {
                                         .foregroundStyle(Color(K.Colors.mainColor))
                                         .fontWeight(.light)
                                 }
-                                Text("itemTitle.name")
+                                Text("itemTitles.name")
                                     .font(.title3)
                                     .fontWeight(.light)
                                     .font(.system(size: 18))

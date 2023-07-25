@@ -26,7 +26,7 @@ class AppViewModel: ObservableObject{
     var isSignedIn: Bool{
         return auth.currentUser != nil
     }
-    
+        
     func passSecure(password: String) -> Color{
         var passColor: Color = Color(K.Colors.gray)
         var bigLatter = false

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9E3CFF1C2A6875A90087AFD0 /* BottomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF1B2A6875A90087AFD0 /* BottomTabBar.swift */; };
 		9E3CFF1E2A6878EB0087AFD0 /* TopTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF1D2A6878EB0087AFD0 /* TopTabBar.swift */; };
 		9E3CFF212A688E5C0087AFD0 /* CurrentPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF202A688E5C0087AFD0 /* CurrentPersonView.swift */; };
 		9E3CFF242A68981E0087AFD0 /* AllPeopleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF232A68981E0087AFD0 /* AllPeopleView.swift */; };
@@ -39,7 +38,6 @@
 		1C78EE6BAC6DDC6A8A124D5F /* Pods-ChurchNotes.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChurchNotes.debug.xcconfig"; path = "Target Support Files/Pods-ChurchNotes/Pods-ChurchNotes.debug.xcconfig"; sourceTree = "<group>"; };
 		359489A0CB187CF1DD7C3238 /* Pods_ChurchNotes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChurchNotes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		43AE1F4A98A64DDA7A4A95DB /* Pods-ChurchNotes.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChurchNotes.release.xcconfig"; path = "Target Support Files/Pods-ChurchNotes/Pods-ChurchNotes.release.xcconfig"; sourceTree = "<group>"; };
-		9E3CFF1B2A6875A90087AFD0 /* BottomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomTabBar.swift; sourceTree = "<group>"; };
 		9E3CFF1D2A6878EB0087AFD0 /* TopTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopTabBar.swift; sourceTree = "<group>"; };
 		9E3CFF202A688E5C0087AFD0 /* CurrentPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentPersonView.swift; sourceTree = "<group>"; };
 		9E3CFF232A68981E0087AFD0 /* AllPeopleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllPeopleView.swift; sourceTree = "<group>"; };
@@ -182,7 +180,6 @@
 				9E6F9E032A4BC436009B72DC /* Item.swift */,
 				9E563AD22A61A90900F5E52B /* ImagePicker.swift */,
 				9E65DA782A658965000C87FB /* AppViewModel.swift */,
-				9E3CFF1B2A6875A90087AFD0 /* BottomTabBar.swift */,
 				9E3CFF1D2A6878EB0087AFD0 /* TopTabBar.swift */,
 			);
 			path = Models;
@@ -363,7 +360,6 @@
 			files = (
 				9E7282E52A57BB6D004D6483 /* ItemPersonView.swift in Sources */,
 				9E44BEFE2A5A0D6D0059C56C /* LoginPage.swift in Sources */,
-				9E3CFF1C2A6875A90087AFD0 /* BottomTabBar.swift in Sources */,
 				9E65DA792A658965000C87FB /* AppViewModel.swift in Sources */,
 				9E6F9E042A4BC436009B72DC /* Item.swift in Sources */,
 				9E65DA772A64F017000C87FB /* IndexView.swift in Sources */,

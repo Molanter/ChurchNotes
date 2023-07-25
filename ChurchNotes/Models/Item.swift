@@ -57,10 +57,9 @@ final class UserProfile {
     var notes: String
     var profileImage: String
     var username: String
-    var uid: String
     var timeStamp = Date.now
     
-    init(name: String, phoneNumber: String, email: String, cristian: Bool, notes: String, country: String, profileImage: String, username: String, uid : String) {
+    init(name: String, phoneNumber: String, email: String, cristian: Bool, notes: String, country: String, profileImage: String, username: String) {
         self.name = name
         self.phone = phoneNumber
         self.email = email
@@ -69,7 +68,6 @@ final class UserProfile {
         self.country = country
         self.profileImage = profileImage
         self.username = username
-        self.uid = uid
     }
 }
 
