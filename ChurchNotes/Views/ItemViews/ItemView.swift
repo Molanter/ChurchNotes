@@ -28,7 +28,7 @@ struct ItemView: View {
     @State var sheetPesonInfo = false
     @State var email = ""
     @State var currentTab: Int = 0
-    @State var currentItem: Items = ([Items]().first ?? .init(name: "Name", isLiked: false, isCheked: false, notes: "notes", email: "eail@gmail.com", birthDay: Date.now))
+    @State private var currentItem: Items?
     var itemTitles: ItemsTitle{
         if title.isEmpty{
             addFirst()
@@ -48,14 +48,14 @@ struct ItemView: View {
     
     var body: some View {
         NavigationStack{
-            VStack(spacing: 0){
-                TopBarView(currentTab: self.$currentTab)
-                
-                
-                List{
+//            VStack(spacing: 0){
+//                TopBarView(currentTab: self.$currentTab)
+//                
+//                
+                List(filteredNames, id: \.self){item in
                     
-                    ForEach(filteredNames){ item in
                         Button(action: {
+                            currentItem = item
                             self.sheetPesonInfo.toggle()
                         }){
                             HStack{
@@ -123,13 +123,14 @@ struct ItemView: View {
                             //                                    }
                             
                         }
-                        .sheet(isPresented: $sheetPesonInfo){
+                        .sheet(item: $currentItem, onDismiss: nil){ item in
                             NavigationStack{
                                 ItemPersonView(item: item)
                                     .toolbar{
                                         ToolbarItem(placement: .topBarTrailing){
                                             Button(action: {
-                                                self.sheetPesonInfo.toggle()
+//                                                self.sheetPesonInfo.toggle()
+                                                
                                             }){
                                                 Image(systemName: "xmark.circle")
                                             }
@@ -139,11 +140,7 @@ struct ItemView: View {
                             .accentColor(Color.white)
                             
                         }
-                    }
-                 }
-                .toolbar{
-                                EditButton()
-                            }
+                  }
                 .toolbar(content: {
                     ToolbarItem(placement: .topBarTrailing, content: {
                         Button(action: {self.presentSheet.toggle()}){
@@ -151,11 +148,14 @@ struct ItemView: View {
                                 .foregroundStyle(Color(K.Colors.mainColor))
                         }
                     })
+                    ToolbarItem(placement: .topBarLeading) {
+                        EditButton()
+                    }
                 })
                 .scrollContentBackground(.hidden)
                 .listStyle(.plain)
                 .frame(maxHeight: .infinity)
-//                .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Name")
+                .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Name")
                 //                            HStack{
                 //                                EditButton()
                 //                                    .foregroundStyle(Color(K.Colors.mainColor))
@@ -173,7 +173,7 @@ struct ItemView: View {
                 //                            }
                 //                            .padding(.bottom, 10)
                 //                            .padding(.horizontal, 15)
-            }
+//            }
             .tabViewStyle(.page(indexDisplayMode: .never))
         }
         .sheet(isPresented: $presentSheet){

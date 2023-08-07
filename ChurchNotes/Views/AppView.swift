@@ -55,7 +55,7 @@ struct AppView: View {
 //                        }
                     }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             HStack(alignment: .lastTextBaseline) {
-                CustomTabBarItem(iconName: "note.text",
+                CustomTabBarItem(iconName: "list.bullet.clipboard",
                                  label: "Notes",
                                  selection: $selection,
                                  tag: 0)
@@ -567,7 +567,7 @@ struct AppView: View {
             .toolbar(content: {
                 ToolbarItem(placement: .topBarTrailing, content: {
                     Button(action: {viewModel.logOut()}){
-                        Image(systemName: "square.and.pencil")
+                        Image(systemName: "rectangle.portrait.and.arrow.right")
                             .foregroundStyle(Color(K.Colors.mainColor))
                     }
                 })
@@ -680,7 +680,7 @@ struct CustomTabBarItem: View {
     
     var body: some View {
         VStack(alignment: .center) {
-            Image(systemName: iconName)
+            Image(systemName: selection.wrappedValue == tag ? "\(iconName).fill" : iconName)
                 .frame(minWidth: 25, minHeight: 25)
             Text(label)
                 .font(.caption)

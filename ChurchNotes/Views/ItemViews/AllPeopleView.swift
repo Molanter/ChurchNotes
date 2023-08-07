@@ -9,15 +9,13 @@ import SwiftUI
 import SwiftData
 
 struct AllPeopleView: View {
-    @SwiftData.Query (sort: \Items.timestamp, order: .forward, animation: .spring) var items: [Items]
+    @SwiftData.Query (sort: \Items.name, order: .forward, animation: .spring) var items: [Items]
     @SwiftData.Query (sort: \ItemsTitle.timeStamp, order: .forward, animation: .spring) var itemTitles: [ItemsTitle]
     @State var sheetPesonInfo = false
     
     var body: some View {
         NavigationStack{
-            VStack(alignment: .leading){
-                List{
-                    ForEach(items){ item in
+                List(items, id: \.self){item in
                         Button(action: {self.sheetPesonInfo.toggle()}){
                                 HStack{
                                     ZStack(alignment: .bottomTrailing){
@@ -83,14 +81,10 @@ struct AllPeopleView: View {
     
                                 }
                             }
-                    }
                 }
                 .scrollContentBackground(.hidden)
                 .listStyle(.plain)
                 .frame(maxHeight: .infinity)
-                .padding(.vertical)
-
-            }
         }
     }
 }
