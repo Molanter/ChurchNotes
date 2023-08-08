@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import iPhoneNumberField
 
 struct ItemView: View {
     @Environment(\.modelContext) private var modelContext
@@ -14,13 +15,14 @@ struct ItemView: View {
     @EnvironmentObject var viewModel: AppViewModel
     @SwiftData.Query var title: [ItemsTitle]
     @SwiftData.Query (sort: \Items.timestamp, order: .forward, animation: .spring) var items: [Items]
-
+    
     @State private var searchText = ""
     @State var name = ""
     @State var isLiked = false
     @State var isCheked = false
     @State private var showingAlert = false
     @State var notes = ""
+    @State var birthDay = Date.now
     @State var presentSheet = false
     @State var shouldShowImagePicker = false
     @State var image: UIImage?
@@ -28,7 +30,9 @@ struct ItemView: View {
     @State var sheetPesonInfo = false
     @State var email = ""
     @State var currentTab: Int = 0
+    @State var phoneNumber: String = ""
     @State private var currentItem: Items?
+    @State private var nameIsEmpty = false
     var itemTitles: ItemsTitle{
         if title.isEmpty{
             addFirst()
@@ -37,7 +41,7 @@ struct ItemView: View {
             return titles[currentTab]
         }
     }
-
+    
     var filteredNames: [Items] {
         if searchText.isEmpty {
             return itemTitles.items.sorted(by: { $0.timestamp > $1.timestamp })
@@ -46,14 +50,18 @@ struct ItemView: View {
         }
     }
     
+    //    init() {
+    //            let appearance = UINavigationBarAppearance()
+    //            appearance.shadowColor = .clear
+    //            UINavigationBar.appearance().standardAppearance = appearance
+    //            UINavigationBar.appearance().scrollEdgeAppearance = appearance
+    //    }
+    
     var body: some View {
         NavigationStack{
-//            VStack(spacing: 0){
-//                TopBarView(currentTab: self.$currentTab)
-//                
-//                
-                List(filteredNames, id: \.self){item in
-                    
+            List{
+                Section(header: TopBarView(currentTab: self.$currentTab)){
+                    ForEach(filteredNames, id: \.self){item in
                         Button(action: {
                             currentItem = item
                             self.sheetPesonInfo.toggle()
@@ -129,8 +137,7 @@ struct ItemView: View {
                                     .toolbar{
                                         ToolbarItem(placement: .topBarTrailing){
                                             Button(action: {
-//                                                self.sheetPesonInfo.toggle()
-                                                
+                                                currentItem = nil
                                             }){
                                                 Image(systemName: "xmark.circle")
                                             }
@@ -140,110 +147,213 @@ struct ItemView: View {
                             .accentColor(Color.white)
                             
                         }
-                  }
-                .toolbar(content: {
-                    ToolbarItem(placement: .topBarTrailing, content: {
-                        Button(action: {self.presentSheet.toggle()}){
-                            Image(systemName: "person.badge.plus")
-                                .foregroundStyle(Color(K.Colors.mainColor))
-                        }
-                    })
-                    ToolbarItem(placement: .topBarLeading) {
-                        EditButton()
+                    }
+                    
+                    .padding(.horizontal, 0)
+                }
+            }
+            .toolbar(content: {
+                ToolbarItem(placement: .topBarTrailing, content: {
+                    Button(action: {self.presentSheet.toggle()}){
+                        Image(systemName: "person.badge.plus")
+                            .foregroundStyle(Color(K.Colors.mainColor))
                     }
                 })
-                .scrollContentBackground(.hidden)
-                .listStyle(.plain)
-                .frame(maxHeight: .infinity)
-                .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Name")
-                //                            HStack{
-                //                                EditButton()
-                //                                    .foregroundStyle(Color(K.Colors.mainColor))
-                //                                    .padding(.horizontal, 15)
-                //                                    .background(Color(K.Colors.darkGray).opacity(0.25).cornerRadius(.infinity))
-                //                                Spacer()
-                //                                Image(systemName: "note.text.badge.plus")
-                //                                    .padding(15)
-                //                                    .onTapGesture(perform: {
-                //                                        self.presentSheet.toggle()
-                //                                    })
-                //                                    .font(.title2)
-                //                                    .foregroundStyle(Color(K.Colors.mainColor))
-                //                                    .background(Color(K.Colors.darkGray).opacity(0.25).cornerRadius(.infinity))
-                //                            }
-                //                            .padding(.bottom, 10)
-                //                            .padding(.horizontal, 15)
-//            }
+                ToolbarItem(placement: .topBarLeading) {
+                    EditButton()
+                }
+            })
+            .scrollContentBackground(.hidden)
+            .listStyle(.plain)
+            .frame(maxHeight: .infinity)
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Name")
             .tabViewStyle(.page(indexDisplayMode: .never))
         }
         .sheet(isPresented: $presentSheet){
             NavigationStack{
-                VStack(alignment: .center){
-                    Button (action: {
-                        shouldShowImagePicker.toggle()
-                    }){
-                        VStack(alignment: . center){
-                            if let image = self.image{
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .frame(width: 100, height: 100)
-                                    .cornerRadius(50)
-                                    .overlay(
-                                        Circle().stroke(Color(K.Colors.mainColor), lineWidth: 2)
-                                    )
-                                    .padding(15)
-                                
-                            }else{
-                                Image(systemName: "person.fill.viewfinder")
-                                    .resizable()
-                                    .frame(width: 100, height: 100)
-                                    .foregroundColor(Color(K.Colors.mainColor))
-                                    .padding(15)
-                                
-                                
-                            }
-                            Text("tap to change Image")
-                                .foregroundStyle(.secondary)
-                                .foregroundStyle(Color(K.Colors.mainColor))
-                        }
-                        .padding(15)
-                    }
-                    VStack(alignment: .leading, spacing: 20){
-                        VStack{
-                            Text("Write Person Name")
-                                .font(.title2)
-                                .fontWeight(.medium)
-                            HStack{
-                                TextField("Name", text: $name)
-                                    .onSubmit {
-                                        if !name.isEmpty{
-                                            addItem()
-                                        }
+                ZStack(alignment: .bottom){
+                    ScrollView{
+                        VStack(alignment: .center){
+                            Button (action: {
+                                shouldShowImagePicker.toggle()
+                            }){
+                                VStack(alignment: . center){
+                                    if let image = self.image{
+                                        Image(uiImage: image)
+                                            .resizable()
+                                            .frame(width: 100, height: 100)
+                                            .cornerRadius(50)
+                                            .overlay(
+                                                Circle().stroke(Color(K.Colors.mainColor), lineWidth: 2)
+                                            )
+                                            .padding(15)
+                                        
+                                    }else{
+                                        Image(systemName: "person.fill.viewfinder")
+                                            .resizable()
+                                            .frame(width: 100, height: 100)
+                                            .foregroundColor(Color(K.Colors.mainColor))
+                                            .padding(15)
+                                        
+                                        
                                     }
+                                    Text("tap to change Image")
+                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(Color(K.Colors.mainColor))
+                                }
+                                .padding(15)
                             }
-                            .padding(10)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.darkGray), lineWidth: 1)
-                            )
-                        }
-                        Button(action: {
-                            if !name.isEmpty{
-                                addItem()
+                            VStack(alignment: .leading, spacing: 20){
+                                VStack{
+                                    HStack{
+                                        Text("Write Person Name")
+                                            .font(.title2)
+                                            .fontWeight(.medium)
+                                        Spacer()
+                                        Text("(required)")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                            .fontWeight(.medium)
+                                    }
+                                    HStack{
+                                        TextField("Name", text: $name)
+                                            }
+                                    .padding(10)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.darkGray), lineWidth: 1)
+                                    )
+                                }
+                                VStack{
+                                    HStack{
+                                        Text("Email")
+                                            .font(.title2)
+                                            .fontWeight(.medium)
+                                        Spacer()
+                                        Text("(optional)")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                            .fontWeight(.medium)
+                                    }
+                                    HStack{
+                                        TextField("Email", text: $email)
+                                            }
+                                    .padding(10)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.darkGray), lineWidth: 1)
+                                    )
+                                }
+                                VStack(alignment: .leading, spacing: 20){
+                                    Text("Phone")
+                                        .fontWeight(.semibold)
+                                        .font(.system(size: 15))
+                                    HStack(alignment: .center, spacing: 0.0){
+                                        ZStack(alignment: .leading){
+                                            iPhoneNumberField("Phone Number", text: $phoneNumber)
+                                                .maximumDigits(15)
+                                                .prefixHidden(false)
+                                                .flagHidden(false)
+                                                .flagSelectable(true)
+                                                .placeholderColor(Color(K.Colors.lightGray))
+                                                .frame(height: 45)
+                                                .disableAutocorrection(true)
+                                                .textInputAutocapitalization(.never)
+                                                .padding(0)
+                                                .textContentType(.telephoneNumber)
+                                                .foregroundStyle(Color.black)
+                                        }
+                                        .padding(.leading)
+                                        Spacer()
+                                        Image(systemName: "phone.fill")
+                                            .foregroundStyle(Color(K.Colors.lightGray))
+                                            .padding(.trailing)
+                                    }
+                                    .frame(height: 50)
+                                    .overlay(
+                                        RoundedRectangle(cornerSize: .init(width: 7, height: 7))
+                                            .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
+                                    )
+                                }
+                                VStack{
+                                    HStack{
+                                        Text("Notes")
+                                            .font(.title2)
+                                            .fontWeight(.medium)
+                                        Spacer()
+                                        Text("(optional)")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                            .fontWeight(.medium)
+                                    }
+                                    HStack{
+                                        TextField("Notes", text: $notes)
+                                            }
+                                    .padding(10)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.darkGray), lineWidth: 1)
+                                    )
+                                }
+                                VStack{
+                                    HStack{
+                                        Text("Birthday")
+                                            .font(.title2)
+                                            .fontWeight(.medium)
+                                        Spacer()
+                                        Text("(optional)")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                            .fontWeight(.medium)
+                                    }
+                                    HStack{
+                                        Text("Birthday")
+                                            .foregroundStyle(.secondary.opacity(0.5))
+                                        DatePicker(
+                                                "",
+                                                selection: $birthDay,
+                                                displayedComponents: [.date]
+                                            )
+                                            }
+                                    .padding(10)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.darkGray), lineWidth: 1)
+                                    )
+                                }
+                                Button(action: {
+                                    if !name.isEmpty{
+                                        addItem()
+                                    }else{
+                                        nameError()
+                                    }
+                                }){
+                                    Text("Add")
+                                        .foregroundColor(Color.white)
+                                        .padding(.vertical, 10)
+                                        .frame(maxWidth: .infinity)
+                                        .background(Color(K.Colors.mainColor))
+                                        .cornerRadius(7)
+                                }
                             }
-                        }){
-                            Text("Add")
-                                .foregroundColor(Color.white)
-                                .padding(.vertical, 10)
-                                .frame(maxWidth: .infinity)
-                                .background(Color(K.Colors.mainColor))
-                                .cornerRadius(7)
+                            .padding(15)
                         }
+                        Spacer()
                     }
-                    .padding(15)
+                    HStack(alignment: .center){
+                        Text("Name is empty")
+                            .foregroundStyle(Color(K.Colors.lightGray))
+                    }
+                    .frame(height: 40)
+                    .frame(maxWidth: .infinity)
+                    .background(Color(K.Colors.darkGray))
+                    .cornerRadius(7)
+                    .onTapGesture(perform: {
+                        withAnimation{
+                            nameIsEmpty = false
+                        }
+                    })
+                    .offset(y: nameIsEmpty ? -20 : 100)
+                    .padding(.horizontal, 15)
                 }
-                Spacer()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .padding()
+                    .padding(.vertical)
                     .toolbar{
                         ToolbarItem(placement: .navigationBarLeading){
                             Button(action: {
@@ -257,6 +367,8 @@ struct ItemView: View {
                             Button(action: {
                                 if !name.isEmpty{
                                     addItem()
+                                }else{
+                                    nameError()
                                 }
                             }){
                                 Text("Save")
@@ -275,6 +387,17 @@ struct ItemView: View {
         .frame(maxHeight: .infinity)
     }
     
+    private func nameError(){
+        withAnimation{
+            nameIsEmpty = true
+        }
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
+            withAnimation{
+                nameIsEmpty = false
+            }
+//            }
+    }
+    
     private func addItem() {
         withAnimation {
             if image != nil{
@@ -285,20 +408,25 @@ struct ItemView: View {
                     print("Avata is nil")
                     return
                 }
-                
-                let newItem = Items(name: name, isLiked: false, isCheked: false, notes: notes, imageData: imageData, email: email, birthDay: Date.now)
+                let modifiedDate = Calendar.current.date(byAdding: .day, value: -1, to: birthDay)!
+
+                let newItem = Items(name: name, isLiked: false, isCheked: false, notes: notes, imageData: imageData, email: email, birthDay: birthDay >= modifiedDate ? nil : birthDay, title: itemTitles.name, phone: phoneNumber.count > 5 ? phoneNumber : "")
                 itemTitles.items.append(newItem)
                 email = ""
                 name = ""
                 notes = ""
+                phoneNumber = ""
                 image = nil
                 self.presentSheet.toggle()
             }else{
-                let newItem = Items(name: name, isLiked: false, isCheked: false, notes: notes, imageData: nil, email: email, birthDay: Date.now)
+                let modifiedDate = Calendar.current.date(byAdding: .day, value: -1, to: birthDay)!
+
+                let newItem = Items(name: name, isLiked: false, isCheked: false, notes: notes, imageData: nil, email: email, birthDay: birthDay >= modifiedDate ? nil : birthDay, title: itemTitles.name, phone: phoneNumber.count > 5 ? phoneNumber : "")
                 itemTitles.items.append(newItem)
                 email = ""
                 name = ""
                 notes = ""
+                phoneNumber = ""
                 image = nil
                 self.presentSheet.toggle()
             }

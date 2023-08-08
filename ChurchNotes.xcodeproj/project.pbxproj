@@ -30,6 +30,7 @@
 		9E7282D72A574399004D6483 /* WidgetNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7282D62A574399004D6483 /* WidgetNote.swift */; };
 		9E7282D92A57439A004D6483 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E7282D82A57439A004D6483 /* Assets.xcassets */; };
 		9E7282E52A57BB6D004D6483 /* ItemPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7282E42A57BB6D004D6483 /* ItemPersonView.swift */; };
+		9EC618AC2A82899D00CB3E5C /* SwiftData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EE4A03E2A81D51700C7179F /* SwiftData.framework */; };
 		9ED6F2EE2A5093DE002568DF /* WidgetTaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ED6F2ED2A5093DE002568DF /* WidgetTaskModel.swift */; };
 		E144702C1C07938D3169463A /* Pods_ChurchNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 359489A0CB187CF1DD7C3238 /* Pods_ChurchNotes.framework */; };
 /* End PBXBuildFile section */
@@ -67,6 +68,7 @@
 		9EA7AB952A508D20004DB3BA /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		9EA7AB972A508D20004DB3BA /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		9ED6F2ED2A5093DE002568DF /* WidgetTaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTaskModel.swift; sourceTree = "<group>"; };
+		9EE4A03E2A81D51700C7179F /* SwiftData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftData.framework; path = System/Library/Frameworks/SwiftData.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +78,7 @@
 			files = (
 				E144702C1C07938D3169463A /* Pods_ChurchNotes.framework in Frameworks */,
 				9E6830A22A5F0B09000AB299 /* iPhoneNumberField in Frameworks */,
+				9EC618AC2A82899D00CB3E5C /* SwiftData.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,6 +203,7 @@
 		BDB0A59DBE031AA6D1133182 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9EE4A03E2A81D51700C7179F /* SwiftData.framework */,
 				9E3521C42A73308000B607D7 /* libswiftDataDetection.tbd */,
 				9E5671612A6190E5002FCFC5 /* CoreAudioTypes.framework */,
 				359489A0CB187CF1DD7C3238 /* Pods_ChurchNotes.framework */,
@@ -515,6 +519,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ChurchNotes/Preview Content\"";
@@ -555,6 +560,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ChurchNotes/Preview Content\"";
@@ -661,7 +667,7 @@
 				9E6F9E062A4BC436009B72DC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		9E6F9E072A4BC436009B72DC /* Build configuration list for PBXNativeTarget "ChurchNotes" */ = {
 			isa = XCConfigurationList;
@@ -670,7 +676,7 @@
 				9E6F9E092A4BC436009B72DC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		9E7282DE2A57439A004D6483 /* Build configuration list for PBXNativeTarget "WidgetExtension" */ = {
 			isa = XCConfigurationList;
@@ -679,7 +685,7 @@
 				9E7282E02A57439A004D6483 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 

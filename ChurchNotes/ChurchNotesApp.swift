@@ -26,7 +26,7 @@ struct ChurchNotesApp: App {
     var body: some Scene {
         WindowGroup {
             let viewModel = AppViewModel()
-                IndexView()
+                AllPeopleView()
                 .environmentObject(viewModel)
         }
         

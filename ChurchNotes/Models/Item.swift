@@ -5,7 +5,6 @@
 //  Created by Edgars Yarmolatiy on 6/27/23.
 //
 
-import Foundation
 import SwiftUI
 import SwiftData
 
@@ -18,9 +17,11 @@ final class Items{
     var notes: String
     var imageData: Data?
     var email: String
-    var birthDay: Date
+    var birthDay: Date?
+    var title: String
+    var phone: String
     
-    init(name: String, isLiked: Bool, isCheked: Bool, notes: String, imageData: Data? = nil, email: String, birthDay: Date) {
+    init(name: String, isLiked: Bool, isCheked: Bool, notes: String, imageData: Data? = nil, email: String, birthDay: Date?, title: String, phone: String) {
         self.timestamp = .now
         self.name = name
         self.isLiked = isLiked
@@ -29,6 +30,8 @@ final class Items{
         self.imageData = imageData
         self.email = email
         self.birthDay = birthDay
+        self.title = title
+        self.phone = phone
     }
     
     

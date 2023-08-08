@@ -19,6 +19,7 @@ struct IndexView: View {
             }
         }
         .onAppear{
+            print("apeaaarssss")
             viewModel.signedIn = viewModel.isSignedIn
         }    }
 }

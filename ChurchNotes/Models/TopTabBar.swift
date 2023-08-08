@@ -47,7 +47,6 @@ struct TopBarView: View {
                 
             }
         }
-        .padding(.horizontal, 15)
         .onAppear{
             if itemTitles.isEmpty{
                 addFirst()

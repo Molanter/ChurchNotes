@@ -11,12 +11,13 @@ import SwiftData
 struct AllPeopleView: View {
     @SwiftData.Query (sort: \Items.name, order: .forward, animation: .spring) var items: [Items]
     @SwiftData.Query (sort: \ItemsTitle.timeStamp, order: .forward, animation: .spring) var itemTitles: [ItemsTitle]
-    @State var sheetPesonInfo = false
-    
+    @State private var searchText = ""
+    @State private var currentItem: Items?
+
     var body: some View {
         NavigationStack{
                 List(items, id: \.self){item in
-                        Button(action: {self.sheetPesonInfo.toggle()}){
+                        Button(action: {currentItem = item}){
                                 HStack{
                                     ZStack(alignment: .bottomTrailing){
                                         if item.imageData != nil{
@@ -64,13 +65,13 @@ struct AllPeopleView: View {
                                         .foregroundStyle(Color(K.Colors.lightGray))
                                     }
                                 }
-                                .sheet(isPresented: $sheetPesonInfo){
+                                .sheet(item: $currentItem, onDismiss: nil){ item in
                                     NavigationStack{
                                         ItemPersonView(item: item)
                                             .toolbar{
                                                 ToolbarItem(placement: .topBarTrailing){
                                                     Button(action: {
-                                                        self.sheetPesonInfo.toggle()
+                                                        currentItem = nil
                                                     }){
                                                         Image(systemName: "xmark.circle")
                                                     }
@@ -82,6 +83,7 @@ struct AllPeopleView: View {
                                 }
                             }
                 }
+                .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Name")
                 .scrollContentBackground(.hidden)
                 .listStyle(.plain)
                 .frame(maxHeight: .infinity)

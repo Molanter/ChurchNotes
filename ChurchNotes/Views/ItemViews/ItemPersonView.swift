@@ -7,10 +7,10 @@
 
 import SwiftUI
 import SwiftData
+import iPhoneNumberField
 
 struct ItemPersonView: View {
     @Bindable var item: Items
-//    @Bindable var itemTitles: ItemsTitle
     @State var edit = false
     @Query (sort: \ItemsTitle.timeStamp, order: .forward, animation: .spring) var titles: [ItemsTitle]
     @State var selectedTheme = ""
@@ -90,154 +90,168 @@ struct ItemPersonView: View {
                         }
                         .offset(y: 35)
                     }
-                    VStack(alignment: .leading, spacing: 15){
-                        HStack(spacing: 20){
-                            ZStack{
-                                Circle()
-                                    .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
-                                    .frame(width: 40, height: 40)
-                                Image(systemName: "person")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 20)
-                                    .foregroundStyle(Color(K.Colors.mainColor))
-                                    .fontWeight(.light)
+                    ScrollView{
+                        VStack(alignment: .leading, spacing: 15){
+                            HStack(spacing: 20){
+                                ZStack{
+                                    Circle()
+                                        .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
+                                        .frame(width: 40, height: 40)
+                                    Image(systemName: "person")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 20)
+                                        .foregroundStyle(Color(K.Colors.mainColor))
+                                        .fontWeight(.light)
+                                }
+                                HStack{
+                                    TextField(item.name.isEmpty ? "Name" : item.name, text: $item.name)
+                                        .font(.title3)
+                                        .fontWeight(.light)
+                                        .font(.system(size: 20))
+                                        .padding(10)
+                                }
+                                .shadow(color: Color(red: 0.2, green: 0.2, blue: 0.28).opacity(0.06), radius: 4, x: 0, y: 4)
+                                .overlay(
+                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
+                                        .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
+                                )
                             }
-                            HStack{
-                                TextField(item.name.isEmpty ? "Name" : item.name, text: $item.name)
-                                    .font(.title3)
-                                    .fontWeight(.light)
-                                    .font(.system(size: 20))
-                                    .padding(10)
+                            .padding(.top, 50)
+                            Divider()
+                            HStack(spacing: 20){
+                                ZStack{
+                                    Circle()
+                                        .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
+                                        .frame(width: 40, height: 40)
+                                    Image(systemName: "envelope")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 20)
+                                        .foregroundStyle(Color(K.Colors.mainColor))
+                                        .fontWeight(.light)
+                                }
+                                HStack{
+                                    TextField(item.email.isEmpty ? "Email" : item.email, text: $item.email)
+                                        .font(.title3)
+                                        .fontWeight(.light)
+                                        .font(.system(size: 20))
+                                        .padding(10)
+                                        .keyboardType(.emailAddress)
+                                        .textContentType(.emailAddress)
+                                }
+                                .shadow(color: Color(red: 0.2, green: 0.2, blue: 0.28).opacity(0.06), radius: 4, x: 0, y: 4)
+                                .overlay(
+                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
+                                        .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
+                                )
                             }
-                            .shadow(color: Color(red: 0.2, green: 0.2, blue: 0.28).opacity(0.06), radius: 4, x: 0, y: 4)
-                            .overlay(
-                                RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                    .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-                            )
-                        }
-                        Divider()
-//                        HStack(spacing: 18){
-//                            ZStack{
-//                                Circle()
-//                                    .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
-//                                    .frame(width: 40, height: 40)
-//                                Image(systemName: "bell")
-//                                    .resizable()
-//                                    .aspectRatio(contentMode: .fit)
-//                                    .frame(width: 20)
-//                                    .foregroundStyle(Color(K.Colors.bluePurple))
-//                                    .fontWeight(.light)
-//                            }
-//                            HStack{
-//                                Picker("Item", selection: $selectedTheme) {
-//                                    ForEach(titles, id: \.self) {item in
-//                                        Text(item.name).tag(item.name)
-//                                    }
-//                                }
-//                                .onChange(of: selectedTheme) {
-//                                    selectedTheme = $0
-//                                    let newItem = Items(name: self.item.name, isLiked: self.item.isLiked, isCheked: self.item.isCheked, notes: self.item.notes, imageData: self.item.imageData, email: self.item.email)
-//                                    titles.name.contains(selectedTheme)
-//                                    
-//                                }
-//                                .pickerStyle(.menu)
-//                                .onAppear{
-//                                    selectedTheme = itemTitle.name
-//                                }
-//                                .padding(7)
-//                                Spacer()
-//                            }
-//                            .shadow(color: Color(red: 0.2, green: 0.2, blue: 0.28).opacity(0.06), radius: 4, x: 0, y: 4)
-//                            .overlay(
-//                                RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-//                                    .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-//                            )
-//                            
-//                        }
-//                        Divider()
-                        HStack(spacing: 20){
-                            ZStack{
-                                Circle()
-                                    .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
-                                    .frame(width: 40, height: 40)
-                                Image(systemName: "envelope")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 20)
-                                    .foregroundStyle(Color(K.Colors.mainColor))
-                                    .fontWeight(.light)
+                            Divider()
+                            HStack(spacing: 20){
+                                ZStack{
+                                    Circle()
+                                        .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
+                                        .frame(width: 40, height: 40)
+                                    Image(systemName: "phone")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 20)
+                                        .foregroundStyle(Color(K.Colors.mainColor))
+                                        .fontWeight(.light)
+                                }
+                                HStack(alignment: .center, spacing: 0.0){
+                                    ZStack(alignment: .leading){
+                                        iPhoneNumberField("Phone Number", text: $item.phone)
+                                            .maximumDigits(15)
+                                            .prefixHidden(false)
+                                            .flagHidden(false)
+                                            .flagSelectable(true)
+                                            .placeholderColor(Color(K.Colors.lightGray))
+                                            .frame(height: 45)
+                                            .disableAutocorrection(true)
+                                            .textInputAutocapitalization(.never)
+                                            .padding(0)
+                                            .textContentType(.telephoneNumber)
+                                            .foregroundStyle(Color.black)
+                                    }
+                                    .padding(.leading)
+                                    Spacer()
+                                }
+                                .frame(height: 50)
+                                .overlay(
+                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
+                                        .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
+                                )
                             }
-                            HStack{
-                                TextField(item.email.isEmpty ? "Email" : item.email, text: $item.email)
-                                    .font(.title3)
-                                    .fontWeight(.light)
-                                    .font(.system(size: 20))
-                                    .padding(10)
-                                    .keyboardType(.emailAddress)
-                                    .textContentType(.emailAddress)
+                            Divider()
+                            HStack(spacing: 20){
+                                ZStack{
+                                    Circle()
+                                        .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
+                                        .frame(width: 40, height: 40)
+                                    Image(systemName: "square.and.pencil")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 20)
+                                        .foregroundStyle(Color(K.Colors.mainColor))
+                                        .fontWeight(.light)
+                                }
+                                HStack{
+                                    TextField(item.notes.isEmpty ? "Notes" : item.notes, text: $item.notes, axis: .vertical)
+                                        .font(.title3)
+                                        .fontWeight(.light)
+                                        .font(.system(size: 20))
+                                        .padding(10)
+                                }
+                                .shadow(color: Color(red: 0.2, green: 0.2, blue: 0.28).opacity(0.06), radius: 4, x: 0, y: 4)
+                                .overlay(
+                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
+                                        .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
+                                )
                             }
-                            .shadow(color: Color(red: 0.2, green: 0.2, blue: 0.28).opacity(0.06), radius: 4, x: 0, y: 4)
-                            .overlay(
-                                RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                    .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-                            )
-                        }
-                        Divider()
-                        HStack(spacing: 20){
-                            ZStack{
-                                Circle()
-                                    .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
-                                    .frame(width: 40, height: 40)
-                                Image(systemName: "square.and.pencil")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 20)
-                                    .foregroundStyle(Color(K.Colors.mainColor))
-                                    .fontWeight(.light)
-                            }
-                            HStack{
-                                TextField(item.notes.isEmpty ? "Notes" : item.notes, text: $item.notes, axis: .vertical)
-                                    .font(.title3)
-                                    .fontWeight(.light)
-                                    .font(.system(size: 20))
-                                    .padding(10)
-                            }
-                            .shadow(color: Color(red: 0.2, green: 0.2, blue: 0.28).opacity(0.06), radius: 4, x: 0, y: 4)
-                            .overlay(
-                                RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                    .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-                            )
-                        }
-                        Divider()
-                        HStack(spacing: 20){
-                            Button(action: {
-                                modelContext.delete(item)
-                                try? modelContext.save()
-                                
-                            }){
-                                Text("Delete")
-                                    .foregroundStyle(Color.white)
-                                    .padding()
+                            Divider()
+                            HStack(spacing: 20){
+                                ZStack(alignment: .center){
+                                    Button(action: {
+                                        modelContext.delete(item)
+                                        try? modelContext.save()
+                                        
+                                    }){
+                                        Text("Delete")
+                                            .foregroundStyle(Color.white)
+                                            .padding()
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color(K.Colors.pink))
+                                    .cornerRadius(7)
+                                    Button(action: {
+                                        modelContext.delete(item)
+                                        try? modelContext.save()
+                                        
+                                    }){
+                                        Text(" ")
+                                            .foregroundStyle(Color.black)
+                                            .padding()
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color.black.opacity(0.25))
+                                    .cornerRadius(7)
+                                }
+                                Button(action: {
+                                    self.edit.toggle()
+                                }){
+                                    Text("Save")
+                                        .foregroundStyle(Color.white)
+                                        .padding()
+                                }
+                                .frame(maxWidth: .infinity)
+                                .background(Color(K.Colors.mainColor))
+                                .cornerRadius(7)
                             }
                             .frame(maxWidth: .infinity)
-                            .background(Color(K.Colors.pink))
-                            .cornerRadius(7)
-                            Button(action: {
-                                self.edit.toggle()
-                            }){
-                                Text("Save")
-                                    .foregroundStyle(Color.white)
-                                    .padding()
-                            }
-                            .frame(maxWidth: .infinity)
-                            .background(Color(K.Colors.mainColor))
-                            .cornerRadius(7)
+                            Spacer()
                         }
-                        .frame(maxWidth: .infinity)
-                        Spacer()
                     }
-                    .padding(.top, 50)
                     .padding(.horizontal, 15)
                     .frame(maxHeight: .infinity)
                     Spacer()
@@ -313,88 +327,193 @@ struct ItemPersonView: View {
                             }
                             .offset(y: 35)
                         }
-                        VStack(alignment: .leading, spacing: 15){
-                            HStack(spacing: 20){
-                                ZStack{
-                                    Circle()
-                                        .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
-                                        .frame(width: 40, height: 40)
-                                    Image(systemName: "person")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 20)
-                                        .foregroundStyle(Color(K.Colors.mainColor))
-                                        .fontWeight(.light)
+                        ScrollView{
+                            VStack(alignment: .leading){
+                                VStack(alignment: .leading, spacing: 15){
+                                    HStack(spacing: 20){
+                                        ZStack{
+                                            Circle()
+                                                .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
+                                                .frame(width: 40, height: 40)
+                                            Image(systemName: "person")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 20)
+                                                .foregroundStyle(Color(K.Colors.mainColor))
+                                                .fontWeight(.light)
+                                        }
+                                        Text(item.name.isEmpty ? "Name" : item.name)
+                                            .font(.title3)
+                                            .fontWeight(.light)
+                                            .font(.system(size: 20))
+                                    }
+                                    .padding(.top, 50)
+                                    Divider()
+                                    if item.email != ""{
+                                        VStack(alignment: .leading, spacing: 15){
+                                            HStack(spacing: 20){
+                                                ZStack{
+                                                    Circle()
+                                                        .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
+                                                        .frame(width: 40, height: 40)
+                                                    Image(systemName: "envelope")
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fit)
+                                                        .frame(width: 20)
+                                                        .foregroundStyle(Color(K.Colors.mainColor))
+                                                        .fontWeight(.light)
+                                                }
+                                                Text(item.email)
+                                                    .font(.title3)
+                                                    .fontWeight(.light)
+                                                    .font(.system(size: 20))
+                                            }
+                                            Divider()
+                                            
+                                        }
+                                    }
+                                    if item.phone != ""{
+                                        HStack(spacing: 20){
+                                            ZStack{
+                                                Circle()
+                                                    .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
+                                                    .frame(width: 40, height: 40)
+                                                Image(systemName: "phone")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(width: 20)
+                                                    .foregroundStyle(Color(K.Colors.mainColor))
+                                                    .fontWeight(.light)
+                                            }
+                                            HStack(alignment: .center, spacing: 0.0){
+                                                Text(item.phone)
+                                                    .font(.title3)
+                                                    .fontWeight(.light)
+                                                    .font(.system(size: 18))
+                                            }
+                                            .frame(height: 45)
+                                        }
+                                        Divider()
+                                    }
+                                    VStack(alignment: .leading, spacing: 15){
+                                        HStack(spacing: 18){
+                                            ZStack{
+                                                Circle()
+                                                    .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
+                                                    .frame(width: 40, height: 40)
+                                                Image(systemName: "folder")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(width: 20)
+                                                    .foregroundStyle(Color(K.Colors.mainColor))
+                                                    .fontWeight(.light)
+                                            }
+                                            Text(item.title)
+                                                .font(.title3)
+                                                .fontWeight(.light)
+                                                .font(.system(size: 18))
+                                        }
+                                        Divider()
+                                    }
+                                    if let bday = item.birthDay{
+                                        HStack(spacing: 20){
+                                            ZStack{
+                                                Circle()
+                                                    .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
+                                                    .frame(width: 40, height: 40)
+                                                Image(systemName: "gift")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(width: 20)
+                                                    .foregroundStyle(Color(K.Colors.mainColor))
+                                                    .fontWeight(.light)
+                                            }
+                                            HStack(spacing: 1){
+                                                Text(bday, format: .dateTime.month(.twoDigits))
+                                                Text("/\(bday, format: .dateTime.day())/")
+                                                Text(bday, format: .dateTime.year())
+                                            }
+                                            .font(.title3)
+                                            .fontWeight(.light)
+                                            .font(.system(size: 18))
+                                        }
+                                        Divider()
+                                    }
+                                    VStack(alignment: .leading, spacing: 15){
+                                        HStack(spacing: 18){
+                                            ZStack{
+                                                Circle()
+                                                    .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
+                                                    .frame(width: 40, height: 40)
+                                                Image(systemName: "square.and.pencil")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(width: 20)
+                                                    .foregroundStyle(Color(K.Colors.mainColor))
+                                                    .fontWeight(.light)
+                                            }
+                                            Text(item.notes.isEmpty ? "Notes" : item.notes)
+                                                .multilineTextAlignment(.leading)
+                                                .lineLimit(10)
+                                                .font(.title3)
+                                                .fontWeight(.light)
+                                                .font(.system(size: 18))
+                                        }
+                                        Divider()
+                                    }
+                                    VStack(alignment: .leading, spacing: 15){
+                                        HStack(spacing: 20){
+                                            ZStack{
+                                                Circle()
+                                                    .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
+                                                    .frame(width: 40, height: 40)
+                                                Image(systemName: "person.badge.clock")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(width: 25)
+                                                    .foregroundStyle(Color(K.Colors.mainColor))
+                                                    .fontWeight(.light)
+                                                    .offset(x: 2)
+                                            }
+                                            HStack(spacing: 1){
+                                                Text(item.timestamp, format: .dateTime.month(.twoDigits))
+                                                Text("/\(item.timestamp, format: .dateTime.day())/")
+                                                Text(item.timestamp, format: .dateTime.year())
+                                            }
+                                            .font(.title3)
+                                            .fontWeight(.light)
+                                            .font(.system(size: 18))
+                                        }
+                                        Divider()
+                                    }
+                                    Spacer()
                                 }
-                                Text(item.name.isEmpty ? "Name" : item.name)
-                                    .font(.title3)
-                                    .fontWeight(.light)
-                                    .font(.system(size: 20))
+                                    HStack(spacing: 20){
+                                        ZStack{
+                                            Circle()
+                                                .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
+                                                .frame(width: 40, height: 40)
+                                            Image(systemName: "video.badge.plus")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 30)
+                                                .foregroundStyle(Color(K.Colors.mainColor))
+                                                .fontWeight(.light)
+                                        }
+                                        HStack(alignment: .center, spacing: 0.0){
+                                            Text("Record video for  **\(item.name.capitalized)**")
+                                                .font(.title3)
+                                                .fontWeight(.light)
+                                                .font(.system(size: 18))
+                                                .lineLimit(3)
+                                        }
+                                    }
+                                    .onTapGesture {
+                                        print("1")
+                                    }
+                                Divider()
                             }
-                            Divider()
-                            HStack(spacing: 18){
-                                ZStack{
-                                    Circle()
-                                        .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
-                                        .frame(width: 40, height: 40)
-                                    Image(systemName: "bell")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 20)
-                                        .foregroundStyle(Color(K.Colors.mainColor))
-                                        .fontWeight(.light)
-                                }
-                                Text("itemTitles.name")
-                                    .font(.title3)
-                                    .fontWeight(.light)
-                                    .font(.system(size: 18))
-                            }
-                            Divider()
-                            HStack(spacing: 20){
-                                ZStack{
-                                    Circle()
-                                        .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
-                                        .frame(width: 40, height: 40)
-                                    Image(systemName: "gift")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 20)
-                                        .foregroundStyle(Color(K.Colors.mainColor))
-                                        .fontWeight(.light)
-                                }
-                                HStack(spacing: 1){
-                                    Text(item.timestamp, format: .dateTime.month(.twoDigits))
-                                    Text("/\(item.timestamp, format: .dateTime.day())/")
-                                    Text(item.timestamp, format: .dateTime.year())
-                                }
-                                .font(.title3)
-                                .fontWeight(.light)
-                                .font(.system(size: 18))
-                            }
-                            Divider()
-                            HStack(spacing: 18){
-                                ZStack{
-                                    Circle()
-                                        .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
-                                        .frame(width: 40, height: 40)
-                                    Image(systemName: "square.and.pencil")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 20)
-                                        .foregroundStyle(Color(K.Colors.mainColor))
-                                        .fontWeight(.light)
-                                }
-                                Text(item.notes.isEmpty ? "Notes" : item.notes)
-                                    .multilineTextAlignment(.leading)
-                                    .lineLimit(10)
-                                    .font(.title3)
-                                    .fontWeight(.light)
-                                    .font(.system(size: 18))
-                            }
-                            Divider()
-                            Spacer()
                         }
-                        .padding(.top, 50)
                         .padding(.horizontal, 15)
                         .frame(maxHeight: .infinity)
                         Spacer()
@@ -417,4 +536,5 @@ struct ItemPersonView: View {
 
 //#Preview {
 //    ItemPersonView()
+//        .modelContainer(for: [UserProfile.self, Items.self, ItemsTitle.self])
 //}
