@@ -21,12 +21,16 @@ class AppViewModel: ObservableObject{
     @Environment(\.modelContext) private var modelContext
     var err = ""
     @State var profileImage = ""
-    @SwiftData.Query var profile: [UserProfile]
+    @Query var profile: [UserProfile]
     @Published var signedIn = false
     var isSignedIn: Bool{
         return auth.currentUser != nil
     }
-        
+     
+    func twoNames(name: String) -> String{
+        return String(name.components(separatedBy: " ").compactMap { $0.first }).count >= 3 ? String(String(name.components(separatedBy: " ").compactMap { $0.first }).prefix(2)) : String(name.components(separatedBy: " ").compactMap { $0.first })
+    }
+    
     func passSecure(password: String) -> Color{
         var passColor: Color = Color(K.Colors.gray)
         var bigLatter = false

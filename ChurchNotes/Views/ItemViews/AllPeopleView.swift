@@ -9,8 +9,8 @@ import SwiftUI
 import SwiftData
 
 struct AllPeopleView: View {
-    @SwiftData.Query (sort: \Items.name, order: .forward, animation: .spring) var items: [Items]
-    @SwiftData.Query (sort: \ItemsTitle.timeStamp, order: .forward, animation: .spring) var itemTitles: [ItemsTitle]
+    @Query (sort: \Items.name, order: .forward) var items: [Items]
+    @Query (sort: \ItemsTitle.timeStamp, order: .forward) var itemTitles: [ItemsTitle]
     @State private var searchText = ""
     @State private var currentItem: Items?
 
@@ -91,8 +91,8 @@ struct AllPeopleView: View {
     }
 }
 
-#Preview {
-    AllPeopleView()
-        .environmentObject(AppViewModel())
-        .modelContainer(for: [UserProfile.self, Items.self, ItemsTitle.self])
-}
+//#Preview {
+//    AllPeopleView()
+//        .environmentObject(AppViewModel())
+//        .modelContainer(for: [UserProfile.self, Items.self, ItemsTitle.self])
+//}

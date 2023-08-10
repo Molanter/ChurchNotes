@@ -14,7 +14,7 @@ struct TopBarView: View {
     @Binding var currentTab: Int
     @Namespace var namespace
     @Environment(\.modelContext) private var modelContext
-    @Query (sort: \ItemsTitle.timeStamp, order: .forward, animation: .spring) var itemTitles: [ItemsTitle]
+    @Query (sort: \ItemsTitle.timeStamp, order: .forward) var itemTitles: [ItemsTitle]
     @State var presentSheet = false
     @State var title = ""
     var body: some View {

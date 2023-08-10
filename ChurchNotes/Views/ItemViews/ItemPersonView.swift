@@ -12,9 +12,12 @@ import iPhoneNumberField
 struct ItemPersonView: View {
     @Bindable var item: Items
     @State var edit = false
-    @Query (sort: \ItemsTitle.timeStamp, order: .forward, animation: .spring) var titles: [ItemsTitle]
+    @Query (sort: \ItemsTitle.timeStamp, order: .forward) var titles: [ItemsTitle]
     @State var selectedTheme = ""
     @Environment(\.modelContext) private var modelContext
+    @State var shouldShowImagePicker = false
+    @State var image: UIImage?
+    @EnvironmentObject var viewModel: AppViewModel
 
     var body: some View {
         VStack{
@@ -38,55 +41,70 @@ struct ItemPersonView: View {
                                 .font(.title2)
                                 .fontWeight(.medium)
                                 .font(.system(size: 24))
-                            if item.email != ""{
-                                Text(item.email)
-                                    .foregroundColor(.white)
+                            if edit{
+                                Button(action: {
+                                    self.shouldShowImagePicker.toggle()
+                                }){
+                                    Text("tap to change image")
+                                        .foregroundColor(.white)
+                                        .multilineTextAlignment(.center)
+                                        .font(.callout)
+                                        .fontWeight(.light)
+                                        .padding(.bottom)
+                                }
+                            }else{
+                                if item.email != ""{
+                                    Text(item.email)
+                                        .foregroundColor(.white)
+                                        .multilineTextAlignment(.center)
+                                        .font(.callout)
+                                        .fontWeight(.light)
+                                        .padding(.bottom)
+                                }else{
+                                    HStack(spacing: 1){
+                                        Text(item.timestamp, format: .dateTime.month(.wide))
+                                        Text(item.timestamp, format: .dateTime.day())
+                                        Text(", \(item.timestamp, format: .dateTime.year()), ")
+                                        Text(item.timestamp, style: .time)
+                                    }
                                     .multilineTextAlignment(.center)
                                     .font(.callout)
                                     .fontWeight(.light)
+                                    .foregroundColor(.white)
+                                    .foregroundStyle(.secondary)
+                                    .font(.system(size: 15))
                                     .padding(.bottom)
-                            }else{
-                                HStack(spacing: 1){
-                                    Text(item.timestamp, format: .dateTime.month(.wide))
-                                    Text(item.timestamp, format: .dateTime.day())
-                                    Text(", \(item.timestamp, format: .dateTime.year()), ")
-                                    Text(item.timestamp, style: .time)
                                 }
-                                .multilineTextAlignment(.center)
-                                .font(.callout)
-                                .fontWeight(.light)
-                                .foregroundColor(.white)
-                                .foregroundStyle(.secondary)
-                                .font(.system(size: 15))
-                                .padding(.bottom)
                             }
-                            if item.imageData != nil{
-                                if let img = item.imageData{
-                                    Image(uiImage: UIImage(data: img)!)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: 80, height: 80)
-                                        .cornerRadius(40)
+                            Button(action: {
+                                self.shouldShowImagePicker.toggle()
+                            }){
+                                    if item.imageData != nil{
+                                        if let img = item.imageData{
+                                            Image(uiImage: UIImage(data: img)!)
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fill)
+                                                .frame(width: 80, height: 80)
+                                                .cornerRadius(40)
+                                                .overlay(
+                                                    Circle().stroke(.white, lineWidth: 2)
+                                                )
+                                        }
+                                    }else{
+                                        ZStack(alignment: .center){
+                                            Circle()
+                                                .foregroundColor(Color(K.Colors.darkGray))
+                                                .frame(width: 80, height: 80)
+                                            Text(viewModel.twoNames(name: item.name))
+                                                .font(.system(size: 35))
+                                                .textCase(.uppercase)
+                                                .foregroundColor(Color.white)
+                                        }
                                         .overlay(
                                             Circle().stroke(.white, lineWidth: 2)
                                         )
-                                }
-                            }else{
-                                ZStack(alignment: .center){
-                                    Circle()
-                                        .foregroundColor(Color(K.Colors.darkGray))
-                                        .frame(width: 80, height: 80)
-                                    Text(String(item.name.components(separatedBy: " ").compactMap { $0.first }).count >= 3 ? String(String(item.name.components(separatedBy: " ").compactMap { $0.first }).prefix(2)) : String(item.name.components(separatedBy: " ").compactMap { $0.first }))
-                                        .font(.system(size: 35))
-                                        .textCase(.uppercase)
-                                        .foregroundColor(Color.white)
-                                }
-                                .overlay(
-                                    Circle().stroke(.white, lineWidth: 2)
-                                )
+                                    }
                             }
-                            
-                            
                         }
                         .offset(y: 35)
                     }
@@ -530,6 +548,21 @@ struct ItemPersonView: View {
                     Text(edit ? "Done" : "Edit")
                 }
             }
+        }
+        .sheet(isPresented: $shouldShowImagePicker) {
+            ImagePicker(image: $image)
+                .onDisappear{
+                    if image != nil{
+                        guard let imageSelected = image else{
+                            return
+                        }
+                        guard let imageData = imageSelected.jpegData(compressionQuality: 0.4) else{
+                            print("Avata is nil")
+                            return
+                        }
+                        item.imageData = imageData
+                    }
+                }
         }
     }
 }

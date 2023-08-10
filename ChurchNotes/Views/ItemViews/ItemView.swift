@@ -11,10 +11,10 @@ import iPhoneNumberField
 
 struct ItemView: View {
     @Environment(\.modelContext) private var modelContext
-    @SwiftData.Query (sort: \ItemsTitle.timeStamp, order: .forward, animation: .spring) var titles: [ItemsTitle]
+    @Query (sort: \ItemsTitle.timeStamp, order: .forward) var titles: [ItemsTitle]
     @EnvironmentObject var viewModel: AppViewModel
-    @SwiftData.Query var title: [ItemsTitle]
-    @SwiftData.Query (sort: \Items.timestamp, order: .forward, animation: .spring) var items: [Items]
+    @Query var title: [ItemsTitle]
+    @Query (sort: \Items.timestamp, order: .forward) var items: [Items]
     
     @State private var searchText = ""
     @State var name = ""
@@ -244,8 +244,8 @@ struct ItemView: View {
                                 }
                                 VStack(alignment: .leading, spacing: 20){
                                     Text("Phone")
-                                        .fontWeight(.semibold)
-                                        .font(.system(size: 15))
+                                        .font(.title2)
+                                        .fontWeight(.medium)
                                     HStack(alignment: .center, spacing: 0.0){
                                         ZStack(alignment: .leading){
                                             iPhoneNumberField("Phone Number", text: $phoneNumber)
@@ -253,7 +253,7 @@ struct ItemView: View {
                                                 .prefixHidden(false)
                                                 .flagHidden(false)
                                                 .flagSelectable(true)
-                                                .placeholderColor(Color(K.Colors.lightGray))
+                                                .placeholderColor(Color(K.Colors.darkGray))
                                                 .frame(height: 45)
                                                 .disableAutocorrection(true)
                                                 .textInputAutocapitalization(.never)
@@ -270,7 +270,7 @@ struct ItemView: View {
                                     .frame(height: 50)
                                     .overlay(
                                         RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                            .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
+                                            .stroke(Color(K.Colors.darkGray), lineWidth: 1)
                                     )
                                 }
                                 VStack{
@@ -305,7 +305,7 @@ struct ItemView: View {
                                     }
                                     HStack{
                                         Text("Birthday")
-                                            .foregroundStyle(.secondary.opacity(0.5))
+//                                            .foregroundStyle(.secondary.opacity(0.5))
                                         DatePicker(
                                                 "",
                                                 selection: $birthDay,
@@ -317,39 +317,45 @@ struct ItemView: View {
                                         RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.darkGray), lineWidth: 1)
                                     )
                                 }
-                                Button(action: {
-                                    if !name.isEmpty{
-                                        addItem()
-                                    }else{
-                                        nameError()
-                                    }
-                                }){
-                                    Text("Add")
-                                        .foregroundColor(Color.white)
-                                        .padding(.vertical, 10)
-                                        .frame(maxWidth: .infinity)
-                                        .background(Color(K.Colors.mainColor))
-                                        .cornerRadius(7)
-                                }
+                                .padding(.bottom, 75)
                             }
                             .padding(15)
                         }
                         Spacer()
                     }
-                    HStack(alignment: .center){
-                        Text("Name is empty")
-                            .foregroundStyle(Color(K.Colors.lightGray))
-                    }
-                    .frame(height: 40)
-                    .frame(maxWidth: .infinity)
-                    .background(Color(K.Colors.darkGray))
-                    .cornerRadius(7)
-                    .onTapGesture(perform: {
-                        withAnimation{
-                            nameIsEmpty = false
+                    VStack(alignment: .center, spacing: 30){
+                        Button(action: {
+                            if !name.isEmpty{
+                                addItem()
+                            }else{
+                                nameError()
+                            }
+                        }){
+                            Text("Add")
+                                .foregroundColor(Color.white)
+                                .padding(.vertical, 10)
+                                .frame(maxWidth: .infinity)
+                                .background(Color(K.Colors.mainColor))
+                                .cornerRadius(7)
                         }
-                    })
-                    .offset(y: nameIsEmpty ? -20 : 100)
+                        if nameIsEmpty{
+                            HStack(alignment: .center){
+                                Text("Name is empty")
+                                    .foregroundStyle(Color(K.Colors.lightGray))
+                            }
+                            .frame(height: 40)
+                            .frame(maxWidth: .infinity)
+                            .background(Color(K.Colors.darkGray))
+                            .cornerRadius(7)
+                            .onTapGesture(perform: {
+                                withAnimation{
+                                    nameIsEmpty = false
+                                }
+                            })
+                            .offset(y: nameIsEmpty ? -20 : 150)
+                        }
+                    }
+                    .padding(.bottom, nameIsEmpty ? 0 : 15)
                     .padding(.horizontal, 15)
                 }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -360,7 +366,7 @@ struct ItemView: View {
                                 self.presentSheet.toggle()
                             }){
                                 Text("Cancel")
-                                    .foregroundColor(Color(K.Colors.lightBlue))
+                                    .foregroundColor(Color(K.Colors.mainColor))
                             }
                         }
                         ToolbarItem(placement: .navigationBarTrailing) {
@@ -372,7 +378,7 @@ struct ItemView: View {
                                 }
                             }){
                                 Text("Save")
-                                    .foregroundColor(Color(K.Colors.lightBlue))
+                                    .foregroundColor(Color(K.Colors.mainColor))
                             }
                         }
                     }
@@ -391,11 +397,11 @@ struct ItemView: View {
         withAnimation{
             nameIsEmpty = true
         }
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
             withAnimation{
                 nameIsEmpty = false
             }
-//            }
+            }
     }
     
     private func addItem() {

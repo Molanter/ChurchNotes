@@ -46,8 +46,8 @@ final class ItemsTitle{
         self.name = name
         self.timeStamp = .now
     }
-    @Relationship(.cascade)
-    var items: [Items] = []
+    @Relationship(deleteRule: .cascade)
+    var items: [Items]
 }
 
 @Model
@@ -60,9 +60,9 @@ final class UserProfile {
     var notes: String
     var profileImage: String
     var username: String
-    var timeStamp = Date.now
+    var timeStamp: Date
     
-    init(name: String, phoneNumber: String, email: String, cristian: Bool, notes: String, country: String, profileImage: String, username: String) {
+    init(name: String, phoneNumber: String, email: String, cristian: Bool, notes: String, country: String, profileImage: String, username: String, timeStamp: Date) {
         self.name = name
         self.phone = phoneNumber
         self.email = email
@@ -71,6 +71,7 @@ final class UserProfile {
         self.country = country
         self.profileImage = profileImage
         self.username = username
+        self.timeStamp = timeStamp
     }
 }
 

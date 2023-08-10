@@ -79,7 +79,7 @@ struct LoginPage: View {
                         ZStack{
                             RoundedRectangle(cornerRadius: 7)
                                 .frame(maxWidth: .infinity)
-                                .foregroundStyle(Color(K.Colors.darkGray))
+                                .foregroundStyle(Color(K.Colors.darkBlue))
                             HStack{
                                 Image(systemName: "envelope")
                                     .resizable()
@@ -105,7 +105,7 @@ struct LoginPage: View {
                         ZStack{
                             RoundedRectangle(cornerRadius: 7)
                                 .frame(maxWidth: .infinity)
-                                .foregroundStyle(Color.black)
+                                .foregroundStyle(Color(K.Colors.justDarkGray))
                             HStack{
                                 Image(systemName: "apple.logo")
                                     .resizable()

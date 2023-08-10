@@ -13,9 +13,9 @@ import FirebaseFirestore
 import iPhoneNumberField
 
 struct AppView: View {
-    @SwiftData.Query (sort: \ItemsTitle.timeStamp, order: .forward, animation: .spring) var itemTitles: [ItemsTitle]
+    @Query (sort: \ItemsTitle.timeStamp, order: .forward) var itemTitles: [ItemsTitle]
     @Environment(\.modelContext) private var modelContext
-    @SwiftData.Query (sort: \Items.timestamp, order: .forward, animation: .spring) var items: [Items]
+    @Query (sort: \Items.timestamp, order: .forward) var items: [Items]
     @State var name = "name"
     @State var phone = "+1234567890"
     @State var email = "email@gmail.com"
@@ -36,63 +36,68 @@ struct AppView: View {
     @State var accentColor = false
     var db = Firestore.firestore()
     var auth = Auth.auth()
-    @EnvironmentObject var viewModel: AppViewModel
     @State private var selection: Int = 0 // 1
-
+    @EnvironmentObject var viewModel: AppViewModel
+    
     var body: some View {
         VStack(alignment: .center, spacing: 0) { // 2
-                    ZStack { // 3
-                        if (selection == 0) {
-                            ItemView()
-                        } else if (selection == 1) {
-                            settings
-                        }// else if (selection == 2) {
-//                            contactsContent()
-//                        } else if (selection == 3) {
-//                            keypadContent()
-//                        } else if (selection == 4) {
-//                            voicemailContent()
-//                        }
-                    }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            HStack(alignment: .lastTextBaseline) {
-                CustomTabBarItem(iconName: "list.bullet.clipboard",
-                                 label: "Notes",
-                                 selection: $selection,
-                                 tag: 0)
-                CustomTabBarItem(iconName: "gearshape",
-                                 label: "Settings",
-                                 selection: $selection,
-                                 tag: 1)
-//                CustomTabBarItem(iconName: "person.crop.circle",
-//                                 label: "Contacts",
-//                                 selection: $selection,
-//                                 tag: 2)
-//                CustomTabBarItem(iconName: "circle.grid.3x3.fill",
-//                                 label: "Keypad",
-//                                 selection: $selection,
-//                                 tag: 3)
-//                CustomTabBarItem(iconName: "recordingtape",
-//                                 label: "Voicemail",
-//                                 selection: $selection,
-//                                 tag: 4)
-            }
-                    .frame(maxWidth: .infinity)
-                    .background(
-                        GeometryReader { parentGeometry in
+            ZStack { // 3
+                if (selection == 0) {
+                    ItemView()
+                } else if (selection == 1) {
+                    settings
+                }// else if (selection == 2) {
+                //                            contactsContent()
+                //                        } else if (selection == 3) {
+                //                            keypadContent()
+                //                        } else if (selection == 4) {
+                //                            voicemailContent()
+                //                        }
+            }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            if !width{
+                HStack(alignment: .lastTextBaseline) {
+                    CustomTabBarItem(iconName: "list.bullet.clipboard",
+                                     label: "Notes",
+                                     selection: $selection,
+                                     tag: 0)
+                    CustomTabBarItem(iconName: "gearshape",
+                                     label: "Settings",
+                                     selection: $selection,
+                                     tag: 1)
+                    //                CustomTabBarItem(iconName: "person.crop.circle",
+                    //                                 label: "Contacts",
+                    //                                 selection: $selection,
+                    //                                 tag: 2)
+                    //                CustomTabBarItem(iconName: "circle.grid.3x3.fill",
+                    //                                 label: "Keypad",
+                    //                                 selection: $selection,
+                    //                                 tag: 3)
+                    //                CustomTabBarItem(iconName: "recordingtape",
+                    //                                 label: "Voicemail",
+                    //                                 selection: $selection,
+                    //                                 tag: 4)
+                }
+                .frame(maxWidth: .infinity)
+                .background(
+                    GeometryReader { parentGeometry in
+                        if !width{
                             Rectangle()
                                 .fill(Color(K.Colors.background))
                                 .frame(width: parentGeometry.size.width, height: 0.5)
                                 .position(x: parentGeometry.size.width / 2, y: 0)
                         }
-                    )
-                    .background(Color(UIColor.systemGray6))
-                }.frame(maxHeight: .infinity, alignment: .bottom)
-        .onAppear(){
-            if itemTitles.isEmpty{
-                addFirst()
+                    }
+                )
+                .background(Color(K.Colors.background))
+                .offset(y: width ? 150 : 0)
             }
-        }
-        .accentColor(accentColor ? Color.white : Color(K.Colors.bluePurple))
+        }.frame(maxHeight: .infinity, alignment: .bottom)
+        //        .onAppear(){
+        //            if itemTitles.isEmpty{
+        //                addFirst()
+        //            }
+        //        }
+            .accentColor(accentColor ? Color.white : Color(K.Colors.bluePurple))
         
     }
     
@@ -353,7 +358,7 @@ struct AppView: View {
                             .cornerRadius(.infinity)
                             .overlay(
                                 Circle().stroke(Color(K.Colors.darkGray).opacity(0.6), lineWidth: 1)
-                                )
+                            )
                             .onTapGesture {
                                 withAnimation{
                                     self.width.toggle()
@@ -368,7 +373,7 @@ struct AppView: View {
                                 .foregroundColor(Color(K.Colors.justLightGray))
                                 .overlay(
                                     Circle().stroke(Color(K.Colors.darkGray).opacity(0.6), lineWidth: 1)
-                                    )
+                                )
                                 .onTapGesture {
                                     withAnimation{
                                         self.width.toggle()
@@ -381,8 +386,8 @@ struct AppView: View {
                                     .font(.system(size: 20))
                                     .fontWeight(.bold)
                                 Text(cristian ? "†" : "")
-                                        .font(.title2)
-                                        .fontWeight(.bold)
+                                    .font(.title2)
+                                    .fontWeight(.bold)
                             }
                             Text(email)
                                 .foregroundStyle(Color(K.Colors.mainColor))
@@ -395,7 +400,7 @@ struct AppView: View {
                     .padding(.horizontal, 25)
                     VStack(alignment: .leading, spacing: 20){
                         VStack{
-                            NavigationLink(destination: CurrentPersonView(user: .init(name: name, phoneNumber: phone, email: email, cristian: cristian, notes: notes, country: country, profileImage: profileImage, username: username))        .accentColor(Color(K.Colors.darkGray))){
+                            NavigationLink(destination: CurrentPersonView(user: .init(name: name, phoneNumber: phone, email: email, cristian: cristian, notes: notes, country: country, profileImage: profileImage, username: username, timeStamp: Date.now))        .accentColor(Color(K.Colors.darkGray))){
                                 HStack(spacing: 29){
                                     Image(systemName: "person")
                                         .font(.system(size: 29))
@@ -423,7 +428,7 @@ struct AppView: View {
                                     Image(systemName: "person.3")
                                         .font(.system(size: 25))
                                         .fontWeight(.light)
-                                VStack(alignment: .leading, spacing: 5){
+                                    VStack(alignment: .leading, spacing: 5){
                                         Text("People")
                                             .font(.system(size: 15))
                                             .fontWeight(.semibold)
@@ -500,11 +505,11 @@ struct AppView: View {
                                 Image(systemName: "rectangle.portrait.and.arrow.right")
                                     .font(.system(size: 29))
                                     .fontWeight(.light)
-                                    Text("Log Out")
-                                        .fontWeight(.semibold)
-                                        .font(.system(size: 15))
-                                        .foregroundStyle(.primary)
-                                    
+                                Text("Log Out")
+                                    .fontWeight(.semibold)
+                                    .font(.system(size: 15))
+                                    .foregroundStyle(.primary)
+                                
                                 Spacer()
                             }
                             .padding(.horizontal, 25)
@@ -557,11 +562,11 @@ struct AppView: View {
                     .background(
                         Color.black.opacity(0.9)
                     )
-                        .onTapGesture {
-                            withAnimation{
-                                self.width.toggle()
-                            }
+                    .onTapGesture {
+                        withAnimation{
+                            self.width.toggle()
                         }
+                    }
                 }
             }
             .toolbar(content: {
@@ -614,10 +619,10 @@ struct AppView: View {
                     print("Error getting documents: \(err)")
                 } else {
                     for document in querySnapshot!.documents {
-//                        print("\(document.documentID) => \(document.data())")
+                        //                        print("\(document.documentID) => \(document.data())")
                         let dictionary = document.data()
                         
-//                        print("dictionary:   -\(dictionary)")
+                        //                        print("dictionary:   -\(dictionary)")
                         let email = dictionary["email"] as! String
                         let username = dictionary["username"] as! String
                         let profileImage = dictionary["profileImageUrl"] as! String
@@ -644,7 +649,6 @@ struct AppView: View {
 
 #Preview {
     AppView()
-        .environmentObject(AppViewModel())
         .modelContainer(for: [UserProfile.self, Items.self, ItemsTitle.self])
 }
 
@@ -661,7 +665,7 @@ struct SearchView: View {
             .navigationTitle("Searching")
         }
     }
-
+    
     var filteredNames: [String] {
         if searchText.isEmpty {
             return allNames
