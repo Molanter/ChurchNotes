@@ -46,9 +46,9 @@ struct AppView: View {
                     ItemView()
                 } else if (selection == 1) {
                     settings
-                }// else if (selection == 2) {
-                //                            contactsContent()
-                //                        } else if (selection == 3) {
+                } else if (selection == 2) {
+                    CameraView()
+                                        }// else if (selection == 3) {
                 //                            keypadContent()
                 //                        } else if (selection == 4) {
                 //                            voicemailContent()
@@ -64,10 +64,10 @@ struct AppView: View {
                                      label: "Settings",
                                      selection: $selection,
                                      tag: 1)
-                    //                CustomTabBarItem(iconName: "person.crop.circle",
-                    //                                 label: "Contacts",
-                    //                                 selection: $selection,
-                    //                                 tag: 2)
+                                    CustomTabBarItem(iconName: "person.crop.circle",
+                                                     label: "Contacts",
+                                                     selection: $selection,
+                                                     tag: 2)
                     //                CustomTabBarItem(iconName: "circle.grid.3x3.fill",
                     //                                 label: "Keypad",
                     //                                 selection: $selection,

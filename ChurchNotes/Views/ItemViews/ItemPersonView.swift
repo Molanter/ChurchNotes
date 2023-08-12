@@ -567,7 +567,4 @@ struct ItemPersonView: View {
     }
 }
 
-//#Preview {
-//    ItemPersonView()
-//        .modelContainer(for: [UserProfile.self, Items.self, ItemsTitle.self])
-//}
+
