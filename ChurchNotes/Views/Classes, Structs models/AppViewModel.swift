@@ -27,6 +27,14 @@ class AppViewModel: ObservableObject{
         return auth.currentUser != nil
     }
      
+    func saveToFirebase(item: Items){
+        let itm: [String: Any] = ["name": item.name, "isLiked": item.isLiked, "isCheked": item.isCheked, "notes": item.notes, "imageData": item.imageData, "email": item.email, "birthDay": item.birthDay, "title": item.title, "phone": item.phone]
+            if let uid = Auth.auth().currentUser?.uid{
+            let doc = db.collection("users").document("people").collection(uid)
+                doc.addDocument(data: itm)
+        }
+    }
+    
     func twoNames(name: String) -> String{
         return String(name.components(separatedBy: " ").compactMap { $0.first }).count >= 3 ? String(String(name.components(separatedBy: " ").compactMap { $0.first }).prefix(2)) : String(name.components(separatedBy: " ").compactMap { $0.first })
     }
@@ -119,8 +127,12 @@ class AppViewModel: ObservableObject{
                             "uid": uid,
                             "email": email,
                             "name": name,
+                            "mainColor": "blue-purple",
                             "timeStamp": Date.now,
                             "username": userName,
+                            "notifications": false,
+                            "notificationTime": Date.now,
+                            "notes": "",
     //                        "dateOfBirth": dateOfBirth,
                             "country": country,
                             "profileImageUrl": "",
@@ -155,7 +167,11 @@ class AppViewModel: ObservableObject{
                         "email": email,
                         "name": name,
                         "timeStamp": Date.now,
+                        "mainColor": "blue-purple",
                         "username": userName,
+                        "notifications": false,
+                        "notificationTime": Date.now,
+                        "notes": "",
 //                        "dateOfBirth": dateOfBirth,
                         "country": country,
                         "profileImageUrl": "",

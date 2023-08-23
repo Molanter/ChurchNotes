@@ -9,16 +9,22 @@ import SwiftUI
 
 struct IndexView: View {
     @EnvironmentObject var viewModel: AppViewModel
+    @StateObject var networkMonitor = NetworkMonitor()
+    var utilities = Utilities()
 
     var body: some View {
         ZStack{
             if viewModel.signedIn{
                 AppView()
+                    .accentColor(Color(K.Colors.mainColor))
+                    .environmentObject(networkMonitor)
             }else{
                 LoginPage()
+                    .accentColor(Color(K.Colors.mainColor))
             }
         }
         .onAppear{
+            utilities.overrideDisplayMode()
             print("apeaaarssss")
             viewModel.signedIn = viewModel.isSignedIn
         }    }

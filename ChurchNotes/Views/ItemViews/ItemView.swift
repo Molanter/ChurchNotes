@@ -7,6 +7,9 @@
 
 import SwiftUI
 import SwiftData
+import FirebaseAuth
+import FirebaseStorage
+import FirebaseFirestore
 import iPhoneNumberField
 
 struct ItemView: View {
@@ -15,24 +18,15 @@ struct ItemView: View {
     @EnvironmentObject var viewModel: AppViewModel
     @Query var title: [ItemsTitle]
     @Query (sort: \Items.timestamp, order: .forward) var items: [Items]
-    
+
+    @State var showAddPersonView = false
     @State private var searchText = ""
-    @State var name = ""
-    @State var isLiked = false
-    @State var isCheked = false
-    @State private var showingAlert = false
-    @State var notes = ""
-    @State var birthDay = Date.now
     @State var presentSheet = false
-    @State var shouldShowImagePicker = false
-    @State var image: UIImage?
     @State var finishImage: Data?
     @State var sheetPesonInfo = false
-    @State var email = ""
     @State var currentTab: Int = 0
-    @State var phoneNumber: String = ""
     @State private var currentItem: Items?
-    @State private var nameIsEmpty = false
+    
     var itemTitles: ItemsTitle{
         if title.isEmpty{
             addFirst()
@@ -41,7 +35,6 @@ struct ItemView: View {
             return titles[currentTab]
         }
     }
-    
     var filteredNames: [Items] {
         if searchText.isEmpty {
             return itemTitles.items.sorted(by: { $0.timestamp > $1.timestamp })
@@ -84,7 +77,7 @@ struct ItemView: View {
                                             Circle()
                                                 .foregroundColor(Color(K.Colors.darkGray))
                                                 .frame(width: 40, height: 40)
-                                            Text(String(item.name.components(separatedBy: " ").compactMap { $0.first }).count >= 3 ? String(String(item.name.components(separatedBy: " ").compactMap { $0.first }).prefix(2)) : String(item.name.components(separatedBy: " ").compactMap { $0.first }))
+                                            Text(viewModel.twoNames(name: item.name))
                                                 .textCase(.uppercase)
                                                 .foregroundColor(Color.white)
                                         }
@@ -113,14 +106,13 @@ struct ItemView: View {
                                     .foregroundStyle(Color(K.Colors.lightGray))
                                 }
                             }
-                            //                                    .swipeActions(edge: .trailing) {
-                            //                                        Button(role: .destructive, action: {
-                            //                                            modelContext.delete(item)
-                            //                                            try? modelContext.save()
-                            //                                        } ) {
-                            //                                            Label("Delete", systemImage: "trash")
-                            //                                        }
-                            //                                    }
+//                                                                .swipeActions(edge: .trailing) {
+//                                                                    Button(role: .destructive, action: {
+//                                                                        modelContext.delete(item)
+//                                                                    } ) {
+//                                                                        Label("Delete", systemImage: "trash")
+//                                                                    }
+//                                                                }
                             //                                    .contextMenu {
                             //                                        Button(role: .destructive) {
                             //                                            modelContext.delete(item)
@@ -148,13 +140,13 @@ struct ItemView: View {
                             
                         }
                     }
-                    
+//                    .onDelete(perform: delete)
                     .padding(.horizontal, 0)
                 }
             }
             .toolbar(content: {
                 ToolbarItem(placement: .topBarTrailing, content: {
-                    Button(action: {self.presentSheet.toggle()}){
+                    Button(action: {self.showAddPersonView.toggle()}){
                         Image(systemName: "person.badge.plus")
                             .foregroundStyle(Color(K.Colors.mainColor))
                     }
@@ -169,274 +161,24 @@ struct ItemView: View {
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Name")
             .tabViewStyle(.page(indexDisplayMode: .never))
         }
-        .sheet(isPresented: $presentSheet){
+        .sheet(isPresented: $showAddPersonView){
             NavigationStack{
-                ZStack(alignment: .bottom){
-                    ScrollView{
-                        VStack(alignment: .center){
-                            Button (action: {
-                                shouldShowImagePicker.toggle()
-                            }){
-                                VStack(alignment: . center){
-                                    if let image = self.image{
-                                        Image(uiImage: image)
-                                            .resizable()
-                                            .frame(width: 100, height: 100)
-                                            .cornerRadius(50)
-                                            .overlay(
-                                                Circle().stroke(Color(K.Colors.mainColor), lineWidth: 2)
-                                            )
-                                            .padding(15)
-                                        
-                                    }else{
-                                        Image(systemName: "person.fill.viewfinder")
-                                            .resizable()
-                                            .frame(width: 100, height: 100)
-                                            .foregroundColor(Color(K.Colors.mainColor))
-                                            .padding(15)
-                                        
-                                        
-                                    }
-                                    Text("tap to change Image")
-                                        .foregroundStyle(.secondary)
-                                        .foregroundStyle(Color(K.Colors.mainColor))
-                                }
-                                .padding(15)
-                            }
-                            VStack(alignment: .leading, spacing: 20){
-                                VStack{
-                                    HStack{
-                                        Text("Write Person Name")
-                                            .font(.title2)
-                                            .fontWeight(.medium)
-                                        Spacer()
-                                        Text("(required)")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.secondary)
-                                            .fontWeight(.medium)
-                                    }
-                                    HStack{
-                                        TextField("Name", text: $name)
-                                            }
-                                    .padding(10)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.darkGray), lineWidth: 1)
-                                    )
-                                }
-                                VStack{
-                                    HStack{
-                                        Text("Email")
-                                            .font(.title2)
-                                            .fontWeight(.medium)
-                                        Spacer()
-                                        Text("(optional)")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.secondary)
-                                            .fontWeight(.medium)
-                                    }
-                                    HStack{
-                                        TextField("Email", text: $email)
-                                            }
-                                    .padding(10)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.darkGray), lineWidth: 1)
-                                    )
-                                }
-                                VStack(alignment: .leading, spacing: 20){
-                                    Text("Phone")
-                                        .font(.title2)
-                                        .fontWeight(.medium)
-                                    HStack(alignment: .center, spacing: 0.0){
-                                        ZStack(alignment: .leading){
-                                            iPhoneNumberField("Phone Number", text: $phoneNumber)
-                                                .maximumDigits(15)
-                                                .prefixHidden(false)
-                                                .flagHidden(false)
-                                                .flagSelectable(true)
-                                                .placeholderColor(Color(K.Colors.darkGray))
-                                                .frame(height: 45)
-                                                .disableAutocorrection(true)
-                                                .textInputAutocapitalization(.never)
-                                                .padding(0)
-                                                .textContentType(.telephoneNumber)
-                                                .foregroundStyle(Color.black)
-                                        }
-                                        .padding(.leading)
-                                        Spacer()
-                                        Image(systemName: "phone.fill")
-                                            .foregroundStyle(Color(K.Colors.lightGray))
-                                            .padding(.trailing)
-                                    }
-                                    .frame(height: 50)
-                                    .overlay(
-                                        RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                            .stroke(Color(K.Colors.darkGray), lineWidth: 1)
-                                    )
-                                }
-                                VStack{
-                                    HStack{
-                                        Text("Notes")
-                                            .font(.title2)
-                                            .fontWeight(.medium)
-                                        Spacer()
-                                        Text("(optional)")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.secondary)
-                                            .fontWeight(.medium)
-                                    }
-                                    HStack{
-                                        TextField("Notes", text: $notes)
-                                            }
-                                    .padding(10)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.darkGray), lineWidth: 1)
-                                    )
-                                }
-                                VStack{
-                                    HStack{
-                                        Text("Birthday")
-                                            .font(.title2)
-                                            .fontWeight(.medium)
-                                        Spacer()
-                                        Text("(optional)")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.secondary)
-                                            .fontWeight(.medium)
-                                    }
-                                    HStack{
-                                        Text("Birthday")
-//                                            .foregroundStyle(.secondary.opacity(0.5))
-                                        DatePicker(
-                                                "",
-                                                selection: $birthDay,
-                                                displayedComponents: [.date]
-                                            )
-                                            }
-                                    .padding(10)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.darkGray), lineWidth: 1)
-                                    )
-                                }
-                                .padding(.bottom, 75)
-                            }
-                            .padding(15)
-                        }
-                        Spacer()
-                    }
-                    VStack(alignment: .center, spacing: 30){
-                        Button(action: {
-                            if !name.isEmpty{
-                                addItem()
-                            }else{
-                                nameError()
-                            }
-                        }){
-                            Text("Add")
-                                .foregroundColor(Color.white)
-                                .padding(.vertical, 10)
-                                .frame(maxWidth: .infinity)
-                                .background(Color(K.Colors.mainColor))
-                                .cornerRadius(7)
-                        }
-                        if nameIsEmpty{
-                            HStack(alignment: .center){
-                                Text("Name is empty")
-                                    .foregroundStyle(Color(K.Colors.lightGray))
-                            }
-                            .frame(height: 40)
-                            .frame(maxWidth: .infinity)
-                            .background(Color(K.Colors.darkGray))
-                            .cornerRadius(7)
-                            .onTapGesture(perform: {
-                                withAnimation{
-                                    nameIsEmpty = false
-                                }
-                            })
-                            .offset(y: nameIsEmpty ? -20 : 150)
-                        }
-                    }
-                    .padding(.bottom, nameIsEmpty ? 0 : 15)
-                    .padding(.horizontal, 15)
-                }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .padding(.vertical)
+                AddPersonView(showAddPersonView: $showAddPersonView, title: itemTitles)
                     .toolbar{
-                        ToolbarItem(placement: .navigationBarLeading){
+                        ToolbarItem(placement: .topBarLeading){
                             Button(action: {
-                                self.presentSheet.toggle()
+                                self.showAddPersonView.toggle()
                             }){
                                 Text("Cancel")
-                                    .foregroundColor(Color(K.Colors.mainColor))
-                            }
-                        }
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button(action: {
-                                if !name.isEmpty{
-                                    addItem()
-                                }else{
-                                    nameError()
-                                }
-                            }){
-                                Text("Save")
-                                    .foregroundColor(Color(K.Colors.mainColor))
                             }
                         }
                     }
-                    .edgesIgnoringSafeArea(.bottom)
             }
-            .sheet(isPresented: $shouldShowImagePicker) {
-                ImagePicker(image: $image)
-            }
+            .accentColor(Color(K.Colors.mainColor))
             .edgesIgnoringSafeArea(.bottom)
             .presentationDetents([.medium, .large])
         }
         .frame(maxHeight: .infinity)
-    }
-    
-    private func nameError(){
-        withAnimation{
-            nameIsEmpty = true
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
-            withAnimation{
-                nameIsEmpty = false
-            }
-            }
-    }
-    
-    private func addItem() {
-        withAnimation {
-            if image != nil{
-                guard let imageSelected = image else{
-                    return
-                }
-                guard let imageData = imageSelected.jpegData(compressionQuality: 0.4) else{
-                    print("Avata is nil")
-                    return
-                }
-                let modifiedDate = Calendar.current.date(byAdding: .day, value: -1, to: birthDay)!
-
-                let newItem = Items(name: name, isLiked: false, isCheked: false, notes: notes, imageData: imageData, email: email, birthDay: birthDay >= modifiedDate ? nil : birthDay, title: itemTitles.name, phone: phoneNumber.count > 5 ? phoneNumber : "")
-                itemTitles.items.append(newItem)
-                email = ""
-                name = ""
-                notes = ""
-                phoneNumber = ""
-                image = nil
-                self.presentSheet.toggle()
-            }else{
-                let modifiedDate = Calendar.current.date(byAdding: .day, value: -1, to: birthDay)!
-
-                let newItem = Items(name: name, isLiked: false, isCheked: false, notes: notes, imageData: nil, email: email, birthDay: birthDay >= modifiedDate ? nil : birthDay, title: itemTitles.name, phone: phoneNumber.count > 5 ? phoneNumber : "")
-                itemTitles.items.append(newItem)
-                email = ""
-                name = ""
-                notes = ""
-                phoneNumber = ""
-                image = nil
-                self.presentSheet.toggle()
-            }
-        }
     }
     
     func addFirst(){
@@ -459,15 +201,14 @@ struct ItemView: View {
     private func delete(offsets: IndexSet) {
         withAnimation {
             for index in offsets {
-                itemTitles.items.remove(at: index)
-                try? modelContext.save()
+                modelContext.delete(items[index])
             }
         }
     }
-    func deleteItem(_ item: Items) {
-        modelContext.delete(item)
-        try? modelContext.save()
-    }
+    
+//    func deleteItem(_ item: Items) {
+//        modelContext.delete(item)
+//    }
 }
 
 //#Preview {

@@ -156,6 +156,7 @@ struct LoginPage: View {
                 }
             }
         }
+        .modifier(DismissingKeyboard())
         .frame(maxWidth: .infinity)
         .padding(15)
         .sheet(isPresented: $showLogin, content: {
@@ -236,7 +237,6 @@ struct LoginPage: View {
                                             .padding(0)
                                             .keyboardType(.namePhonePad)
                                             .textContentType(.name)
-                                            .foregroundStyle(Color.black)
                                     }
                                     Spacer()
                                     Image(systemName: "person.fill")
@@ -269,7 +269,6 @@ struct LoginPage: View {
                                             .keyboardType(.namePhonePad)
                                             .textCase(.lowercase)
                                             .textContentType(.username)
-                                            .foregroundStyle(Color.black)
                                     }
                                     Spacer()
                                     Image(systemName: "at")
@@ -294,6 +293,7 @@ struct LoginPage: View {
                                                 .foregroundColor(Color(K.Colors.lightGray))
                                         }
                                         TextField("", text: $email)
+                                            .textCase(.lowercase)
                                             .padding(.leading)
                                             .foregroundColor(Color(K.Colors.lightGray))
                                             .disableAutocorrection(true)
@@ -302,7 +302,6 @@ struct LoginPage: View {
                                             .padding(0)
                                             .keyboardType(.emailAddress)
                                             .textContentType(.emailAddress)
-                                            .foregroundStyle(Color.black)
                                     }
                                     Spacer()
                                     Button(action: {
@@ -339,7 +338,6 @@ struct LoginPage: View {
                                             .opacity(0.75)
                                             .padding(0)
                                             .textContentType(.countryName)
-                                            .foregroundStyle(Color.black)
                                     }
                                     Spacer()
                                     Image(systemName: "flag.fill")
@@ -369,7 +367,6 @@ struct LoginPage: View {
                                             .textInputAutocapitalization(.never)
                                             .padding(0)
                                             .textContentType(.telephoneNumber)
-                                            .foregroundStyle(Color.black)
                                     }
                                     .padding(.leading)
                                     Spacer()
@@ -412,7 +409,6 @@ struct LoginPage: View {
                                                         .padding(0)
                                                         .textContentType(.newPassword)
                                                         .padding(.leading)
-                                                        .foregroundStyle(Color.black)
                                                 }
                                             }
                                             Spacer()
@@ -458,7 +454,6 @@ struct LoginPage: View {
                                                         .padding(0)
                                                         .textContentType(.newPassword)
                                                         .padding(.leading)
-                                                        .foregroundStyle(Color.black)
                                                 }
                                             }
                                             Spacer()
@@ -503,9 +498,10 @@ struct LoginPage: View {
                     }
                     
                     Button(action: {
-                        
+                        self.showRegister = false
+                        self.showLogin = true
                     }){
-                        Text("Already have acount? Log In")
+                        Text("Already have an acount? - Log In")
                             .font(.system(size: 16))
                             .padding(.top, 20)
                             .foregroundColor(Color(K.Colors.mainColor))
@@ -520,6 +516,7 @@ struct LoginPage: View {
                     }
                 })
             }
+            .modifier(DismissingKeyboard())
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: {self.showRegister.toggle()}){
@@ -536,7 +533,7 @@ struct LoginPage: View {
             viewModel.register(email: email, password: createPassword, image: image, name: name, userName: username.lowercased(), country: country, phone: phone)
             errReg = viewModel.err
         }else{
-            errReg = "Passwords don't matches."
+            errReg = "Passwords do not match."
         }
     }
     var login: some View {
@@ -670,9 +667,10 @@ struct LoginPage: View {
                     Spacer()
                     //
                     Button(action: {
-
+                        self.showLogin = false
+                        self.showRegister = true
                     }){
-                        Text("Does't have acount? - Rerister")
+                        Text("Don't have an acount? - Rerister")
                             .font(.system(size: 16))
                             .padding(.top, 20)
                             .foregroundColor(Color(K.Colors.mainColor))
@@ -680,6 +678,7 @@ struct LoginPage: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
+            .modifier(DismissingKeyboard())
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: {self.showLogin.toggle()}){
