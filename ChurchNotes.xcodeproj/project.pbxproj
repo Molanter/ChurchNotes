@@ -11,6 +11,19 @@
 		9E14D0BF2A8A8C28005E0BC0 /* FinalPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E14D0BE2A8A8C28005E0BC0 /* FinalPreview.swift */; };
 		9E14D0C32A8BF487005E0BC0 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E14D0C22A8BF487005E0BC0 /* NotificationView.swift */; };
 		9E14D0C52A8C20A6005E0BC0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E14D0C42A8C20A6005E0BC0 /* SettingsView.swift */; };
+		9E1A5E502A96CCC10061CA19 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1A5E4D2A96CCC10061CA19 /* DataModel.swift */; };
+		9E1A5E512A96CCC10061CA19 /* CameraV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1A5E4E2A96CCC10061CA19 /* CameraV.swift */; };
+		9E1A5E522A96CCC10061CA19 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1A5E4F2A96CCC10061CA19 /* Camera.swift */; };
+		9E1A5E542A96CDB00061CA19 /* ViewfinderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1A5E532A96CDB00061CA19 /* ViewfinderView.swift */; };
+		9E1A5E5C2A96CE160061CA19 /* PhotoLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1A5E552A96CE150061CA19 /* PhotoLibrary.swift */; };
+		9E1A5E5D2A96CE160061CA19 /* PhotoCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1A5E562A96CE150061CA19 /* PhotoCollection.swift */; };
+		9E1A5E5E2A96CE160061CA19 /* PhotoCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1A5E572A96CE150061CA19 /* PhotoCollectionView.swift */; };
+		9E1A5E5F2A96CE160061CA19 /* PhotoItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1A5E582A96CE160061CA19 /* PhotoItemView.swift */; };
+		9E1A5E602A96CE160061CA19 /* PhotoAssetCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1A5E592A96CE160061CA19 /* PhotoAssetCollection.swift */; };
+		9E1A5E612A96CE160061CA19 /* PhotoAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1A5E5A2A96CE160061CA19 /* PhotoAsset.swift */; };
+		9E1A5E622A96CE160061CA19 /* PhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1A5E5B2A96CE160061CA19 /* PhotoView.swift */; };
+		9E1A5E642A96CE570061CA19 /* CachedImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1A5E632A96CE570061CA19 /* CachedImageManager.swift */; };
+		9E1A5E662A96D6FE0061CA19 /* ThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1A5E652A96D6FE0061CA19 /* ThumbnailView.swift */; };
 		9E3CFF1E2A6878EB0087AFD0 /* TopTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF1D2A6878EB0087AFD0 /* TopTabBar.swift */; };
 		9E3CFF212A688E5C0087AFD0 /* CurrentPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF202A688E5C0087AFD0 /* CurrentPersonView.swift */; };
 		9E3CFF242A68981E0087AFD0 /* AllPeopleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF232A68981E0087AFD0 /* AllPeopleView.swift */; };
@@ -36,7 +49,6 @@
 		9E7282D72A574399004D6483 /* WidgetNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7282D62A574399004D6483 /* WidgetNote.swift */; };
 		9E7282D92A57439A004D6483 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E7282D82A57439A004D6483 /* Assets.xcassets */; };
 		9E7282E52A57BB6D004D6483 /* ItemPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7282E42A57BB6D004D6483 /* ItemPersonView.swift */; };
-		9E91BDAB2A93B014007DD52E /* CornerRotateModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E91BDAA2A93B014007DD52E /* CornerRotateModifier.swift */; };
 		9E91BDAD2A93C4F5007DD52E /* DismissingKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E91BDAC2A93C4F5007DD52E /* DismissingKeyboard.swift */; };
 		9EAB02D52A8FBC49005E3719 /* AddPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EAB02D42A8FBC49005E3719 /* AddPersonView.swift */; };
 		9EAB02D82A8FD46F005E3719 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EAB02D72A8FD46F005E3719 /* NetworkMonitor.swift */; };
@@ -53,6 +65,19 @@
 		9E14D0BE2A8A8C28005E0BC0 /* FinalPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalPreview.swift; sourceTree = "<group>"; };
 		9E14D0C22A8BF487005E0BC0 /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		9E14D0C42A8C20A6005E0BC0 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		9E1A5E4D2A96CCC10061CA19 /* DataModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
+		9E1A5E4E2A96CCC10061CA19 /* CameraV.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraV.swift; sourceTree = "<group>"; };
+		9E1A5E4F2A96CCC10061CA19 /* Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
+		9E1A5E532A96CDB00061CA19 /* ViewfinderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewfinderView.swift; sourceTree = "<group>"; };
+		9E1A5E552A96CE150061CA19 /* PhotoLibrary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoLibrary.swift; sourceTree = "<group>"; };
+		9E1A5E562A96CE150061CA19 /* PhotoCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCollection.swift; sourceTree = "<group>"; };
+		9E1A5E572A96CE150061CA19 /* PhotoCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCollectionView.swift; sourceTree = "<group>"; };
+		9E1A5E582A96CE160061CA19 /* PhotoItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoItemView.swift; sourceTree = "<group>"; };
+		9E1A5E592A96CE160061CA19 /* PhotoAssetCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoAssetCollection.swift; sourceTree = "<group>"; };
+		9E1A5E5A2A96CE160061CA19 /* PhotoAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoAsset.swift; sourceTree = "<group>"; };
+		9E1A5E5B2A96CE160061CA19 /* PhotoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoView.swift; sourceTree = "<group>"; };
+		9E1A5E632A96CE570061CA19 /* CachedImageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachedImageManager.swift; sourceTree = "<group>"; };
+		9E1A5E652A96D6FE0061CA19 /* ThumbnailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbnailView.swift; sourceTree = "<group>"; };
 		9E3521C42A73308000B607D7 /* libswiftDataDetection.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftDataDetection.tbd; path = usr/lib/swift/libswiftDataDetection.tbd; sourceTree = SDKROOT; };
 		9E3CFF1D2A6878EB0087AFD0 /* TopTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopTabBar.swift; sourceTree = "<group>"; };
 		9E3CFF202A688E5C0087AFD0 /* CurrentPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentPersonView.swift; sourceTree = "<group>"; };
@@ -81,7 +106,6 @@
 		9E7282D82A57439A004D6483 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9E7282DA2A57439A004D6483 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9E7282E42A57BB6D004D6483 /* ItemPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemPersonView.swift; sourceTree = "<group>"; };
-		9E91BDAA2A93B014007DD52E /* CornerRotateModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRotateModifier.swift; sourceTree = "<group>"; };
 		9E91BDAC2A93C4F5007DD52E /* DismissingKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissingKeyboard.swift; sourceTree = "<group>"; };
 		9EA7AB952A508D20004DB3BA /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		9EA7AB972A508D20004DB3BA /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -122,6 +146,27 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		9E1A5E4C2A96CCC10061CA19 /* Try */ = {
+			isa = PBXGroup;
+			children = (
+				9E1A5E632A96CE570061CA19 /* CachedImageManager.swift */,
+				9E1A5E5A2A96CE160061CA19 /* PhotoAsset.swift */,
+				9E1A5E592A96CE160061CA19 /* PhotoAssetCollection.swift */,
+				9E1A5E562A96CE150061CA19 /* PhotoCollection.swift */,
+				9E1A5E572A96CE150061CA19 /* PhotoCollectionView.swift */,
+				9E1A5E582A96CE160061CA19 /* PhotoItemView.swift */,
+				9E1A5E552A96CE150061CA19 /* PhotoLibrary.swift */,
+				9E1A5E5B2A96CE160061CA19 /* PhotoView.swift */,
+				9E1A5E652A96D6FE0061CA19 /* ThumbnailView.swift */,
+				9E1A5E532A96CDB00061CA19 /* ViewfinderView.swift */,
+				9E1A5E4D2A96CCC10061CA19 /* DataModel.swift */,
+				9E1A5E4E2A96CCC10061CA19 /* CameraV.swift */,
+				9E1A5E4F2A96CCC10061CA19 /* Camera.swift */,
+			);
+			name = Try;
+			path = ChurchNotes/Views/Try;
+			sourceTree = SOURCE_ROOT;
 		};
 		9E3CFF1F2A688BB70087AFD0 /* ItemViews */ = {
 			isa = PBXGroup;
@@ -199,6 +244,7 @@
 		9E6F9E0C2A4C6B50009B72DC /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				9E1A5E4C2A96CCC10061CA19 /* Try */,
 				9E91BDA92A939DF2007DD52E /* Roots */,
 				9E91BDA82A939DE5007DD52E /* Settings */,
 				9EAB02D62A8FD450005E3719 /* Classes, Structs models */,
@@ -256,7 +302,6 @@
 				9E3CFF1D2A6878EB0087AFD0 /* TopTabBar.swift */,
 				9E14D0BC2A8A7DAC005E0BC0 /* NotificationHandler.swift */,
 				9EAB02D72A8FD46F005E3719 /* NetworkMonitor.swift */,
-				9E91BDAA2A93B014007DD52E /* CornerRotateModifier.swift */,
 				9E91BDAC2A93C4F5007DD52E /* DismissingKeyboard.swift */,
 			);
 			path = "Classes, Structs models";
@@ -427,27 +472,39 @@
 			buildActionMask = 2147483647;
 			files = (
 				9E7282E52A57BB6D004D6483 /* ItemPersonView.swift in Sources */,
+				9E1A5E642A96CE570061CA19 /* CachedImageManager.swift in Sources */,
 				9EAB02D82A8FD46F005E3719 /* NetworkMonitor.swift in Sources */,
+				9E1A5E5F2A96CE160061CA19 /* PhotoItemView.swift in Sources */,
 				9E14D0BD2A8A7DAC005E0BC0 /* NotificationHandler.swift in Sources */,
 				9E14D0C32A8BF487005E0BC0 /* NotificationView.swift in Sources */,
-				9E91BDAB2A93B014007DD52E /* CornerRotateModifier.swift in Sources */,
+				9E1A5E612A96CE160061CA19 /* PhotoAsset.swift in Sources */,
 				9E44BEFE2A5A0D6D0059C56C /* LoginPage.swift in Sources */,
+				9E1A5E502A96CCC10061CA19 /* DataModel.swift in Sources */,
 				9E65DA792A658965000C87FB /* AppViewModel.swift in Sources */,
 				9E6F9E042A4BC436009B72DC /* Item.swift in Sources */,
 				9E14D0BF2A8A8C28005E0BC0 /* FinalPreview.swift in Sources */,
 				9E65DA772A64F017000C87FB /* IndexView.swift in Sources */,
 				9E45B8AC2A87D2CE002D9AF1 /* VideoView.swift in Sources */,
 				9E4FD3C42A4C92FB00D46FB8 /* AppView.swift in Sources */,
+				9E1A5E602A96CE160061CA19 /* PhotoAssetCollection.swift in Sources */,
 				9E3CFF242A68981E0087AFD0 /* AllPeopleView.swift in Sources */,
+				9E1A5E542A96CDB00061CA19 /* ViewfinderView.swift in Sources */,
 				9E3CFF1E2A6878EB0087AFD0 /* TopTabBar.swift in Sources */,
 				9E7282C82A5235D3004D6483 /* ItemView.swift in Sources */,
+				9E1A5E5D2A96CE160061CA19 /* PhotoCollection.swift in Sources */,
+				9E1A5E512A96CCC10061CA19 /* CameraV.swift in Sources */,
 				9EAB02D52A8FBC49005E3719 /* AddPersonView.swift in Sources */,
+				9E1A5E522A96CCC10061CA19 /* Camera.swift in Sources */,
+				9E1A5E622A96CE160061CA19 /* PhotoView.swift in Sources */,
 				9E6F9E132A4C6C33009B72DC /* ContentView.swift in Sources */,
+				9E1A5E5C2A96CE160061CA19 /* PhotoLibrary.swift in Sources */,
 				9E6F9DFB2A4BC435009B72DC /* ChurchNotesApp.swift in Sources */,
+				9E1A5E662A96D6FE0061CA19 /* ThumbnailView.swift in Sources */,
 				9E45B8AA2A87CFC1002D9AF1 /* CameraView.swift in Sources */,
 				9E563AD32A61A90900F5E52B /* ImagePicker.swift in Sources */,
 				9E91BDAD2A93C4F5007DD52E /* DismissingKeyboard.swift in Sources */,
 				9E3CFF212A688E5C0087AFD0 /* CurrentPersonView.swift in Sources */,
+				9E1A5E5E2A96CE160061CA19 /* PhotoCollectionView.swift in Sources */,
 				9E6F9E0B2A4BC994009B72DC /* Constants.swift in Sources */,
 				9ED6F2EE2A5093DE002568DF /* WidgetTaskModel.swift in Sources */,
 				9E14D0C52A8C20A6005E0BC0 /* SettingsView.swift in Sources */,
@@ -603,10 +660,12 @@
 				INFOPLIST_FILE = ChurchNotes/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ChurchNotes;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow to use your camera.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Allow to record videos.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Accept to add photos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -644,10 +703,12 @@
 				INFOPLIST_FILE = ChurchNotes/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ChurchNotes;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow to use your camera.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Allow to record videos.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Accept to add photos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (

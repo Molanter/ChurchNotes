@@ -83,7 +83,7 @@ struct FinalPreview: View{
     }
         
     func sendMessage(){
-        
+        showMessageComposeView.toggle()
                 
 //        PHPhotoLibrary.shared().performChanges({
 //            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: fileURL)
@@ -135,16 +135,31 @@ struct MessageComposeView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> MFMessageComposeViewController {
         let vc = MFMessageComposeViewController()
         vc.recipients = self.recipients
-        let videoData = try? Data(contentsOf: url as URL)
-        if let vData = videoData{
-            vc.addAttachmentData(vData, typeIdentifier: "video/mov", filename: "video.mov")
-        }
+        vc.addAttachmentURL(url, withAlternateFilename: "video.mov")
+//        let videoData = try? Data(contentsOf: url as URL)
+//        if let vData = videoData{
+//            vc.addAttachmentData(vData, typeIdentifier: "video/mov", filename: "video.mov")
+//        }
         return vc
     }
     
     func updateUIViewController(_ uiViewController: MFMessageComposeViewController, context: Context) {
         uiViewController.recipients = recipients
     }
+    
+    func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+            switch (result) {
+            case .cancelled:
+                print("Message cancelled")
+            case .failed:
+                print("Message failed")
+            case .sent:
+                print("Message sent")
+            default:
+                         break
+            }
+        controller.dismiss(animated: true, completion: nil)
+        }
 }
 
 

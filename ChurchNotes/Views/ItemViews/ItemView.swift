@@ -37,9 +37,9 @@ struct ItemView: View {
     }
     var filteredNames: [Items] {
         if searchText.isEmpty {
-            return itemTitles.items.sorted(by: { $0.timestamp > $1.timestamp })
+            return itemTitles.items!.sorted(by: { $0.timestamp > $1.timestamp })
         } else {
-            return itemTitles.items.filter { $0.name.contains(searchText) }
+            return itemTitles.items!.filter { $0.name.contains(searchText) }
         }
     }
     
@@ -106,21 +106,21 @@ struct ItemView: View {
                                     .foregroundStyle(Color(K.Colors.lightGray))
                                 }
                             }
-//                                                                .swipeActions(edge: .trailing) {
-//                                                                    Button(role: .destructive, action: {
-//                                                                        modelContext.delete(item)
-//                                                                    } ) {
-//                                                                        Label("Delete", systemImage: "trash")
-//                                                                    }
-//                                                                }
-                            //                                    .contextMenu {
-                            //                                        Button(role: .destructive) {
-                            //                                            modelContext.delete(item)
-                            //                                            try? modelContext.save()
-                            //                                        } label: {
-                            //                                            Label("Delete", systemImage: "trash")
-                            //                                        }
-                            //                                    }
+                                                                .swipeActions(edge: .trailing) {
+                                                                    Button(role: .destructive, action: {
+                                                                        modelContext.delete(item)
+                                                                    } ) {
+                                                                        Label("Delete", systemImage: "trash")
+                                                                    }
+                                                                }
+                                                                .contextMenu {
+                                                                    Button(role: .destructive) {
+                                                                        modelContext.delete(item)
+                                                                        try? modelContext.save()
+                                                                    } label: {
+                                                                        Label("Delete", systemImage: "trash")
+                                                                    }
+                                                                }
                             
                         }
                         .sheet(item: $currentItem, onDismiss: nil){ item in
@@ -140,7 +140,7 @@ struct ItemView: View {
                             
                         }
                     }
-//                    .onDelete(perform: delete)
+                    .onDelete(perform: delete)
                     .padding(.horizontal, 0)
                 }
             }

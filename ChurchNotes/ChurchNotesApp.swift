@@ -22,11 +22,15 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
 @main
 struct ChurchNotesApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    var utilities = Utilities()
 
     var body: some Scene {
         WindowGroup {
             let viewModel = AppViewModel()
                 IndexView()
+                .onAppear{
+                    utilities.overrideDisplayMode()
+                }
                 .environmentObject(viewModel)
         }
         

@@ -42,12 +42,11 @@ final class ItemsTitle{
     @Attribute(.unique) var name: String
     var timeStamp: Date
     
-    init(name: String) {
+    init(name: String, timeStamp: Date = Date.now) {
         self.name = name
-        self.timeStamp = .now
+        self.timeStamp = timeStamp
     }
-    @Relationship(deleteRule: .cascade)
-    var items: [Items]
+    @Relationship(deleteRule: .cascade) var items: [Items]?
 }
 
 @Model

@@ -263,7 +263,7 @@ struct AddPersonView: View {
                     let modifiedDate = Calendar.current.date(byAdding: .day, value: -1, to: birthDay)!
 
                     let newItem = Items(name: name, isLiked: false, isCheked: false, notes: notes, imageData: imageData, email: email, birthDay: birthDay >= modifiedDate ? nil : birthDay, title: title.name, phone: phoneNumber.count > 5 ? phoneNumber : "")
-                    title.items.append(newItem)
+                    title.items!.append(newItem)
                     email = ""
                     name = ""
                     notes = ""
@@ -273,7 +273,7 @@ struct AddPersonView: View {
                     let modifiedDate = Calendar.current.date(byAdding: .day, value: -1, to: birthDay)!
 
                     let newItem = Items(name: name, isLiked: false, isCheked: false, notes: notes, imageData: nil, email: email, birthDay: birthDay >= modifiedDate ? nil : birthDay, title: title.name, phone: phoneNumber.count > 5 ? phoneNumber : "")
-                    title.items.append(newItem)
+                    title.items!.append(newItem)
                     email = ""
                     name = ""
                     notes = ""

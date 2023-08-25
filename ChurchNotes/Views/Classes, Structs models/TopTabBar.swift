@@ -88,13 +88,13 @@ struct TopBarView: View {
                             presentSheet.toggle()
                         }){
                             Text("Cancel")
-                                .foregroundColor(Color(K.Colors.lightBlue))
+                                .foregroundColor(Color(K.Colors.mainColor))
                         }
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {addItemTitle()}){
                             Text("Save")
-                                .foregroundColor(Color(K.Colors.lightBlue))
+                                .foregroundColor(Color(K.Colors.mainColor))
                         }
                     }
                 }

@@ -550,7 +550,8 @@ struct ItemPersonView: View {
                         }
                         if !item.phone.isEmpty{
                             NavigationLink{
-                                CameraView(recipients: [item.phone], message: "Let's goo!", item: item)
+//                                CameraView(recipients: [item.phone], message: "Let's goo!", item: item)
+                                CameraV()
                             } label:{
                                 HStack(spacing: 20){
                                     ZStack{

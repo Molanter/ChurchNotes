@@ -4,11 +4,12 @@
 <dict>
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>Allow app to send you notifications.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Allow to record videos.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Allow to use your camera.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Accept to add photos.</string>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>blackAndWhite</string>
+		<key>UIImageName</key>
+		<string>LogoPng</string>
+	</dict>
 </dict>
 </plist>
