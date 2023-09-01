@@ -15,10 +15,10 @@ import iPhoneNumberField
 struct ItemView: View {
     @Environment(\.modelContext) private var modelContext
     @Query (sort: \ItemsTitle.timeStamp, order: .forward) var titles: [ItemsTitle]
+    @Query (sort: \Items.orderIndex, order: .forward) var items: [Items]
+
     @EnvironmentObject var viewModel: AppViewModel
     @Query var title: [ItemsTitle]
-    @Query (sort: \Items.timestamp, order: .forward) var items: [Items]
-
     @State var showAddPersonView = false
     @State private var searchText = ""
     @State var presentSheet = false
@@ -26,8 +26,10 @@ struct ItemView: View {
     @State var sheetPesonInfo = false
     @State var currentTab: Int = 0
     @State private var currentItem: Items?
+    let notify = NotificationHandler()
+    @State private var lastItem: Items?
     
-    var itemTitles: ItemsTitle{
+    private var itemTitles: ItemsTitle{
         if title.isEmpty{
             addFirst()
             return titles[currentTab]
@@ -35,11 +37,19 @@ struct ItemView: View {
             return titles[currentTab]
         }
     }
-    var filteredNames: [Items] {
+    private var filteredNames: [Items] {
         if searchText.isEmpty {
-            return itemTitles.items!.sorted(by: { $0.timestamp > $1.timestamp })
+            return itemTitles.items.sorted(by: { $0.orderIndex < $1.orderIndex })
         } else {
-            return itemTitles.items!.filter { $0.name.contains(searchText) }
+            return itemTitles.items.filter { $0.name.contains(searchText) }
+        }
+    }
+    
+    private var filteredItems: [Items] {
+        if searchText.isEmpty {
+            return filteredNames.sorted(by: { $0.isLiked && !$1.isLiked })
+        } else {
+            return filteredNames.filter { $0.name.contains(searchText) }
         }
     }
     
@@ -50,100 +60,166 @@ struct ItemView: View {
     //            UINavigationBar.appearance().scrollEdgeAppearance = appearance
     //    }
     
-    var body: some View {
+    var body: some View{
+        if K.tabStyle == 0{
+            slider
+//            folder
+        }else{
+            folder
+        }
+    }
+    
+    var slider: some View {
         NavigationStack{
             List{
                 Section(header: TopBarView(currentTab: self.$currentTab)){
-                    ForEach(filteredNames, id: \.self){item in
-                        Button(action: {
-                            currentItem = item
-                            self.sheetPesonInfo.toggle()
-                        }){
-                            HStack{
-                                ZStack(alignment: .bottomTrailing){
-                                    if item.imageData != nil{
-                                        if let img = item.imageData{
-                                            Image(uiImage: UIImage(data: img)!)
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fill)
-                                                .frame(width: 40, height: 40)
-                                                .cornerRadius(20)
-                                                .overlay(
-                                                    Circle().stroke(.gray.opacity(0.6), lineWidth: 1)
-                                                )
+                    ForEach(filteredItems, id: \.self){ item in
+                        if !item.isCheked {
+                            Button(action: {
+                                currentItem = item
+                                self.sheetPesonInfo.toggle()
+                            }){
+                                HStack{
+                                    ZStack(alignment: .bottomTrailing){
+                                        if item.imageData != nil{
+                                            if let img = item.imageData{
+                                                Image(uiImage: UIImage(data: img)!)
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                    .frame(width: 40, height: 40)
+                                                    .cornerRadius(20)
+                                                    .overlay(
+                                                        Circle().stroke(.gray.opacity(0.6), lineWidth: 1)
+                                                    )
+                                            }
+                                        }else{
+                                            ZStack(alignment: .center){
+                                                Circle()
+                                                    .foregroundColor(Color(K.Colors.darkGray))
+                                                    .frame(width: 40, height: 40)
+                                                Text(viewModel.twoNames(name: item.name))
+                                                    .textCase(.uppercase)
+                                                    .foregroundColor(Color.white)
+                                            }
+                                            
                                         }
-                                    }else{
-                                        ZStack(alignment: .center){
-                                            Circle()
-                                                .foregroundColor(Color(K.Colors.darkGray))
-                                                .frame(width: 40, height: 40)
-                                            Text(viewModel.twoNames(name: item.name))
-                                                .textCase(.uppercase)
-                                                .foregroundColor(Color.white)
+                                        Circle()
+                                            .overlay(
+                                                Circle().stroke(.white, lineWidth: 1)
+                                            )
+                                            .frame(width: 15)
+                                            .foregroundColor(Color(K.Colors.green))
+                                    }
+                                    VStack(alignment: .leading, spacing: 3){
+                                        Text(item.name.capitalized )
+                                            .padding(.vertical, 3)
+                                            .fontWeight(.medium)
+                                            .foregroundStyle(.primary)
+                                            .font(.system(size: 13))
+                                        HStack(spacing: 1){
+                                            Text(item.timestamp, format: .dateTime.month(.wide))
+                                            Text(item.timestamp, format: .dateTime.day())
+                                            Text(", \(item.timestamp, format: .dateTime.year()), ")
+                                            Text(item.timestamp, style: .time)
                                         }
-                                        
+                                        .font(.system(size: 11))
+                                        .foregroundStyle(Color(K.Colors.lightGray))
                                     }
-                                    Circle()
-                                        .overlay(
-                                            Circle().stroke(.white, lineWidth: 1)
-                                        )
-                                        .frame(width: 15)
-                                        .foregroundColor(Color(K.Colors.green))
-                                }
-                                VStack(alignment: .leading, spacing: 3){
-                                    Text(item.name.capitalized)
-                                        .padding(.vertical, 3)
-                                        .fontWeight(.medium)
-                                        .foregroundStyle(.primary)
-                                        .font(.system(size: 13))
-                                    HStack(spacing: 1){
-                                        Text(item.timestamp, format: .dateTime.month(.wide))
-                                        Text(item.timestamp, format: .dateTime.day())
-                                        Text(", \(item.timestamp, format: .dateTime.year()), ")
-                                        Text(item.timestamp, style: .time)
-                                    }
-                                    .font(.system(size: 11))
-                                    .foregroundStyle(Color(K.Colors.lightGray))
-                                }
-                            }
-                                                                .swipeActions(edge: .trailing) {
-                                                                    Button(role: .destructive, action: {
-                                                                        modelContext.delete(item)
-                                                                    } ) {
-                                                                        Label("Delete", systemImage: "trash")
-                                                                    }
-                                                                }
-                                                                .contextMenu {
-                                                                    Button(role: .destructive) {
-                                                                        modelContext.delete(item)
-                                                                        try? modelContext.save()
-                                                                    } label: {
-                                                                        Label("Delete", systemImage: "trash")
-                                                                    }
-                                                                }
-                            
-                        }
-                        .sheet(item: $currentItem, onDismiss: nil){ item in
-                            NavigationStack{
-                                ItemPersonView(item: item)
-                                    .toolbar{
-                                        ToolbarItem(placement: .topBarTrailing){
-                                            Button(action: {
-                                                currentItem = nil
-                                            }){
-                                                Image(systemName: "xmark.circle")
+                                    Spacer()
+                                    Image(systemName: item.isLiked ? "heart.fill" : "")
+                                        .foregroundStyle(Color(K.Colors.red))
+                                        .contentTransition(.symbolEffect(.replace))
+                                        .padding()
+                                        .onTapGesture {
+                                            withAnimation{
+                                                item.isLiked.toggle()
                                             }
                                         }
+                                }
+                                .swipeActions(edge: .trailing) {
+                                    Button(role: .destructive, action: {
+//                                        modelContext.delete(item)
+                                        withAnimation{
+                                            item.isCheked.toggle()
+                                        }
+                                        notify.stopNotifying(type: "birthday", name: item.name)
+                                        lastItem = item
+
+                                    } ) {
+                                        Label("Delete", systemImage: "trash")
                                     }
+                                }
+                                .contextMenu {
+                                    Button{
+                                        withAnimation{
+                                            item.isLiked.toggle()
+                                        }
+                                    } label: {
+                                        Label("Favourite", systemImage: item.isLiked ? "heart.fill" : "heart")
+                                            .accentColor(Color(K.Colors.red))
+                                            .contentTransition(.symbolEffect(.replace))
+
+                                    }
+                                    Button(role: .destructive) {
+//                                        modelContext.delete(item)
+//                                        try? modelContext.save()
+                                        withAnimation{
+                                            item.isCheked.toggle()
+                                        }
+                                        notify.stopNotifying(type: "birthday", name: item.name)
+                                        lastItem = item
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                }
                             }
-                            .accentColor(Color.white)
-                            
+                            .sheet(item: $currentItem, onDismiss: nil){ item in
+                                NavigationStack{
+                                    ItemPersonView(item: item)
+                                        .toolbar{
+                                            ToolbarItem(placement: .topBarTrailing){
+                                                Button(action: {
+                                                    currentItem = nil
+                                                }){
+                                                    Image(systemName: "xmark.circle")
+                                                }
+                                            }
+                                        }
+                                }
+                                .accentColor(Color.white)
+                                
+                            }
                         }
                     }
-                    .onDelete(perform: delete)
+//                    .onDelete(perform: delete)
+                    .onDelete(perform: { indexSet in
+                        withAnimation{
+                            for index in indexSet {
+                                filteredItems[index].isCheked.toggle()
+                                let name = filteredItems[index].name
+                                notify.stopNotifying(type: "birthday", name: name)
+                                lastItem = filteredItems[index]
+                            }
+                        }
+                        
+                    })
+                    .onMove { source, destination in
+                        
+                        let list = filteredItems
+                        var updatedItems = list
+                        updatedItems.move(fromOffsets: source, toOffset: destination)
+                        for (index, item) in updatedItems.enumerated() {
+                            item.orderIndex = index
+                        }
+//                        updatedItems.updateOrderIndices()
+                    }
                     .padding(.horizontal, 0)
                 }
             }
+            .onShake{
+                print("Device shaken!")
+                self.lastItem?.isCheked.toggle()
+                    }
             .toolbar(content: {
                 ToolbarItem(placement: .topBarTrailing, content: {
                     Button(action: {self.showAddPersonView.toggle()}){
@@ -163,7 +239,7 @@ struct ItemView: View {
         }
         .sheet(isPresented: $showAddPersonView){
             NavigationStack{
-                AddPersonView(showAddPersonView: $showAddPersonView, title: itemTitles)
+                AddPersonView(showAddPersonView: $showAddPersonView, title: itemTitles, offset: filteredItems.startIndex)
                     .toolbar{
                         ToolbarItem(placement: .topBarLeading){
                             Button(action: {
@@ -201,14 +277,120 @@ struct ItemView: View {
     private func delete(offsets: IndexSet) {
         withAnimation {
             for index in offsets {
-                modelContext.delete(items[index])
+                modelContext.delete(itemTitles.items[index])
             }
         }
     }
     
-//    func deleteItem(_ item: Items) {
-//        modelContext.delete(item)
-//    }
+    
+    var folder: some View{
+        NavigationStack{
+                FolderTabBar(currentTab: $currentTab)
+                .frame(maxWidth: UIScreen.screenWidth)
+//                    ForEach(filteredNames, id: \.self){ item in
+//                        if !item.isCheked {
+//                            Button(action: {
+//                                currentItem = item
+//                                self.sheetPesonInfo.toggle()
+//                            }){
+//                                HStack{
+//                                    ZStack(alignment: .bottomTrailing){
+//                                        if item.imageData != nil{
+//                                            if let img = item.imageData{
+//                                                Image(uiImage: UIImage(data: img)!)
+//                                                    .resizable()
+//                                                    .aspectRatio(contentMode: .fill)
+//                                                    .frame(width: 40, height: 40)
+//                                                    .cornerRadius(20)
+//                                                    .overlay(
+//                                                        Circle().stroke(.gray.opacity(0.6), lineWidth: 1)
+//                                                    )
+//                                            }
+//                                        }else{
+//                                            ZStack(alignment: .center){
+//                                                Circle()
+//                                                    .foregroundColor(Color(K.Colors.darkGray))
+//                                                    .frame(width: 40, height: 40)
+//                                                Text(viewModel.twoNames(name: item.name))
+//                                                    .textCase(.uppercase)
+//                                                    .foregroundColor(Color.white)
+//                                            }
+//
+//                                        }
+//                                        Circle()
+//                                            .overlay(
+//                                                Circle().stroke(.white, lineWidth: 1)
+//                                            )
+//                                            .frame(width: 15)
+//                                            .foregroundColor(Color(K.Colors.green))
+//                                    }
+//                                    VStack(alignment: .leading, spacing: 3){
+//                                        Text(item.name.capitalized)
+//                                            .padding(.vertical, 3)
+//                                            .fontWeight(.medium)
+//                                            .foregroundStyle(.primary)
+//                                            .font(.system(size: 13))
+//                                        HStack(spacing: 1){
+//                                            Text(item.timestamp, format: .dateTime.month(.wide))
+//                                            Text(item.timestamp, format: .dateTime.day())
+//                                            Text(", \(item.timestamp, format: .dateTime.year()), ")
+//                                            Text(item.timestamp, style: .time)
+//                                        }
+//                                        .font(.system(size: 11))
+//                                        .foregroundStyle(Color(K.Colors.lightGray))
+//                                    }
+//                                }
+//                                .swipeActions(edge: .trailing) {
+//                                    Button(role: .destructive, action: {
+//                                        modelContext.delete(item)
+//                                    } ) {
+//                                        Label("Delete", systemImage: "trash")
+//                                    }
+//                                }
+//                                .contextMenu {
+//                                    Button(role: .destructive) {
+//                                        modelContext.delete(item)
+//                                        try? modelContext.save()
+//                                    } label: {
+//                                        Label("Delete", systemImage: "trash")
+//                                    }
+//                                }
+//
+//                            }
+//                            .sheet(item: $currentItem, onDismiss: nil){ item in
+//                                NavigationStack{
+//                                    ItemPersonView(item: item)
+//                                        .toolbar{
+//                                            ToolbarItem(placement: .topBarTrailing){
+//                                                Button(action: {
+//                                                    currentItem = nil
+//                                                }){
+//                                                    Image(systemName: "xmark.circle")
+//                                                }
+//                                            }
+//                                        }
+//                                }
+//                                .accentColor(Color.white)
+//
+//                            }
+//                        }
+//                    }
+//                    .onDelete(perform: delete)
+//                    .padding(.horizontal, 0)
+            .toolbar(content: {
+                ToolbarItem(placement: .topBarTrailing, content: {
+                    Button(action: {self.showAddPersonView.toggle()}){
+                        Image(systemName: "person.badge.plus")
+                            .foregroundStyle(Color(K.Colors.mainColor))
+                    }
+                })
+                ToolbarItem(placement: .topBarLeading) {
+                    EditButton()
+                }
+            })
+        }
+        .frame(maxWidth: UIScreen.screenWidth, maxHeight: .infinity)
+    }
 }
 
 //#Preview {

@@ -21,7 +21,6 @@ struct ItemPersonView: View {
     @State var showMessageComposeView = false
     @State var phoneError = false
     @State private var offset = CGFloat.zero
-
     var body: some View {
         VStack{
             VStack{
@@ -311,6 +310,7 @@ struct ItemPersonView: View {
             .padding(.horizontal, 15)
             .frame(maxHeight: .infinity)
             Spacer()
+            
         }
     }
     
@@ -550,8 +550,10 @@ struct ItemPersonView: View {
                         }
                         if !item.phone.isEmpty{
                             NavigationLink{
-//                                CameraView(recipients: [item.phone], message: "Let's goo!", item: item)
-                                CameraV()
+                                GeometryReader{ proxy in
+                                    let size = proxy
+                                    CameraView(recipients: [item.phone], message: "Let's goo!", size: size, item: item)
+                                }
                             } label:{
                                 HStack(spacing: 20){
                                     ZStack{

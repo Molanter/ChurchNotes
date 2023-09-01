@@ -10,8 +10,9 @@ import SwiftData
 
 @Model
 final class Items{
-    var name: String
-    var timestamp: Date
+    @Attribute(.unique) var name: String
+    var orderIndex: Int
+    var timestamp = Date.now
     var isCheked: Bool
     var isLiked: Bool
     var notes: String
@@ -20,9 +21,9 @@ final class Items{
     var birthDay: Date?
     var title: String
     var phone: String
+    var isDone: Bool
     
-    init(name: String, isLiked: Bool, isCheked: Bool, notes: String, imageData: Data? = nil, email: String, birthDay: Date?, title: String, phone: String) {
-        self.timestamp = .now
+    init(name: String, isLiked: Bool, isCheked: Bool, notes: String, imageData: Data? = nil, email: String, birthDay: Date?, title: String, phone: String, orderIndex: Int, isDone: Bool) {
         self.name = name
         self.isLiked = isLiked
         self.isCheked = isCheked
@@ -32,6 +33,8 @@ final class Items{
         self.birthDay = birthDay
         self.title = title
         self.phone = phone
+        self.orderIndex = orderIndex
+        self.isDone = isDone
     }
     
     
@@ -46,7 +49,7 @@ final class ItemsTitle{
         self.name = name
         self.timeStamp = timeStamp
     }
-    @Relationship(deleteRule: .cascade) var items: [Items]?
+    @Relationship(deleteRule: .cascade) var items: [Items] = []
 }
 
 @Model

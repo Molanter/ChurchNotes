@@ -7,8 +7,11 @@
 
 import SwiftUI
 import iPhoneNumberField
+import SwiftData
 
 struct AddPersonView: View {
+    @Environment(\.modelContext) private var modelContext
+
     @Binding var showAddPersonView: Bool
     @State var shouldShowImagePicker = false
     @State var name: String = ""
@@ -19,6 +22,16 @@ struct AddPersonView: View {
     @State var image: UIImage?
     @State private var nameIsEmpty = false
     var title: ItemsTitle
+    let notify = NotificationHandler()
+    var offset: Int
+    
+    private var filteredNames: [Items] {
+            return title.items.sorted(by: { $0.orderIndex < $1.orderIndex })
+        }
+    
+    private var filteredItems: [Items] {
+            return filteredNames.sorted(by: { $0.isLiked && !$1.isLiked })
+        }
     
     var body: some View {
         NavigationStack{
@@ -68,6 +81,7 @@ struct AddPersonView: View {
                                 }
                                 HStack{
                                     TextField("Name", text: $name)
+                                        .textContentType(.name)
                                         }
                                 .padding(10)
                                 .overlay(
@@ -89,6 +103,8 @@ struct AddPersonView: View {
                                     TextField("Email", text: $email)
                                         .textInputAutocapitalization(.never)
                                         .disableAutocorrection(true)
+                                        .textContentType(.emailAddress)
+                                        .keyboardType(.emailAddress)
                                         }
                                 .padding(10)
                                 .overlay(
@@ -251,6 +267,11 @@ struct AddPersonView: View {
         }
         
         func addItem() {
+            let modifiedDate = Calendar.current.date(byAdding: .day, value: -1, to: birthDay)!
+
+            let descriptor = FetchDescriptor<ItemsTitle>()
+            let count = (try? modelContext.fetchCount(descriptor)) ?? 0
+            
             withAnimation {
                 if image != nil{
                     guard let imageSelected = image else{
@@ -260,20 +281,38 @@ struct AddPersonView: View {
                         print("Avata is nil")
                         return
                     }
-                    let modifiedDate = Calendar.current.date(byAdding: .day, value: -1, to: birthDay)!
-
-                    let newItem = Items(name: name, isLiked: false, isCheked: false, notes: notes, imageData: imageData, email: email, birthDay: birthDay >= modifiedDate ? nil : birthDay, title: title.name, phone: phoneNumber.count > 5 ? phoneNumber : "")
-                    title.items!.append(newItem)
+                    
+                    
+                    let newItem = Items(name: name, isLiked: false, isCheked: false, notes: notes, imageData: imageData, email: email, birthDay: birthDay >= modifiedDate ? nil : birthDay, title: title.name, phone: phoneNumber.count > 5 ? phoneNumber : "", orderIndex: count, isDone: false)
+                    title.items.append(newItem)
+                    for (index, item) in filteredItems.enumerated() {
+                            item.orderIndex = index
+                        }
+                    notify.sendNotification(
+                        date: birthDay,
+                        type: "birthday",
+                        title: "B-day",
+                        body: "Today is \(name)'s birthday!",
+                        name: name
+                    )
                     email = ""
                     name = ""
                     notes = ""
                     phoneNumber = ""
                     image = nil
                 }else{
-                    let modifiedDate = Calendar.current.date(byAdding: .day, value: -1, to: birthDay)!
-
-                    let newItem = Items(name: name, isLiked: false, isCheked: false, notes: notes, imageData: nil, email: email, birthDay: birthDay >= modifiedDate ? nil : birthDay, title: title.name, phone: phoneNumber.count > 5 ? phoneNumber : "")
-                    title.items!.append(newItem)
+                    let newItem = Items(name: name, isLiked: false, isCheked: false, notes: notes, imageData: nil, email: email, birthDay: birthDay >= modifiedDate ? nil : birthDay, title: title.name, phone: phoneNumber.count > 5 ? phoneNumber : "", orderIndex: count, isDone: false)
+                    title.items.append(newItem)
+                    for (index, item) in filteredItems.enumerated() {
+                            item.orderIndex = index
+                        }
+                    notify.sendNotification(
+                        date: birthDay,
+                        type: "birthday",
+                        title: "B-day",
+                        body: "Today is \(name)'s birthday!",
+                        name: name
+                    )
                     email = ""
                     name = ""
                     notes = ""
@@ -288,3 +327,12 @@ struct AddPersonView: View {
 //#Preview {
 //    AddPersonView()
 //}
+
+
+extension [Items] {
+    func updateOrderIndices() {
+        for (index, item) in enumerated() {
+            item.orderIndex = index
+        }
+    }
+}

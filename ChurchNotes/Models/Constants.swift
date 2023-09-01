@@ -11,6 +11,7 @@ import FirebaseFirestore
 import SwiftUI
 
 struct K{
+    static var tabStyle: Int = 0
     struct Colors{
         var db = Firestore.firestore()
         @AppStorage("mainColor") static var mainColor: String = "blue-purple"

@@ -56,11 +56,11 @@ struct TopBarView: View {
         .sheet(isPresented: $presentSheet){
             NavigationStack{
                 VStack(alignment: .leading, spacing: 20){
-                    Text("Write New Title Name")
+                    Text("Write New Stage Name")
                         .font(.title2)
                         .fontWeight(.medium)
                     HStack{
-                        TextField("New Title Name", text: $title)
+                        TextField("Stage Name", text: $title)
                             .onSubmit {
                                 addItemTitle()
                             }
@@ -166,3 +166,12 @@ struct TopBarItem: View {
         .buttonStyle(.plain)
     }
 }
+
+
+//#Preview {
+//    @State var currentTab: Int = 0
+//
+//    TopBarView(currentTab: $currentTab)
+//        .environmentObject(AppViewModel())
+//        .modelContainer(for: [UserProfile.self, Items.self, ItemsTitle.self])
+//}

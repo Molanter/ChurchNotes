@@ -19,14 +19,18 @@ class NotificationHandler {
         }
     }
     
-    func stopNotifying(type: String){
+    func stopNotifying(type: String, name: String = ""){
         let center = UNUserNotificationCenter.current()
 
 //        center.removeAllPendingNotificationRequests()
-        center.removePendingNotificationRequests(withIdentifiers: [type])
+        if name == ""{
+            center.removePendingNotificationRequests(withIdentifiers: [type])
+        }else{
+            center.removePendingNotificationRequests(withIdentifiers: [name + type])
+        }
     }
     
-    func sendNotification(date: Date, type: String, timeInterval: Double = 10, title: String, body: String) {
+    func sendNotification(date: Date, type: String, timeInterval: Double = 10, title: String, body: String, name: String = "") {
         var trigger: UNNotificationTrigger?
         var type = ""
         // Create a trigger (either from date or time based)
@@ -41,6 +45,10 @@ class NotificationHandler {
             type = "everyDay"
             let dateComponents = Calendar.current.dateComponents([.hour, .minute], from: date)
             trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+        }else if type == "birthday"{
+            type = "birthday"
+            let dateComponents = Calendar.current.dateComponents([.day, .month], from: date)
+            trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
         }
         // Customise the content
         let content = UNMutableNotificationContent()
@@ -49,7 +57,12 @@ class NotificationHandler {
         content.sound = UNNotificationSound.default
         
         // Create the request
-        let request = UNNotificationRequest(identifier: type, content: content, trigger: trigger)
-        UNUserNotificationCenter.current().add(request)
+        if name == ""{
+            let request = UNNotificationRequest(identifier: type, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request)
+        }else{
+            let request = UNNotificationRequest(identifier: name + type, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request)
+        }
     }
 }

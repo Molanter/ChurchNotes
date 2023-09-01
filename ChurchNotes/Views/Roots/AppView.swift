@@ -422,7 +422,7 @@ struct AppView: View {
                                 Divider()
                             }
                             VStack{
-                                NavigationLink(destination: AllPeopleView()){
+                                NavigationLink(destination: SettingsPeopleView()){
                                     HStack(spacing: 15){
                                         Image(systemName: "person.3")
                                             .font(.system(size: 25))
@@ -432,7 +432,7 @@ struct AppView: View {
                                                 .font(.system(size: 15))
                                                 .fontWeight(.semibold)
                                                 .foregroundStyle(.primary)
-                                            Text("New Friend, Invited, Attanded...")
+                                            Text("All people, favourite, deleted...")
                                                 .font(.system(size: 11))
                                                 .foregroundStyle(.secondary)
                                         }

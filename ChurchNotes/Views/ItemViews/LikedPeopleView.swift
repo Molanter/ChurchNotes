@@ -1,14 +1,14 @@
 //
-//  AllPeopleView.swift
+//  LikedPeopleView.swift
 //  ChurchNotes
 //
-//  Created by Edgars Yarmolatiy on 7/19/23.
+//  Created by Edgars Yarmolatiy on 8/30/23.
 //
 
 import SwiftUI
 import SwiftData
 
-struct AllPeopleView: View {
+struct LikedPeopleView: View {
     @Query (sort: \Items.orderIndex, order: .forward) var items: [Items]
     @Query (sort: \ItemsTitle.timeStamp, order: .forward) var itemTitles: [ItemsTitle]
     @State private var searchText = ""
@@ -17,15 +17,11 @@ struct AllPeopleView: View {
     @State private var lastItem: Items?
     @EnvironmentObject var viewModel: AppViewModel
     
-    
-    
-    
-    
     var body: some View {
         NavigationStack{
             List{
                 ForEach(items, id: \.self){ item in
-                    if !item.isCheked{
+                    if item.isLiked && !item.isCheked{
                         Button(action: {
                             currentItem = item
                         }){
@@ -183,10 +179,9 @@ struct AllPeopleView: View {
             .frame(maxHeight: .infinity)
         }
     }
+
 }
 
-//#Preview {
-//    AllPeopleView()
-//        .environmentObject(AppViewModel())
-//        .modelContainer(for: [UserProfile.self, Items.self, ItemsTitle.self])
-//}
+#Preview {
+    LikedPeopleView()
+}
