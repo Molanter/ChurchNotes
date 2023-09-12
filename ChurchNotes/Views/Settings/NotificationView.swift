@@ -80,25 +80,27 @@ struct NotificationView: View {
     
     func fetchDictionary(){
         if let userID = Auth.auth().currentUser?.uid{
-            db.collection("users").document("profiles").collection(userID).getDocuments() { querySnapshot, err in
+            db.collection("users").document(userID).getDocument { querySnapshot, err in
                 if let err = err {
                     print("Error getting documents: \(err)")
                 } else {
-                    for document in querySnapshot!.documents {
+                    if let document = querySnapshot {
                         let dictionary = document.data()
-                        let notifications = dictionary["notifications"] as! Bool
-                        let notificationTime = (dictionary["notificationTime"] as? Timestamp)?.dateValue() ?? Date()
+                        if let dictionary = dictionary{
+                            let notifications = dictionary["notifications"] as! Bool
+                            let notificationTime = (dictionary["notificationTime"] as? Timestamp)?.dateValue() ?? Date()
 
-                        self.notificationTime = notificationTime
-                        self.selectedDate = notificationTime
-                        print(notificationTime.formatted(.dateTime.hour().minute()))
-                        self.notifications = notifications
-                        
-                        self.toggle = self.notifications
-                        if notifications == true{
-                            self.selectedDate = self.notificationTime
-                        }else{
-                            self.notificationTime = Date.now
+                            self.notificationTime = notificationTime
+                            self.selectedDate = notificationTime
+                            print(notificationTime.formatted(.dateTime.hour().minute()))
+                            self.notifications = notifications
+                            
+                            self.toggle = self.notifications
+                            if notifications == true{
+                                self.selectedDate = self.notificationTime
+                            }else{
+                                self.notificationTime = Date.now
+                            }
                         }
                     }
                 }
@@ -118,7 +120,7 @@ struct NotificationView: View {
                 body: "Every day reminding for praying. Take your time.")
             
             if let userID = Auth.auth().currentUser?.uid{
-                let ref = db.collection("users").document("profiles").collection(userID).document(documentId)
+                let ref = db.collection("users").document(userID)
                 ref.updateData(
                     ["notifications": notifications,
                      "notificationTime": notificationTime
@@ -133,7 +135,7 @@ struct NotificationView: View {
             notifications = false
             
             if let userID = Auth.auth().currentUser?.uid{
-                let ref = db.collection("users").document("profiles").collection(userID).document(documentId)
+                let ref = db.collection("users").document(userID)
                 ref.updateData(
                     ["notifications": notifications,
                      "notificationTime": notificationTime

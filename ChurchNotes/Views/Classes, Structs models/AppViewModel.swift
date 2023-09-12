@@ -139,7 +139,7 @@ class AppViewModel: ObservableObject{
                             "phoneNumber": phone,
                             "status": ""
                         ]
-                                self!.db.collection("users").document("profiles").collection(uid).document().setData(dictionary) { err in
+                                self!.db.collection("users").document(uid).setData(dictionary) { err in
                                     if let err = err {
                                         print("Error writing document: \(err.localizedDescription)")
                                     } else {
@@ -178,7 +178,7 @@ class AppViewModel: ObservableObject{
                         "phoneNumber": phone,
                         "status": ""
                     ]
-                    let storegeProfileRef = self!.storage.child("users").child("profiles").child(self!.auth.currentUser!.uid)
+                    let storegeProfileRef = self!.storage.child("users").child(self!.auth.currentUser!.uid)
                     let metadata = StorageMetadata()
                     metadata.contentType = "image/jpg"
                     storegeProfileRef.putData(imageData, metadata: metadata, completion: { (storageMetaData, error) in
@@ -199,7 +199,7 @@ class AppViewModel: ObservableObject{
                                 }
                             }
                                 
-                            self!.db.collection("users").document("profiles").collection(uid).document().setData(dictionary) { err in
+                            self!.db.collection("users").document(uid).setData(dictionary) { err in
                                 if let err = err {
                                     print("Error writing document: \(err.localizedDescription)")
                                 } else {
@@ -221,7 +221,7 @@ class AppViewModel: ObservableObject{
     
     func updateProfile(image: UIImage?, name: String, username: String, country: String, phone: String, documentId: String, oldImageLink: String){
         if let userID = auth.currentUser?.uid{
-            let ref = db.collection("users").document("profiles").collection(userID).document(documentId)
+            let ref = db.collection("users").document(userID)
             if image == nil{
                 print("ref:   -\(ref)")
                 ref.updateData(
@@ -237,7 +237,7 @@ class AppViewModel: ObservableObject{
                         }
                     }
             }else{
-                storage.child("users").child("profiles").child(userID).delete { error in
+                storage.child("users").child(userID).delete { error in
                     if let error = error {
                         print("Error while updating profile:  -\(error)")
                     } else {
@@ -251,7 +251,7 @@ class AppViewModel: ObservableObject{
                 guard let imageData = imageSelected.jpegData(compressionQuality: 0.4) else{
                     return
                 }
-                let storegeProfileRef = self.storage.child("users").child("profiles").child(self.auth.currentUser!.uid)
+                let storegeProfileRef = self.storage.child("users").child(self.auth.currentUser!.uid)
                 let metadata = StorageMetadata()
                 metadata.contentType = "image/jpg"
                 storegeProfileRef.putData(imageData, metadata: metadata, completion: { (storageMetaData, error) in

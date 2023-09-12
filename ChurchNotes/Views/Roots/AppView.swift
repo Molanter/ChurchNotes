@@ -51,7 +51,7 @@ struct AppView: View {
                 } else if (selection == 1) {
                     settings
 //                } else if (selection == 2) {
-//                    CameraView(recipients: ["3235953205"], message: "Let's goo", item: <#Items#>)
+//                    CameraView(recipients: ["3235953205"], message: "Let's goo", item: items)
                 }// else if (selection == 3) {
                 //                            keypadContent()
                 //                        } else if (selection == 4) {
@@ -104,7 +104,6 @@ struct AppView: View {
             .accentColor(accentColor ? Color.white : Color(K.Colors.mainColor))
         
     }
-    
     var update: some View {
         
         NavigationStack{
@@ -649,38 +648,40 @@ struct AppView: View {
     
     func fetchDictionary(){
         if let userID = Auth.auth().currentUser?.uid{
-            db.collection("users").document("profiles").collection(userID).getDocuments() { querySnapshot, err in
+            db.collection("users").document(userID).getDocument { querySnapshot, err in
                 if let err = err {
                     print("Error getting documents: \(err)")
                     showFirebaseError(error: err.localizedDescription)
                 } else {
-                    for document in querySnapshot!.documents {
+                    if let  document = querySnapshot {
                         //                        print("\(document.documentID) => \(document.data())")
                         let dictionary = document.data()
                         
                         //                        print("dictionary:   -\(dictionary)")
-                        let email = dictionary["email"] as! String
-                        let username = dictionary["username"] as! String
-                        let profileImage = dictionary["profileImageUrl"] as! String
-                        let name = dictionary["name"] as! String
-                        let notes = dictionary["notes"] as! String
-                        let phone = dictionary["phoneNumber"] as! String
-                        let country = dictionary["country"] as! String
-                        let notifications = dictionary["notifications"] as! Bool
-                        let notificationTime = (dictionary["notificationTime"] as? Timestamp)?.dateValue() ?? Date()
-                        let timeStamp = (dictionary["timeStamp"] as? Timestamp)?.dateValue() ?? Date()
-                        
-                        self.notes = notes
-                        self.timeStamp = timeStamp
-                        self.notificationTime = notificationTime
-                        self.profileImage = profileImage
-                        self.notifications = notifications
-                        self.name = name
-                        self.email = email
-                        self.username = username
-                        self.phone = phone
-                        self.documentId = document.documentID
-                        self.country = country
+                        if let dictionary = dictionary{
+                            let email = dictionary["email"] as! String
+                            let username = dictionary["username"] as! String
+                            let profileImage = dictionary["profileImageUrl"] as! String
+                            let name = dictionary["name"] as! String
+                            let notes = dictionary["notes"] as! String
+                            let phone = dictionary["phoneNumber"] as! String
+                            let country = dictionary["country"] as! String
+                            let notifications = dictionary["notifications"] as! Bool
+                            let notificationTime = (dictionary["notificationTime"] as? Timestamp)?.dateValue() ?? Date()
+                            let timeStamp = (dictionary["timeStamp"] as? Timestamp)?.dateValue() ?? Date()
+                            
+                            self.notes = notes
+                            self.timeStamp = timeStamp
+                            self.notificationTime = notificationTime
+                            self.profileImage = profileImage
+                            self.notifications = notifications
+                            self.name = name
+                            self.email = email
+                            self.username = username
+                            self.phone = phone
+                            self.documentId = document.documentID
+                            self.country = country
+                        }
                     }
                 }
             }
