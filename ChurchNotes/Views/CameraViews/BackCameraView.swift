@@ -1,8 +1,8 @@
 //
-//  VideoView.swift
+//  BackCameraView.swift
 //  ChurchNotes
 //
-//  Created by Edgars Yarmolatiy on 8/12/23.
+//  Created by Edgars Yarmolatiy on 9/22/23.
 //
 
 import Foundation
@@ -10,7 +10,7 @@ import AVFoundation
 import SwiftUI
 
 
-class CameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecordingDelegate{
+class BackCameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecordingDelegate{
     @Published var isTaken = false
     @Published var session = AVCaptureSession()
     @Published var alert = false
@@ -68,8 +68,7 @@ class CameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecordingDeleg
                         self.session.addOutput (self.output)
                     }
                     self.session.commitConfiguration ()
-                } else if let cameraDevice = AVCaptureDevice.default(.builtInDualCamera,
-                                                               for: .video, position: .front) {
+                } else if let cameraDevice = AVCaptureDevice.default(for: .video)  {
                     let cameraInput = try AVCaptureDeviceInput (device: cameraDevice)
                     let audioDevice = AVCaptureDevice.default(for: .audio)
                     let audioInput = try AVCaptureDeviceInput (device: audioDevice!)
@@ -87,8 +86,7 @@ class CameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecordingDeleg
                     fatalError("Missing expected back camera device.")
                 }
             }else if self.camera == 1{
-                if let cameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera,
-                                                        for: .video, position: .back) {
+                if let cameraDevice = AVCaptureDevice.default(for: .video) {
                     let cameraInput = try AVCaptureDeviceInput (device: cameraDevice)
                     let audioDevice = AVCaptureDevice.default(for: .audio)
                     let audioInput = try AVCaptureDeviceInput (device: audioDevice!)
@@ -226,8 +224,8 @@ class CameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecordingDeleg
     }
 }
 
-struct CameraPreview: UIViewRepresentable {
-    @EnvironmentObject var camera : CameraModel
+struct BackCameraPreview: UIViewRepresentable {
+    @EnvironmentObject var camera : FrontCameraModel
     var size: GeometryProxy
     
     func makeUIView(context: Context) -> UIView {

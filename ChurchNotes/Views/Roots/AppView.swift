@@ -737,7 +737,7 @@ struct CustomTabBarItem: View {
                             .contentTransition(.symbolEffect(.replace))
                 }
             }
-                .onChange(of: selection.wrappedValue) { newValue in
+            .onChange(of: selection.wrappedValue){
                     if settings{
                         withAnimation(.linear(duration: 0.3)){
                             backDegree = 90

@@ -278,21 +278,21 @@ struct SettingsView: View {
 //                            Text("Manualy").tag(1)
 //                        }
 //                        .padding(.horizontal, 15)
-                        .onChange(of: appearance, perform: { value in
-                            if value == 1{
+                        .onChange(of: appearance){
+                            if appearance == 1{
                                 K.Colors.appearance = 1
                                 utilities.overrideDisplayMode()
                                 showColor = true
-                            }else if value == 2{
+                            }else if appearance == 2{
                                 K.Colors.appearance = 2
                                 showColor = true
                                 utilities.overrideDisplayMode()
-                            }else if value == 0{
+                            }else if appearance == 0{
                                 K.Colors.appearance = 0
                                 showColor = false
                                 utilities.overrideDisplayMode()
                             }
-                        })
+                        }
                         .pickerStyle(.segmented)
                         if showColor{
                             HStack{

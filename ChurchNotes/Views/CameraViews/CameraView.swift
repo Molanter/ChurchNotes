@@ -13,41 +13,63 @@ struct CameraView: View {
     var recipients: [String]
     var message: String
     var size: GeometryProxy
+    @State var camera = 0
     @Bindable var item: Items
 
-    @StateObject var cameraModel = CameraModel()
-    
+    @StateObject var frontCameraModel = FrontCameraModel()
+    @StateObject var backCameraModel = BackCameraModel()
+
     
     var body: some View {
         Group{
-            if let url = cameraModel.previewURL, cameraModel.showPreview{
-                FinalPreview(recipients: recipients, message: message, url: url, item: item, showPreview: $cameraModel.showPreview)
+            if let url = frontCameraModel.previewURL, frontCameraModel.showPreview{
+                FinalPreview(recipients: recipients, message: message, url: url, item: item, showPreview: $frontCameraModel.showPreview)
+            }else if let url = backCameraModel.previewURL, backCameraModel.showPreview{
+                FinalPreview(recipients: recipients, message: message, url: url, item: item, showPreview: $backCameraModel.showPreview)
             }else{
                 ZStack(alignment: .bottom){
                     GeometryReader{ proxy in
                         let size = proxy
-                        CameraPreview(size: size)
+                        Group{
+                            if camera == 0{
+                                FrontCameraPreview(size: size)
+                            }else if camera == 1{
+                                BackCameraPreview(size: size)
+                            }
+                        }
                             .background(
                                 Text("Background Text")
                             )
-                            .environmentObject(cameraModel)
-                        
+                            .environmentObject(frontCameraModel)
+                            .environmentObject(backCameraModel)
                         ZStack(alignment: .leading) {
                             Rectangle ()
                                 .fill(.black.opacity (0.25))
                             Rectangle()
                                 .fill(Color(K.Colors.mainColor))
-                                .frame(width: size.size.width * (cameraModel.recordedDuration / cameraModel.maxDuration))
+                                .frame(width: camera == 0 ? (size.size.width * (frontCameraModel.recordedDuration / frontCameraModel.maxDuration)) : (size.size.width * (backCameraModel.recordedDuration / backCameraModel.maxDuration)))
                         }
                         .onReceive(Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()) {_ in
-                            if cameraModel.recordedDuration <= cameraModel.maxDuration && cameraModel.isRecording{
-                                cameraModel.recordedDuration += 0.01
-                            }
-                            
-                            if cameraModel.recordedDuration >= cameraModel.maxDuration && cameraModel.isRecording{
-                                cameraModel.stopRecording()
-                                cameraModel.isRecording = false
-                                cameraModel.recordedDuration = 0
+                            if camera == 0{
+                                if frontCameraModel.recordedDuration <= frontCameraModel.maxDuration && frontCameraModel.isRecording{
+                                    frontCameraModel.recordedDuration += 0.01
+                                }
+                                
+                                if frontCameraModel.recordedDuration >= frontCameraModel.maxDuration && frontCameraModel.isRecording{
+                                    frontCameraModel.stopRecording()
+                                    frontCameraModel.isRecording = false
+                                    frontCameraModel.recordedDuration = 0
+                                }
+                            }else if camera == 1{
+                                if backCameraModel.recordedDuration <= backCameraModel.maxDuration && backCameraModel.isRecording{
+                                    backCameraModel.recordedDuration += 0.01
+                                }
+                                
+                                if backCameraModel.recordedDuration >= backCameraModel.maxDuration && backCameraModel.isRecording{
+                                    backCameraModel.stopRecording()
+                                    backCameraModel.isRecording = false
+                                    backCameraModel.recordedDuration = 0
+                                }
                             }
                         }
                         .frame(height: 8)
@@ -55,13 +77,21 @@ struct CameraView: View {
                     }
                     ZStack{
                         Button(action: {
-                            if cameraModel.isRecording{
-                                cameraModel.stopRecording()
-                            } else{
-                                cameraModel.startRecording()
+                            if camera == 0{
+                                if frontCameraModel.isRecording{
+                                    frontCameraModel.stopRecording()
+                                } else{
+                                    frontCameraModel.startRecording()
+                                }
+                            }else if camera == 1{
+                                if backCameraModel.isRecording{
+                                    backCameraModel.stopRecording()
+                                } else{
+                                    backCameraModel.startRecording()
+                                }
                             }
                         }){
-                            Image(systemName: /*cameraModel.isRecording ? "" : */"video")
+                            Image(systemName: /*frontCameraModel.isRecording ? "" : */"video")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .foregroundStyle(Color(K.Colors.mainColor))
@@ -69,23 +99,32 @@ struct CameraView: View {
                                 .frame(width: 60, height: 60)
                                 .background(
                                     Circle()
-                                        .stroke(cameraModel.isRecording ? .clear : .black)
+                                        .stroke(camera==0 ? (frontCameraModel.isRecording ? .clear : .black) : (backCameraModel.isRecording ? .clear : .black))
                                 )
                                 .padding (6)
                                 .background{
                                     Circle()
-                                        .fill(cameraModel.isRecording ? .red : .white)
+                                        .fill(camera == 0 ? (frontCameraModel.isRecording ? .red : .white) : (backCameraModel.isRecording ? .red : .white))
                                 }
                         }
                         
                         Button(action:  {
-                            if let _ = cameraModel.previewURL{
-                                cameraModel.showPreview.toggle()
+                            if camera == 0{
+                                if let _ = frontCameraModel.previewURL{
+                                    frontCameraModel.showPreview.toggle()
+                                }
+                            }else if camera == 1{
+                                if let _ = backCameraModel.previewURL{
+                                    backCameraModel.showPreview.toggle()
+                                }
                             }
                         }){
                             Group{
-                                if cameraModel.previewURL == nil && cameraModel.recordedURLs.isEmpty{
+                                if camera == 0 && frontCameraModel.previewURL == nil && frontCameraModel.recordedURLs.isEmpty{
                                     // Merging Videos
+                                    ProgressView()
+                                        .tint(.black)
+                                }else if camera == 1 && backCameraModel.previewURL == nil && backCameraModel.recordedURLs.isEmpty{
                                     ProgressView()
                                         .tint(.black)
                                 }else{
@@ -107,18 +146,25 @@ struct CameraView: View {
                         }
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .padding(.trailing)
-                        .opacity ((cameraModel.previewURL == nil && cameraModel.recordedURLs.isEmpty) ||
-                                  cameraModel.isRecording ? 0 : 1)
+                        .opacity (camera == 0 ? ((frontCameraModel.previewURL == nil && frontCameraModel.recordedURLs.isEmpty) ||
+                                                 frontCameraModel.isRecording ? 0 : 1) : ((backCameraModel.previewURL == nil && backCameraModel.recordedURLs.isEmpty) ||
+                                                                                          backCameraModel.isRecording ? 0 : 1))
                     }
                     .frame(maxHeight: .infinity, alignment: .bottom)
                     .padding(.bottom, 10)
                     .padding(.bottom, 30)
                     
-                    if cameraModel.previewURL != nil{
+                    if frontCameraModel.previewURL != nil || backCameraModel.previewURL != nil{
                         Button {
-                            cameraModel.recordedDuration = 0
-                            cameraModel.previewURL = nil
-                            cameraModel.recordedURLs.removeAll()
+                            if camera == 0{
+                                frontCameraModel.recordedDuration = 0
+                                frontCameraModel.previewURL = nil
+                                frontCameraModel.recordedURLs.removeAll()
+                            }else if camera == 1{
+                                backCameraModel.recordedDuration = 0
+                                backCameraModel.previewURL = nil
+                                backCameraModel.recordedURLs.removeAll()
+                            }
                         } label: {
                             Image (systemName: "xmark" )
                                 .font(.title)
@@ -128,14 +174,32 @@ struct CameraView: View {
                         .padding()
                         .padding(.top)
                     }
+                    if frontCameraModel.previewURL == nil || backCameraModel.previewURL == nil{
+                        if frontCameraModel.isRecording == false && backCameraModel.isRecording == false{
+                            Button {
+                                if camera == 0{
+                                    camera = 1
+                                }else if camera == 1{
+                                    camera = 0
+                                }
+                            } label: {
+                                Image (systemName: "arrow.triangle.2.circlepath.camera" )
+                                    .font(.title)
+                                    .foregroundColor(.white)
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                            .padding()
+                            .padding(.top)
+                        }
+                    }
 //                    Button {
-//                        if cameraModel.camera == 1{
-//                            cameraModel.camera = 0
-//                        }else if cameraModel.camera == 0{
-//                            cameraModel.camera = 1
+//                        if frontCameraModel.camera == 1{
+//                            frontCameraModel.camera = 0
+//                        }else if frontCameraModel.camera == 0{
+//                            frontCameraModel.camera = 1
 //                        }
-//                        print(cameraModel.camera)
-//                        cameraModel.setUp()
+//                        print(frontCameraModel.camera)
+//                        frontCameraModel.setUp()
 //                    } label: {
 //                        Image (systemName: "arrow.triangle.2.circlepath.camera" )
 //                            .font(.title)
@@ -148,9 +212,11 @@ struct CameraView: View {
             }
         }
         .onAppear{
-            cameraModel.check()
+            frontCameraModel.check()
+            backCameraModel.check()
         }
-        .animation(.easeInOut, value: cameraModel.showPreview)
+        .animation(.easeInOut, value: frontCameraModel.showPreview)
+        .animation(.easeInOut, value: backCameraModel.showPreview)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

@@ -154,7 +154,7 @@ struct AllPeopleView: View {
                 })
                 .onMove { source, destination in
                     
-                    var list = items
+                    let list = items
                     // Make a copy of the current list of items
                     var updatedItems = list
                     

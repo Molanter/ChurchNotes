@@ -11,13 +11,15 @@
 		9E14D0BF2A8A8C28005E0BC0 /* FinalPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E14D0BE2A8A8C28005E0BC0 /* FinalPreview.swift */; };
 		9E14D0C32A8BF487005E0BC0 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E14D0C22A8BF487005E0BC0 /* NotificationView.swift */; };
 		9E14D0C52A8C20A6005E0BC0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E14D0C42A8C20A6005E0BC0 /* SettingsView.swift */; };
+		9E1E399A2AD4E339006186DD /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1E39992AD4E339006186DD /* Users.swift */; };
+		9E29A4CF2ABDCA1F00BEE019 /* BackCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E29A4CE2ABDCA1F00BEE019 /* BackCameraView.swift */; };
 		9E3CFF1E2A6878EB0087AFD0 /* TopTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF1D2A6878EB0087AFD0 /* TopTabBar.swift */; };
 		9E3CFF212A688E5C0087AFD0 /* CurrentPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF202A688E5C0087AFD0 /* CurrentPersonView.swift */; };
 		9E3CFF242A68981E0087AFD0 /* AllPeopleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF232A68981E0087AFD0 /* AllPeopleView.swift */; };
 		9E44BEFC2A58E09F0059C56C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9E44BEFB2A58E09F0059C56C /* GoogleService-Info.plist */; };
 		9E44BEFE2A5A0D6D0059C56C /* LoginPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E44BEFD2A5A0D6D0059C56C /* LoginPage.swift */; };
 		9E45B8AA2A87CFC1002D9AF1 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E45B8A92A87CFC1002D9AF1 /* CameraView.swift */; };
-		9E45B8AC2A87D2CE002D9AF1 /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E45B8AB2A87D2CE002D9AF1 /* VideoView.swift */; };
+		9E45B8AC2A87D2CE002D9AF1 /* FrontVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E45B8AB2A87D2CE002D9AF1 /* FrontVideoView.swift */; };
 		9E4FD3C42A4C92FB00D46FB8 /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4FD3C32A4C92FB00D46FB8 /* AppView.swift */; };
 		9E563AD32A61A90900F5E52B /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E563AD22A61A90900F5E52B /* ImagePicker.swift */; };
 		9E65DA772A64F017000C87FB /* IndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E65DA762A64F017000C87FB /* IndexView.swift */; };
@@ -58,6 +60,8 @@
 		9E14D0BE2A8A8C28005E0BC0 /* FinalPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalPreview.swift; sourceTree = "<group>"; };
 		9E14D0C22A8BF487005E0BC0 /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		9E14D0C42A8C20A6005E0BC0 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		9E1E39992AD4E339006186DD /* Users.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
+		9E29A4CE2ABDCA1F00BEE019 /* BackCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackCameraView.swift; sourceTree = "<group>"; };
 		9E3521C42A73308000B607D7 /* libswiftDataDetection.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftDataDetection.tbd; path = usr/lib/swift/libswiftDataDetection.tbd; sourceTree = SDKROOT; };
 		9E3CFF1D2A6878EB0087AFD0 /* TopTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopTabBar.swift; sourceTree = "<group>"; };
 		9E3CFF202A688E5C0087AFD0 /* CurrentPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentPersonView.swift; sourceTree = "<group>"; };
@@ -65,7 +69,7 @@
 		9E44BEFB2A58E09F0059C56C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9E44BEFD2A5A0D6D0059C56C /* LoginPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPage.swift; sourceTree = "<group>"; };
 		9E45B8A92A87CFC1002D9AF1 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
-		9E45B8AB2A87D2CE002D9AF1 /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
+		9E45B8AB2A87D2CE002D9AF1 /* FrontVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontVideoView.swift; sourceTree = "<group>"; };
 		9E4FD3C32A4C92FB00D46FB8 /* AppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppView.swift; sourceTree = "<group>"; };
 		9E4FD3C72A4D2C2500D46FB8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		9E563AD22A61A90900F5E52B /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
@@ -136,8 +140,8 @@
 		9E3CFF1F2A688BB70087AFD0 /* ItemViews */ = {
 			isa = PBXGroup;
 			children = (
-				9E6F9E122A4C6C33009B72DC /* ContentView.swift */,
 				9E7282C72A5235D3004D6483 /* ItemView.swift */,
+				9E6F9E122A4C6C33009B72DC /* ContentView.swift */,
 				9E7282E42A57BB6D004D6483 /* ItemPersonView.swift */,
 				9E3CFF232A68981E0087AFD0 /* AllPeopleView.swift */,
 				9EAB02D42A8FBC49005E3719 /* AddPersonView.swift */,
@@ -162,7 +166,8 @@
 			children = (
 				9E14D0BE2A8A8C28005E0BC0 /* FinalPreview.swift */,
 				9E45B8A92A87CFC1002D9AF1 /* CameraView.swift */,
-				9E45B8AB2A87D2CE002D9AF1 /* VideoView.swift */,
+				9E45B8AB2A87D2CE002D9AF1 /* FrontVideoView.swift */,
+				9E29A4CE2ABDCA1F00BEE019 /* BackCameraView.swift */,
 			);
 			path = CameraViews;
 			sourceTree = "<group>";
@@ -226,6 +231,7 @@
 		9E6F9E0D2A4C6B5E009B72DC /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				9E1E39992AD4E339006186DD /* Users.swift */,
 				9E6F9E032A4BC436009B72DC /* Item.swift */,
 				9E6F9E0A2A4BC994009B72DC /* Constants.swift */,
 			);
@@ -453,7 +459,7 @@
 				9E6F9E042A4BC436009B72DC /* Item.swift in Sources */,
 				9E14D0BF2A8A8C28005E0BC0 /* FinalPreview.swift in Sources */,
 				9E65DA772A64F017000C87FB /* IndexView.swift in Sources */,
-				9E45B8AC2A87D2CE002D9AF1 /* VideoView.swift in Sources */,
+				9E45B8AC2A87D2CE002D9AF1 /* FrontVideoView.swift in Sources */,
 				9E4FD3C42A4C92FB00D46FB8 /* AppView.swift in Sources */,
 				9E3CFF242A68981E0087AFD0 /* AllPeopleView.swift in Sources */,
 				9E3CFF1E2A6878EB0087AFD0 /* TopTabBar.swift in Sources */,
@@ -465,9 +471,11 @@
 				9E563AD32A61A90900F5E52B /* ImagePicker.swift in Sources */,
 				9ED71CC22A9F7DCE00613AAD /* ShakeGesture.swift in Sources */,
 				9E91BDAD2A93C4F5007DD52E /* DismissingKeyboard.swift in Sources */,
+				9E1E399A2AD4E339006186DD /* Users.swift in Sources */,
 				9ED71CC42A9FC04600613AAD /* DeletedPeopleView.swift in Sources */,
 				9E3CFF212A688E5C0087AFD0 /* CurrentPersonView.swift in Sources */,
 				9E6F9E0B2A4BC994009B72DC /* Constants.swift in Sources */,
+				9E29A4CF2ABDCA1F00BEE019 /* BackCameraView.swift in Sources */,
 				9ED71CC62A9FC09700613AAD /* LikedPeopleView.swift in Sources */,
 				9ED6F2EE2A5093DE002568DF /* WidgetTaskModel.swift in Sources */,
 				9E14D0C52A8C20A6005E0BC0 /* SettingsView.swift in Sources */,
