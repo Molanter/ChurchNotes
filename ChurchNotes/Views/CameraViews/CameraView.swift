@@ -174,24 +174,24 @@ struct CameraView: View {
                         .padding()
                         .padding(.top)
                     }
-                    if frontCameraModel.previewURL == nil || backCameraModel.previewURL == nil{
-                        if frontCameraModel.isRecording == false && backCameraModel.isRecording == false{
-                            Button {
-                                if camera == 0{
-                                    camera = 1
-                                }else if camera == 1{
-                                    camera = 0
-                                }
-                            } label: {
-                                Image (systemName: "arrow.triangle.2.circlepath.camera" )
-                                    .font(.title)
-                                    .foregroundColor(.white)
-                            }
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                            .padding()
-                            .padding(.top)
-                        }
-                    }
+//                    if frontCameraModel.previewURL == nil || backCameraModel.previewURL == nil{
+//                        if frontCameraModel.isRecording == false && backCameraModel.isRecording == false{
+//                            Button {
+//                                if camera == 0{
+//                                    camera = 1
+//                                }else if camera == 1{
+//                                    camera = 0
+//                                }
+//                            } label: {
+//                                Image (systemName: "arrow.triangle.2.circlepath.camera" )
+//                                    .font(.title)
+//                                    .foregroundColor(.white)
+//                            }
+//                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+//                            .padding()
+//                            .padding(.top)
+//                        }
+//                    }
 //                    Button {
 //                        if frontCameraModel.camera == 1{
 //                            frontCameraModel.camera = 0

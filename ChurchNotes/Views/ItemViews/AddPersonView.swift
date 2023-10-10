@@ -25,6 +25,9 @@ struct AddPersonView: View {
     let notify = NotificationHandler()
     var offset: Int
     
+    @EnvironmentObject var viewModel: AppViewModel
+
+    
     private var filteredNames: [Items] {
             return title.items.sorted(by: { $0.orderIndex < $1.orderIndex })
         }
@@ -271,20 +274,17 @@ struct AddPersonView: View {
 
             let descriptor = FetchDescriptor<ItemsTitle>()
             let count = (try? modelContext.fetchCount(descriptor)) ?? 0
-            
+            print(count)
             withAnimation {
-                if image != nil{
-                    guard let imageSelected = image else{
-                        return
-                    }
-                    guard let imageData = imageSelected.jpegData(compressionQuality: 0.4) else{
-                        print("Avata is nil")
-                        return
-                    }
+                
                     
                     
-                    let newItem = Items(name: name, isLiked: false, isCheked: false, notes: notes, imageData: imageData, email: email, birthDay: birthDay >= modifiedDate ? nil : birthDay, title: title.name, phone: phoneNumber.count > 5 ? phoneNumber : "", orderIndex: count, isDone: false)
-                    title.items.append(newItem)
+//                    let newItem = Items(name: name, isLiked: false, isCheked: false, notes: notes, imageData: imageData, email: email, birthDay: birthDay >= modifiedDate ? nil : birthDay, title: title.name, phone: phoneNumber.count > 5 ? phoneNumber : "", orderIndex: count, isDone: false)
+//                    title.items.append(newItem)
+                    
+                    
+                    viewModel.handleSend(name: name, notes: notes, email: email, title: title.name, phone: phoneNumber, imageData: image, orderIndex: count, isCheked: false, isLiked: false, isDone: false, birthDay: birthDay)
+
                     for (index, item) in filteredItems.enumerated() {
                             item.orderIndex = index
                         }
@@ -295,30 +295,12 @@ struct AddPersonView: View {
                         body: "Today is \(name)'s birthday!",
                         name: name
                     )
+                    
+                    
                     email = ""
                     name = ""
                     notes = ""
                     phoneNumber = ""
-                    image = nil
-                }else{
-                    let newItem = Items(name: name, isLiked: false, isCheked: false, notes: notes, imageData: nil, email: email, birthDay: birthDay >= modifiedDate ? nil : birthDay, title: title.name, phone: phoneNumber.count > 5 ? phoneNumber : "", orderIndex: count, isDone: false)
-                    title.items.append(newItem)
-                    for (index, item) in filteredItems.enumerated() {
-                            item.orderIndex = index
-                        }
-                    notify.sendNotification(
-                        date: birthDay,
-                        type: "birthday",
-                        title: "B-day",
-                        body: "Today is \(name)'s birthday!",
-                        name: name
-                    )
-                    email = ""
-                    name = ""
-                    notes = ""
-                    phoneNumber = ""
-                    image = nil
-                }
                 showAddPersonView = false
             }
         }

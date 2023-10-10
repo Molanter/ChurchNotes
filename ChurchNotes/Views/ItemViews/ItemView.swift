@@ -12,85 +12,11 @@ import FirebaseStorage
 import FirebaseFirestore
 import iPhoneNumberField
 
-struct ChatMessage: Identifiable{
-    var id: String { documentId}
-    let documentId: String
-    let userId, name, notes, email, title, phone, imageData: String
-    let orderIndex: Int
-    let isCheked, isLiked, isDone: Bool
-    let birthDay, timestamp: Date
-    init(documentId: String, data: [String: Any]){
-        self.documentId = documentId
-        self.userId = data["userId"] as? String ?? ""
-        self.name = data["name"] as? String ?? ""
-        self.notes = data["notes"] as? String ?? ""
-        self.email = data["email"] as? String ?? ""
-        self.title = data["title"] as? String ?? ""
-        self.phone = data["phone"] as? String ?? ""
-        self.imageData = data["imageData"] as? String ?? ""
-        self.orderIndex = data["orderIndex"] as? Int ?? 0
-        self.isCheked = data["isCheked"] as? Bool ?? false
-        self.isLiked = data["isLiked"] as? Bool ?? false
-        self.isDone = data["isDone"] as? Bool ?? false
-        self.birthDay = (data["birthDay"] as? Timestamp)?.dateValue() ?? Date()
-        self.timestamp = (data["timestamp"] as? Timestamp)?.dateValue() ?? Date()
-    }
-}
-
-class ChatViewModel: ObservableObject{
-    let db = Firestore.firestore()
-    let auth = Auth.auth()
-    @State var errorMessage = ""
-    @Published var name = ""
-    @Published var notes = ""
-    @Published var email = ""
-    @Published var title = ""
-    @Published var phone = ""
-    @Published var imageData = ""
-    @Published var orderIndex = 0
-    @Published var isCheked = false
-    @Published var isLiked = false
-    @Published var isDone = false
-    @Published var birthDay = Date()
-    @Published var timestamp = Date.now
-
-    @Published var chatMessages = [ChatMessage]()
-    func fetchMessages(){
-        guard let userId = auth.currentUser?.uid else {return}
-        db.collection(userId).addSnapshotListener { querySnapshot, error in
-            if let err = error{
-                self.errorMessage = err.localizedDescription
-            }
-            
-            querySnapshot?.documents.forEach({ queryDocumentSnapshot in
-                let data = queryDocumentSnapshot.data()
-                let docId = queryDocumentSnapshot.documentID
-                let chatMessage = ChatMessage(documentId: docId, data: data)
-                self.chatMessages.append(chatMessage)
-            })
-        }
-    }
-    func handleSend(){
-        guard let userId = auth.currentUser?.uid else {return}
-        let writerDocument = db.collection(userId).document()
-
-        let messageData = ["userId": userId, "name": name, "notes": notes, "email": email, "title": title, "phone": phone, "imageData": imageData, "orderIndex": orderIndex, "isCheked": isCheked, "isLiked": isLiked, "isDone": isDone, "birthDay": birthDay, "timeStamp": timestamp] as [String: Any]
-        writerDocument.setData(messageData){error in
-            if let er = error{
-                self.errorMessage = er.localizedDescription
-            }
-        }
-        
-    }
-}
-
-
 
 struct ItemView: View {
     @Environment(\.modelContext) private var modelContext
     @Query (sort: \ItemsTitle.timeStamp, order: .forward) var titles: [ItemsTitle]
     @Query (sort: \Items.orderIndex, order: .forward) var items: [Items]
-    @EnvironmentObject var vm: ChatViewModel
 
     @EnvironmentObject var viewModel: AppViewModel
     @Query var title: [ItemsTitle]
@@ -285,7 +211,7 @@ struct ItemView: View {
                 }
             }
             .onAppear{
-                vm.fetchMessages()
+                viewModel.fetchMessages()
             }
             .onShake{
                 print("Device shaken!")
