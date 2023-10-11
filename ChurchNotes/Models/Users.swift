@@ -30,7 +30,7 @@ struct Users: Identifiable{
 
 
 
-struct ChatMessage: Identifiable{
+struct Person: Identifiable{
     var id: String { documentId}
     let documentId: String
     let userId, name, notes, email, title, phone, imageData: String

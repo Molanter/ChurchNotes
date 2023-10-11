@@ -16,51 +16,7 @@ import SwiftData
 class AppViewModel: ObservableObject{
 //    var ref: DatabaseReference! = Database.database().reference()
     @State var errorMessage = ""
-    @Published var chatMessages = [ChatMessage]()
-    
-    func fetchMessages(){
-        guard let userId = auth.currentUser?.uid else {return}
-        db.collection(userId).addSnapshotListener { querySnapshot, error in
-            if let err = error{
-                self.errorMessage = err.localizedDescription
-            }
-            
-            querySnapshot?.documents.forEach({ queryDocumentSnapshot in
-                let data = queryDocumentSnapshot.data()
-                let docId = queryDocumentSnapshot.documentID
-                let chatMessage = ChatMessage(documentId: docId, data: data)
-                self.chatMessages.append(chatMessage)
-            })
-        }
-    }
-    func handleSend(name: String, notes: String, email: String, title: String, phone: String, imageData: UIImage?, orderIndex: Int, isCheked: Bool, isLiked: Bool, isDone: Bool, birthDay: Date, timestamp: Date = Date.now){
-        guard let userId = auth.currentUser?.uid else {return}
-        let writerDocument = db.collection(userId).document()
-
-        guard let imageSelected = image else{
-            return
-        }
-        
-        guard let imageData = imageSelected.jpegData(compressionQuality: 0.4) else{
-            return
-        }
-        
-        
-            let personData = ["userId": userId, "name": name, "notes": notes, "email": email, "title": title, "phone": phone, "imageData": imageData, "orderIndex": orderIndex, "isCheked": isCheked, "isLiked": isLiked, "isDone": isDone, "birthDay": birthDay, "timeStamp": timestamp] as [String: Any]
-            writerDocument.setData(personData){error in
-                if let er = error{
-                    self.errorMessage = er.localizedDescription
-                    print("lol msg :   - \(er.localizedDescription)")
-                }else{
-                    print("kaif)")
-                }
-            }
-        
-    }
-
-    
-    
-    
+    @Published var peopleArray = [Person]()
     
     var db = Firestore.firestore()
     var storage = Storage.storage().reference(forURL: "gs://curchnote.appspot.com")
@@ -73,6 +29,81 @@ class AppViewModel: ObservableObject{
     var isSignedIn: Bool{
         return auth.currentUser != nil
     }
+    
+    
+    func fetchMessages(){
+        guard let userId = auth.currentUser?.uid else {return}
+        db.collection(userId).addSnapshotListener { [self] querySnapshot, error in
+            if let err = error{
+                self.errorMessage = err.localizedDescription
+                print("err l:  _ \(err.localizedDescription)")
+            }
+            
+            querySnapshot?.documents.forEach({ queryDocumentSnapshot in
+                let data = queryDocumentSnapshot.data()
+                let docId = queryDocumentSnapshot.documentID
+                let chatMessage = Person(documentId: docId, data: data)
+                self.peopleArray.append(chatMessage)
+            })
+        }
+    }
+    func handleSend(name: String, notes: String, email: String, title: String, phone: String, imageData: UIImage?, orderIndex: Int, isCheked: Bool, isLiked: Bool, isDone: Bool, birthDay: Date, timestamp: Date = Date.now){
+        guard let userId = auth.currentUser?.uid else {return}
+        let writerDocument = db.collection(userId).document()
+
+        let personData = ["userId": userId, "name": name, "notes": notes, "email": email, "title": title, "phone": phone, "imageData": "", "orderIndex": orderIndex, "isCheked": isCheked, "isLiked": isLiked, "isDone": isDone, "birthDay": birthDay, "timeStamp": timestamp] as [String: Any]
+        writerDocument.setData(personData){error in
+            if let er = error{
+                self.errorMessage = er.localizedDescription
+                print("lol msg :   - \(er.localizedDescription)")
+            }else{
+                print("kaif) no img")
+            }
+        }
+        
+        guard let imageSelected = imageData else{return}
+        guard let imageDat = imageSelected.jpegData(compressionQuality: 0.4) else{return}
+        
+        let storegeProfileRef = self.storage.child("people").child(writerDocument.documentID)
+        let metadata = StorageMetadata()
+        metadata.contentType = "image/jpg"
+        storegeProfileRef.putData(imageDat, metadata: metadata, completion: { (storageMetaData, error) in
+            if let error = error{
+                print(error.localizedDescription)
+                self.err = error.localizedDescription
+                return
+            }
+            storegeProfileRef.downloadURL { [self] url, error in
+                if let metaImageUrl = url?.absoluteString{
+                    let ref = db.collection(userId).document(writerDocument.documentID)
+                    if imageData != nil{
+                        ref.updateData(
+                            ["profileImageUrl": metaImageUrl]){error in
+                                if let error = error{
+                                    print("Error while updating profile with image:  -\(error)")
+                                }else{
+                                    print("profile is updated! with image!)")
+                                }
+                            }
+                        
+                    }else{
+                        
+                        
+                    }
+                }
+            }
+        })
+                
+                
+        
+                    
+    }
+
+    
+    
+    
+    
+    
     
     func twoNames(name: String) -> String{
         return String(name.components(separatedBy: " ").compactMap { $0.first }).count >= 3 ? String(String(name.components(separatedBy: " ").compactMap { $0.first }).prefix(2)) : String(name.components(separatedBy: " ").compactMap { $0.first })

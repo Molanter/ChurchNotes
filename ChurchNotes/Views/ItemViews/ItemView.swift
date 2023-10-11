@@ -16,7 +16,6 @@ import iPhoneNumberField
 struct ItemView: View {
     @Environment(\.modelContext) private var modelContext
     @Query (sort: \ItemsTitle.timeStamp, order: .forward) var titles: [ItemsTitle]
-    @Query (sort: \Items.orderIndex, order: .forward) var items: [Items]
 
     @EnvironmentObject var viewModel: AppViewModel
     @Query var title: [ItemsTitle]
@@ -26,9 +25,9 @@ struct ItemView: View {
     @State var finishImage: Data?
     @State var sheetPesonInfo = false
     @State var currentTab: Int = 0
-    @State private var currentItem: Items?
+    @State private var currentItem: Person?
     let notify = NotificationHandler()
-    @State private var lastItem: Items?
+    @State private var lastItem: Person?
    
     
     private var itemTitles: ItemsTitle{
@@ -39,15 +38,18 @@ struct ItemView: View {
             return titles[currentTab]
         }
     }
-    private var filteredNames: [Items] {
+    private var people: [Person] {
+        return viewModel.peopleArray.filter { $0.title.contains(itemTitles.name) }
+    }
+    private var filteredNames: [Person] {
         if searchText.isEmpty {
-            return itemTitles.items.sorted(by: { $0.orderIndex < $1.orderIndex })
+            return people.sorted(by: { $0.orderIndex < $1.orderIndex })
         } else {
-            return itemTitles.items.filter { $0.name.contains(searchText) }
+            return people.filter { $0.name.contains(searchText) }
         }
     }
     
-    private var filteredItems: [Items] {
+    private var filteredItems: [Person] {
         if searchText.isEmpty {
             return filteredNames.sorted(by: { $0.isLiked && !$1.isLiked })
         } else {
@@ -67,7 +69,7 @@ struct ItemView: View {
         NavigationStack{
             List{
                 Section(header: TopBarView(currentTab: self.$currentTab)){
-                    ForEach(filteredItems, id: \.self){ item in
+                    ForEach(filteredItems){ item in
                         if !item.isCheked {
                             Button(action: {
                                 currentItem = item
@@ -77,7 +79,14 @@ struct ItemView: View {
                                     ZStack(alignment: .bottomTrailing){
                                         if item.imageData != nil{
                                             if let img = item.imageData{
-                                                Image(uiImage: UIImage(data: img)!)
+                                                AsyncImage(url: URL(string: img)){image in
+                                                    image.resizable()
+                                                    
+                                                }placeholder: {
+                                                    ProgressView()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .frame(width: 100, height: 100)
+                                                }
                                                     .resizable()
                                                     .aspectRatio(contentMode: .fill)
                                                     .frame(width: 40, height: 40)
