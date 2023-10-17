@@ -120,19 +120,19 @@ struct LikedPeopleView: View {
                             }
                         }
                         .sheet(item: $currentItem, onDismiss: nil){ item in
-                            NavigationStack{
-                                ItemPersonView(item: item)
-                                    .toolbar{
-                                        ToolbarItem(placement: .topBarTrailing){
-                                            Button(action: {
-                                                currentItem = nil
-                                            }){
-                                                Image(systemName: "xmark.circle")
-                                            }
-                                        }
-                                    }
-                            }
-                            .accentColor(Color.white)
+//                            NavigationStack{
+//                                ItemPersonView(item: item)
+//                                    .toolbar{
+//                                        ToolbarItem(placement: .topBarTrailing){
+//                                            Button(action: {
+//                                                currentItem = nil
+//                                            }){
+//                                                Image(systemName: "xmark.circle")
+//                                            }
+//                                        }
+//                                    }
+//                            }
+//                            .accentColor(Color.white)
                             
                         }
                     }

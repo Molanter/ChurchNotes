@@ -26,40 +26,40 @@ struct AllStagesView: View {
             ScrollView(.vertical){
                 VStack(alignment: .leading, spacing: 20){
                     
-                    ForEach(itemTitles){ item in
-                        VStack(alignment: .leading){
-                            NavigationLink(destination: AllPeopleView()){
-                                HStack(spacing: 29){
-                                    ZStack(alignment: .bottomTrailing){
-                                        Image(systemName: "folder")
-                                            .font(.system(size: 29))
-                                            .fontWeight(.light)
-                                        Image(systemName: contains(item.name) ? "gearshape" : "person.fill")
-                                            .foregroundStyle(Color(K.Colors.mainColor))
-                                            .font(.system(size: 19))
-                                            .fontWeight(.medium)
-                                            .offset(x: 6, y: 5)
-
-                                    }
-                                    VStack(alignment: .leading, spacing: 5){
-                                        Text(item.name)
-                                            .fontWeight(.semibold)
-                                            .font(.system(size: 15))
-                                            .foregroundStyle(.primary)
-                                        Text("\(item.items.count) people in stage")
-                                            .font(.system(size: 11))
-                                            .foregroundStyle(.secondary)
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.forward")
-                                        .frame(width: 28)
-                                }
-                                .padding(.horizontal, 25)
-                            }
-                            Divider()
-                        }
-                    }
-                    .accentColor(Color(K.Colors.lightGray))
+//                    ForEach(itemTitles){ item in
+//                        VStack(alignment: .leading){
+//                            NavigationLink(destination: AllPeopleView()){
+//                                HStack(spacing: 29){
+//                                    ZStack(alignment: .bottomTrailing){
+//                                        Image(systemName: "folder")
+//                                            .font(.system(size: 29))
+//                                            .fontWeight(.light)
+//                                        Image(systemName: contains(item.name) ? "gearshape" : "person.fill")
+//                                            .foregroundStyle(Color(K.Colors.mainColor))
+//                                            .font(.system(size: 19))
+//                                            .fontWeight(.medium)
+//                                            .offset(x: 6, y: 5)
+//
+//                                    }
+//                                    VStack(alignment: .leading, spacing: 5){
+//                                        Text(item.name)
+//                                            .fontWeight(.semibold)
+//                                            .font(.system(size: 15))
+//                                            .foregroundStyle(.primary)
+//                                        Text("\(item.items.count) people in stage")
+//                                            .font(.system(size: 11))
+//                                            .foregroundStyle(.secondary)
+//                                    }
+//                                    Spacer()
+//                                    Image(systemName: "chevron.forward")
+//                                        .frame(width: 28)
+//                                }
+//                                .padding(.horizontal, 25)
+//                            }
+//                            Divider()
+//                        }
+//                    }
+//                    .accentColor(Color(K.Colors.lightGray))
                 }
             }
             Button(action: {

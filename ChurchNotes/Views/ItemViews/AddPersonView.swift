@@ -28,13 +28,13 @@ struct AddPersonView: View {
     @EnvironmentObject var viewModel: AppViewModel
 
     
-    private var filteredNames: [Items] {
-            return title.items.sorted(by: { $0.orderIndex < $1.orderIndex })
-        }
-    
-    private var filteredItems: [Items] {
-            return filteredNames.sorted(by: { $0.isLiked && !$1.isLiked })
-        }
+//    private var filteredNames: [Items] {
+//            return title.items.sorted(by: { $0.orderIndex < $1.orderIndex })
+//        }
+//    
+//    private var filteredItems: [Items] {
+//            return filteredNames.sorted(by: { $0.isLiked && !$1.isLiked })
+//        }
     
     var body: some View {
         NavigationStack{
@@ -285,9 +285,9 @@ struct AddPersonView: View {
                     
                     viewModel.handleSend(name: name, notes: notes, email: email, title: title.name, phone: phoneNumber, imageData: image, orderIndex: count, isCheked: false, isLiked: false, isDone: false, birthDay: birthDay)
 
-                    for (index, item) in filteredItems.enumerated() {
-                            item.orderIndex = index
-                        }
+//                    for (index, item) in filteredItems.enumerated() {
+//                            item.orderIndex = index
+//                        }
                     notify.sendNotification(
                         date: birthDay,
                         type: "birthday",

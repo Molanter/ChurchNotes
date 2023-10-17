@@ -12,7 +12,7 @@ import FirebaseFirestore
 struct Users: Identifiable{
     var id: String{uid}
     
-    let uid,email, name, username, notes, country, profileImageUrl, phoneNumber, status: String
+    var uid,email, name, username, notes, country, profileImageUrl, phoneNumber, status: String
     var profileImage: UIImage?
     init(data: [String: Any]){
         self.uid = data["uid"] as? String ?? ""

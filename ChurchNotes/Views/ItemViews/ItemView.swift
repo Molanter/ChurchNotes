@@ -70,16 +70,15 @@ struct ItemView: View {
             List{
                 Section(header: TopBarView(currentTab: self.$currentTab)){
                     ForEach(filteredItems){ item in
-                        if !item.isCheked {
+//                        if !item.isCheked {
                             Button(action: {
                                 currentItem = item
                                 self.sheetPesonInfo.toggle()
                             }){
                                 HStack{
                                     ZStack(alignment: .bottomTrailing){
-                                        if item.imageData != nil{
-                                            if let img = item.imageData{
-                                                AsyncImage(url: URL(string: img)){image in
+                                        if item.imageData != ""{
+                                                AsyncImage(url: URL(string: item.imageData)){image in
                                                     image.resizable()
                                                     
                                                 }placeholder: {
@@ -87,14 +86,12 @@ struct ItemView: View {
                                                         .aspectRatio(contentMode: .fill)
                                                         .frame(width: 100, height: 100)
                                                 }
-                                                    .resizable()
                                                     .aspectRatio(contentMode: .fill)
                                                     .frame(width: 40, height: 40)
                                                     .cornerRadius(20)
                                                     .overlay(
                                                         Circle().stroke(.gray.opacity(0.6), lineWidth: 1)
                                                     )
-                                            }
                                         }else{
                                             ZStack(alignment: .center){
                                                 Circle()
@@ -135,13 +132,12 @@ struct ItemView: View {
                                         .padding()
                                         .onTapGesture {
                                             withAnimation{
-                                                item.isLiked.toggle()
+//                                                item.isLiked.toggle()
                                             }
                                         }
                                 }
                                 .swipeActions(edge: .trailing) {
                                     Button(role: .destructive, action: {
-                                        modelContext.delete(item)
 //                                        withAnimation{
 //                                            item.isCheked.toggle()
 //                                        }
@@ -155,7 +151,7 @@ struct ItemView: View {
                                 .contextMenu {
                                     Button{
                                         withAnimation{
-                                            item.isLiked.toggle()
+//                                            item.isLiked.toggle()
                                         }
                                     } label: {
                                         Label("Favourite", systemImage: item.isLiked ? "heart.fill" : "heart")
@@ -167,7 +163,7 @@ struct ItemView: View {
 //                                        modelContext.delete(item)
 //                                        try? modelContext.save()
                                         withAnimation{
-                                            item.isCheked.toggle()
+//                                            item.isCheked.toggle()
                                         }
                                         notify.stopNotifying(type: "birthday", name: item.name)
                                         lastItem = item
@@ -176,55 +172,52 @@ struct ItemView: View {
                                     }
                                 }
                             }
-                            .sheet(item: $currentItem, onDismiss: nil){ item in
-                                NavigationStack{
-                                    ItemPersonView(item: item)
-                                        .toolbar{
-                                            ToolbarItem(placement: .topBarTrailing){
-                                                Button(action: {
-                                                    currentItem = nil
-                                                }){
-                                                    Image(systemName: "xmark.circle")
-                                                }
-                                            }
-                                        }
-                                }
-                                .accentColor(Color.white)
-                                
-                            }
-                        }
+//                            .sheet(item: $currentItem, onDismiss: nil){ item in
+//                                NavigationStack{
+//                                    ItemPersonView(item: item)
+//                                        .toolbar{
+//                                            ToolbarItem(placement: .topBarTrailing){
+//                                                Button(action: {
+//                                                    currentItem = nil
+//                                                }){
+//                                                    Image(systemName: "xmark.circle")
+//                                                }
+//                                            }
+//                                        }
+//                                }
+//                                .accentColor(Color.white)
+//                                
+//                            }
+//                        }
                     }
 //                    .onDelete(perform: delete)
                     .onDelete(perform: { indexSet in
-                        withAnimation{
-                            for index in indexSet {
-                                filteredItems[index].isCheked.toggle()
-                                let name = filteredItems[index].name
-                                notify.stopNotifying(type: "birthday", name: name)
-                                lastItem = filteredItems[index]
-                            }
-                        }
+//                        withAnimation{
+//                            for index in indexSet {
+//                                filteredItems[index].isCheked.toggle()
+//                                let name = filteredItems[index].name
+//                                notify.stopNotifying(type: "birthday", name: name)
+//                                lastItem = filteredItems[index]
+//                            }
+//                        }
                         
                     })
                     .onMove { source, destination in
                         
-                        let list = filteredItems
-                        var updatedItems = list
-                        updatedItems.move(fromOffsets: source, toOffset: destination)
-                        for (index, item) in updatedItems.enumerated() {
-                            item.orderIndex = index
-                        }
+//                        let list = filteredItems
+//                        var updatedItems = list
+//                        updatedItems.move(fromOffsets: source, toOffset: destination)
+//                        for (index, item) in updatedItems.enumerated() {
+//                            item.orderIndex = index
+//                        }
 //                        updatedItems.updateOrderIndices()
                     }
                     .padding(.horizontal, 0)
                 }
             }
-            .onAppear{
-                viewModel.fetchMessages()
-            }
             .onShake{
                 print("Device shaken!")
-                self.lastItem?.isCheked.toggle()
+//                self.lastItem?.isCheked.toggle()
                     }
             .toolbar(content: {
                 ToolbarItem(placement: .topBarTrailing, content: {
@@ -279,14 +272,6 @@ struct ItemView: View {
         modelContext.insert(newItemTitle)
         newItemTitle = ItemsTitle(name: "Joined Group")
         modelContext.insert(newItemTitle)
-    }
-    
-    private func delete(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(itemTitles.items[index])
-            }
-        }
     }
     
     

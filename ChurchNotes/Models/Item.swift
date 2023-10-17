@@ -49,7 +49,6 @@ final class ItemsTitle{
         self.name = name
         self.timeStamp = timeStamp
     }
-    @Relationship(deleteRule: .cascade) var items: [Items] = []
 }
 
 @Model

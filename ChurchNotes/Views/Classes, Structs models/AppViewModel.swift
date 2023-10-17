@@ -15,7 +15,7 @@ import SwiftData
 
 class AppViewModel: ObservableObject{
 //    var ref: DatabaseReference! = Database.database().reference()
-    @State var errorMessage = ""
+    @Published var errorMessage = ""
     @Published var peopleArray = [Person]()
     
     var db = Firestore.firestore()
@@ -24,7 +24,6 @@ class AppViewModel: ObservableObject{
     @Environment(\.modelContext) private var modelContext
     var err = ""
     @State var profileImage = ""
-    @Query var profile: [UserProfile]
     @Published var signedIn = false
     var isSignedIn: Bool{
         return auth.currentUser != nil
@@ -32,26 +31,28 @@ class AppViewModel: ObservableObject{
     
     
     func fetchMessages(){
+        peopleArray.removeAll()
         guard let userId = auth.currentUser?.uid else {return}
         db.collection(userId).addSnapshotListener { [self] querySnapshot, error in
             if let err = error{
                 self.errorMessage = err.localizedDescription
                 print("err l:  _ \(err.localizedDescription)")
             }
-            
             querySnapshot?.documents.forEach({ queryDocumentSnapshot in
                 let data = queryDocumentSnapshot.data()
                 let docId = queryDocumentSnapshot.documentID
-                let chatMessage = Person(documentId: docId, data: data)
-                self.peopleArray.append(chatMessage)
+                let personModel = Person(documentId: docId, data: data)
+                self.peopleArray.append(personModel)
             })
         }
     }
     func handleSend(name: String, notes: String, email: String, title: String, phone: String, imageData: UIImage?, orderIndex: Int, isCheked: Bool, isLiked: Bool, isDone: Bool, birthDay: Date, timestamp: Date = Date.now){
+        peopleArray.removeAll()
         guard let userId = auth.currentUser?.uid else {return}
         let writerDocument = db.collection(userId).document()
 
         let personData = ["userId": userId, "name": name, "notes": notes, "email": email, "title": title, "phone": phone, "imageData": "", "orderIndex": orderIndex, "isCheked": isCheked, "isLiked": isLiked, "isDone": isDone, "birthDay": birthDay, "timeStamp": timestamp] as [String: Any]
+
         writerDocument.setData(personData){error in
             if let er = error{
                 self.errorMessage = er.localizedDescription
@@ -92,6 +93,8 @@ class AppViewModel: ObservableObject{
                     }
                 }
             }
+            let personModel = Person(documentId: writerDocument.documentID, data: personData)
+
         })
                 
                 

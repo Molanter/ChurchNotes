@@ -16,6 +16,10 @@ struct IndexView: View {
         ZStack{
             if viewModel.signedIn{
                 AppView()
+                    .onAppear{
+                        viewModel.peopleArray.removeAll()
+                        viewModel.fetchMessages()
+                    }
                     .accentColor(Color(K.Colors.mainColor))
                     .environmentObject(networkMonitor)
             }else{

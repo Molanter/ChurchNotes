@@ -38,7 +38,6 @@
 		9E7282D72A574399004D6483 /* WidgetNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7282D62A574399004D6483 /* WidgetNote.swift */; };
 		9E7282D92A57439A004D6483 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E7282D82A57439A004D6483 /* Assets.xcassets */; };
 		9E7282E52A57BB6D004D6483 /* ItemPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7282E42A57BB6D004D6483 /* ItemPersonView.swift */; };
-		9E7FCFDF2A9D1EBD00D390C0 /* FolderTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7FCFDE2A9D1EBD00D390C0 /* FolderTabBar.swift */; };
 		9E91BDAD2A93C4F5007DD52E /* DismissingKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E91BDAC2A93C4F5007DD52E /* DismissingKeyboard.swift */; };
 		9EAB02D52A8FBC49005E3719 /* AddPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EAB02D42A8FBC49005E3719 /* AddPersonView.swift */; };
 		9EAB02D82A8FD46F005E3719 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EAB02D72A8FD46F005E3719 /* NetworkMonitor.swift */; };
@@ -90,7 +89,6 @@
 		9E7282D82A57439A004D6483 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9E7282DA2A57439A004D6483 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9E7282E42A57BB6D004D6483 /* ItemPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemPersonView.swift; sourceTree = "<group>"; };
-		9E7FCFDE2A9D1EBD00D390C0 /* FolderTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderTabBar.swift; sourceTree = "<group>"; };
 		9E91BDAC2A93C4F5007DD52E /* DismissingKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissingKeyboard.swift; sourceTree = "<group>"; };
 		9EA7AB952A508D20004DB3BA /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		9EA7AB972A508D20004DB3BA /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -277,7 +275,6 @@
 				9E14D0BC2A8A7DAC005E0BC0 /* NotificationHandler.swift */,
 				9EAB02D72A8FD46F005E3719 /* NetworkMonitor.swift */,
 				9E91BDAC2A93C4F5007DD52E /* DismissingKeyboard.swift */,
-				9E7FCFDE2A9D1EBD00D390C0 /* FolderTabBar.swift */,
 				9ED71CC12A9F7DCE00613AAD /* ShakeGesture.swift */,
 			);
 			path = "Classes, Structs models";
@@ -448,7 +445,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				9E7282E52A57BB6D004D6483 /* ItemPersonView.swift in Sources */,
-				9E7FCFDF2A9D1EBD00D390C0 /* FolderTabBar.swift in Sources */,
 				9EAB02D82A8FD46F005E3719 /* NetworkMonitor.swift in Sources */,
 				9E14D0BD2A8A7DAC005E0BC0 /* NotificationHandler.swift in Sources */,
 				9E14D0C32A8BF487005E0BC0 /* NotificationView.swift in Sources */,
