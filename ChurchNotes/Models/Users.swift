@@ -33,8 +33,8 @@ struct Users: Identifiable{
 struct Person: Identifiable{
     var id: String { documentId}
     let documentId: String
-    let userId, name, notes, email, title, phone, imageData: String
-    let orderIndex: Int
+    var userId, name, notes, email, title, phone, imageData: String
+    var orderIndex: Int
     let isCheked, isLiked, isDone: Bool
     let birthDay, timestamp: Date
     init(documentId: String, data: [String: Any]){
@@ -50,7 +50,26 @@ struct Person: Identifiable{
         self.isCheked = data["isCheked"] as? Bool ?? false
         self.isLiked = data["isLiked"] as? Bool ?? false
         self.isDone = data["isDone"] as? Bool ?? false
-        self.birthDay = (data["birthDay"] as? Timestamp)?.dateValue() ?? Date()
-        self.timestamp = (data["timestamp"] as? Timestamp)?.dateValue() ?? Date()
+        let bir = data["birthDay"] as? Timestamp ?? Timestamp()
+        self.birthDay = bir.dateValue()
+        let tim = data["timestamp"] as? Timestamp ?? Timestamp()
+        self.timestamp = tim.dateValue()
     }
 }
+
+
+
+struct Stage: Identifiable {
+    var id: String { documentId }
+    let documentId: String
+    let userId, name: String
+    var orderIndex: Int
+    
+    init(documentId: String, data: [String: Any]) {
+        self.documentId = documentId
+        self.userId = data["userId"] as? String ?? ""
+        self.name = data["name"] as? String ?? ""
+        self.orderIndex = data["orderIndex"] as? Int ?? 0
+    }
+}
+

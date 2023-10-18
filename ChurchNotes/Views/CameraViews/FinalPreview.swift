@@ -15,7 +15,7 @@ struct FinalPreview: View{
     var recipients: [String]
     var message: String
     var url: URL
-    @Bindable var item: Items
+    @State var item: Person
 
     @Binding var showPreview: Bool
     

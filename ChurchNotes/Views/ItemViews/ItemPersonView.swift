@@ -10,11 +10,9 @@ import SwiftData
 import iPhoneNumberField
 
 struct ItemPersonView: View {
-    @Bindable var item: Items
+    @State var item: Person
     @State var edit = false
-    @Query (sort: \ItemsTitle.timeStamp, order: .forward) var titles: [ItemsTitle]
     @State var selectedTheme = ""
-    @Environment(\.modelContext) private var modelContext
     @State var shouldShowImagePicker = false
     @State var image: UIImage?
     @EnvironmentObject var viewModel: AppViewModel
@@ -44,13 +42,13 @@ struct ItemPersonView: View {
         }
         .sheet(isPresented: $shouldShowImagePicker) {
             ImagePicker(image: $image)
-                .onDisappear{
-                    if image != nil{
-                        guard let imageSelected = image else{return}
-                        guard let imageData = imageSelected.jpegData(compressionQuality: 0.4) else{return}
-                        item.imageData = imageData
-                    }
-                }
+//                .onDisappear{
+//                    if image != nil{
+//                        guard let imageSelected = image else{return}
+//                        guard let imageData = imageSelected.jpegData(compressionQuality: 0.4) else{return}
+//                        item.imageData = imageData
+//                    }
+//                }
         }
     }
     
@@ -94,12 +92,12 @@ struct ItemPersonView: View {
                                 .fontWeight(.light)
                                 .padding(.bottom)
                         }else{
-                            if let birthDay = item.birthDay{
+                            if item.birthDay != item.timestamp{
                                 HStack(spacing: 1){
-                                    Text(birthDay, format: .dateTime.month(.wide))
-                                    Text(birthDay, format: .dateTime.day())
-                                    Text(", \(birthDay, format: .dateTime.year()), ")
-                                    Text(birthDay, style: .time)
+                                    Text(item.birthDay, format: .dateTime.month(.wide))
+                                    Text(item.birthDay, format: .dateTime.day())
+                                    Text(", \(item.birthDay, format: .dateTime.year()), ")
+                                    Text(item.birthDay, style: .time)
                                 }
                                 .multilineTextAlignment(.center)
                                 .font(.callout)
@@ -114,17 +112,21 @@ struct ItemPersonView: View {
                     Button(action: {
                         self.shouldShowImagePicker.toggle()
                     }){
-                        if item.imageData != nil{
-                            if let img = item.imageData{
-                                Image(uiImage: UIImage(data: img)!)
-                                    .resizable()
+                        if item.imageData != ""{
+                                AsyncImage(url: URL(string: item.imageData)){image in
+                                    image.resizable()
+                                    
+                                }placeholder: {
+                                    ProgressView()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 80, height: 80)
+                                }
                                     .aspectRatio(contentMode: .fill)
                                     .frame(width: 80, height: 80)
                                     .cornerRadius(40)
                                     .overlay(
                                         Circle().stroke(.white, lineWidth: 2)
                                     )
-                            }
                         }else{
                             ZStack(alignment: .center){
                                 Circle()
@@ -268,9 +270,9 @@ struct ItemPersonView: View {
                     HStack(spacing: 20){
                         ZStack(alignment: .center){
                             Button(action: {
-                                modelContext.delete(item)
-                                try? modelContext.save()
-                                
+//sdczvdxbcf vb
+//xdfv f
+//sdfzx
                             }){
                                 Text("Delete")
                                     .foregroundStyle(Color.white)
@@ -280,8 +282,8 @@ struct ItemPersonView: View {
                             .background(Color(K.Colors.pink))
                             .cornerRadius(7)
                             Button(action: {
-                                modelContext.delete(item)
-                                try? modelContext.save()
+//                                modelContext.delete(item)
+//                                try? modelContext.save()
                                 
                             }){
                                 Text(" ")
@@ -357,17 +359,21 @@ struct ItemPersonView: View {
                             .font(.system(size: 15))
                             .padding(.bottom)
                         }
-                        if item.imageData != nil{
-                            if let img = item.imageData{
-                                Image(uiImage: UIImage(data: img)!)
-                                    .resizable()
+                        if item.imageData != ""{
+                                AsyncImage(url: URL(string: item.imageData)){image in
+                                    image.resizable()
+                                    
+                                }placeholder: {
+                                    ProgressView()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 80, height: 80)
+                                }
                                     .aspectRatio(contentMode: .fill)
                                     .frame(width: 80, height: 80)
                                     .cornerRadius(40)
                                     .overlay(
                                         Circle().stroke(.white, lineWidth: 2)
                                     )
-                            }
                         }else{
                             ZStack(alignment: .center){
                                 Circle()
@@ -475,7 +481,7 @@ struct ItemPersonView: View {
                                 }
                                 Divider()
                             }
-                            if let bday = item.birthDay{
+                            if item.birthDay != item.timestamp{
                                 HStack(spacing: 20){
                                     ZStack{
                                         Circle()
@@ -489,9 +495,9 @@ struct ItemPersonView: View {
                                             .fontWeight(.light)
                                     }
                                     HStack(spacing: 1){
-                                        Text(bday, format: .dateTime.month(.twoDigits))
-                                        Text("/\(bday, format: .dateTime.day())/")
-                                        Text(bday, format: .dateTime.year())
+                                        Text(item.birthDay, format: .dateTime.month(.twoDigits))
+                                        Text("/\(item.birthDay, format: .dateTime.day())/")
+                                        Text(item.birthDay, format: .dateTime.year())
                                     }
                                     .font(.title3)
                                     .fontWeight(.light)

@@ -27,5 +27,4 @@ import SwiftData
 //#Preview {
 //    ContentView()
 //        .environmentObject(AppViewModel())
-//        .modelContainer(for: [UserProfile.self, Items.self, ItemsTitle.self])
 //}

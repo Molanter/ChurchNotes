@@ -8,8 +8,16 @@
 import SwiftUI
 
 struct CurrentPersonView: View {
-    @Bindable var user: UserProfile
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    var cristian: Bool
+    var name: String
+    var phone: String
+    var email: String
+    var country: String
+    var notes: String
+    var profileImage: String
+    var username: String
+    var timeStamp: Date
     
     var body: some View {
             VStack{
@@ -27,14 +35,14 @@ struct CurrentPersonView: View {
                                 .frame(width: 557.89917, height: 90)
                         }
                         VStack(alignment: .center){
-                            Text(user.name)
+                            Text(name)
                                 .foregroundColor(.white)
                                 .multilineTextAlignment(.center)
                                 .font(.title2)
                                 .fontWeight(.medium)
                                 .font(.system(size: 24))
-                            if user.email != ""{
-                                Text(user.email)
+                            if email != ""{
+                                Text(email)
                                     .foregroundColor(.white)
                                     .multilineTextAlignment(.center)
                                     .font(.callout)
@@ -42,10 +50,10 @@ struct CurrentPersonView: View {
                                     .padding(.bottom)
                             }else{
                                 HStack(spacing: 1){
-                                    Text(user.timeStamp, format: .dateTime.month(.wide))
-                                    Text(user.timeStamp, format: .dateTime.day())
-                                    Text(", \(user.timeStamp, format: .dateTime.year()), ")
-                                    Text(user.timeStamp, style: .time)
+                                    Text(timeStamp, format: .dateTime.month(.wide))
+                                    Text(timeStamp, format: .dateTime.day())
+                                    Text(", \(timeStamp, format: .dateTime.year()), ")
+                                    Text(timeStamp, style: .time)
                                 }
                                 .multilineTextAlignment(.center)
                                 .font(.callout)
@@ -55,8 +63,8 @@ struct CurrentPersonView: View {
                                 .font(.system(size: 15))
                                 .padding(.bottom)
                             }
-                            if user.profileImage != ""{
-                                AsyncImage(url: URL(string: user.profileImage)){image in
+                            if profileImage != ""{
+                                AsyncImage(url: URL(string: profileImage)){image in
                                     image.resizable()
                                 }placeholder: {
                                     ProgressView()
@@ -74,7 +82,7 @@ struct CurrentPersonView: View {
                                     Circle()
                                         .foregroundColor(Color(K.Colors.darkGray))
                                         .frame(width: 80, height: 80)
-                                    Text(String(user.name.components(separatedBy: " ").compactMap { $0.first }).count >= 3 ? String(String(user.name.components(separatedBy: " ").compactMap { $0.first }).prefix(2)) : String(user.name.components(separatedBy: " ").compactMap { $0.first }))
+                                    Text(String(name.components(separatedBy: " ").compactMap { $0.first }).count >= 3 ? String(String(name.components(separatedBy: " ").compactMap { $0.first }).prefix(2)) : String(name.components(separatedBy: " ").compactMap { $0.first }))
                                         .font(.system(size: 35))
                                         .textCase(.uppercase)
                                         .foregroundColor(Color.white)
@@ -101,7 +109,7 @@ struct CurrentPersonView: View {
                                     .foregroundStyle(Color(K.Colors.mainColor))
                                     .fontWeight(.light)
                             }
-                            Text(user.name.isEmpty ? "Name" : user.name)
+                            Text(name.isEmpty ? "Name" : name)
                                 .font(.title3)
                                 .fontWeight(.light)
                                 .font(.system(size: 20))
@@ -120,9 +128,9 @@ struct CurrentPersonView: View {
                                     .fontWeight(.light)
                             }
                             HStack(spacing: 1){
-                                Text(user.timeStamp, format: .dateTime.month(.twoDigits))
-                                Text("/\(user.timeStamp, format: .dateTime.day())/")
-                                Text(user.timeStamp, format: .dateTime.year())
+                                Text(timeStamp, format: .dateTime.month(.twoDigits))
+                                Text("/\(timeStamp, format: .dateTime.day())/")
+                                Text(timeStamp, format: .dateTime.year())
                             }
                             .font(.title3)
                             .fontWeight(.light)
@@ -141,7 +149,7 @@ struct CurrentPersonView: View {
                                     .foregroundStyle(Color(K.Colors.mainColor))
                                     .fontWeight(.light)
                             }
-                            Text(user.phone.isEmpty ? "Phone" : user.phone)
+                            Text(phone.isEmpty ? "Phone" : phone)
                                 .multilineTextAlignment(.leading)
                                 .lineLimit(10)
                                 .font(.title3)

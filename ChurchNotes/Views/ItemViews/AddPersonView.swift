@@ -10,7 +10,6 @@ import iPhoneNumberField
 import SwiftData
 
 struct AddPersonView: View {
-    @Environment(\.modelContext) private var modelContext
 
     @Binding var showAddPersonView: Bool
     @State var shouldShowImagePicker = false
@@ -21,10 +20,10 @@ struct AddPersonView: View {
     @State var birthDay: Date = Date.now
     @State var image: UIImage?
     @State private var nameIsEmpty = false
-    var title: ItemsTitle
     let notify = NotificationHandler()
     var offset: Int
-    
+    var stageName: String
+    var count: Int
     @EnvironmentObject var viewModel: AppViewModel
 
     
@@ -270,39 +269,39 @@ struct AddPersonView: View {
         }
         
         func addItem() {
-            let modifiedDate = Calendar.current.date(byAdding: .day, value: -1, to: birthDay)!
-
-            let descriptor = FetchDescriptor<ItemsTitle>()
-            let count = (try? modelContext.fetchCount(descriptor)) ?? 0
-            print(count)
-            withAnimation {
-                
-                    
-                    
+//            let modifiedDate = Calendar.current.date(byAdding: .day, value: -1, to: birthDay)!
+//
+//            let descriptor = FetchDescriptor<ItemsTitle>()
+//            let count = (try? modelContext.fetchCount(descriptor)) ?? 0
+//            print(count)
+//            withAnimation {
+//                
+//                    
+//                    
 //                    let newItem = Items(name: name, isLiked: false, isCheked: false, notes: notes, imageData: imageData, email: email, birthDay: birthDay >= modifiedDate ? nil : birthDay, title: title.name, phone: phoneNumber.count > 5 ? phoneNumber : "", orderIndex: count, isDone: false)
 //                    title.items.append(newItem)
-                    
-                    
-                    viewModel.handleSend(name: name, notes: notes, email: email, title: title.name, phone: phoneNumber, imageData: image, orderIndex: count, isCheked: false, isLiked: false, isDone: false, birthDay: birthDay)
-
-//                    for (index, item) in filteredItems.enumerated() {
+//
+//
+                    viewModel.handleSend(name: name, notes: notes, email: email, title: stageName, phone: phoneNumber, imageData: image, orderIndex: count, isCheked: false, isLiked: false, isDone: false, birthDay: birthDay)
+//
+////                    for (index, item) in filteredItems.enumerated() {
 //                            item.orderIndex = index
-//                        }
-                    notify.sendNotification(
-                        date: birthDay,
-                        type: "birthday",
-                        title: "B-day",
-                        body: "Today is \(name)'s birthday!",
-                        name: name
-                    )
-                    
-                    
+////                        }
+//                    notify.sendNotification(
+//                        date: birthDay,
+//                        type: "birthday",
+//                        title: "B-day",
+//                        body: "Today is \(name)'s birthday!",
+//                        name: name
+//                    )
+//                    
+//                    
                     email = ""
                     name = ""
                     notes = ""
                     phoneNumber = ""
                 showAddPersonView = false
-            }
+//            }
         }
 }
 
@@ -311,10 +310,10 @@ struct AddPersonView: View {
 //}
 
 
-extension [Items] {
-    func updateOrderIndices() {
-        for (index, item) in enumerated() {
-            item.orderIndex = index
-        }
-    }
-}
+//extension [Person] {
+//    func updateOrderIndices() {
+//        for (index, item) in enumerated() {
+//            item.orderIndex = index
+//        }
+//    }
+//}

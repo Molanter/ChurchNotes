@@ -11,23 +11,17 @@ import SwiftData
 
 
 struct TopBarView: View {
+    @EnvironmentObject var viewModel: AppViewModel
     @Binding var currentTab: Int
     @Namespace var namespace
-    @Environment(\.modelContext) private var modelContext
-    @Query (sort: \ItemsTitle.timeStamp, order: .forward) var itemTitles: [ItemsTitle]
     @State var presentSheet = false
     @State var title = ""
+    private var itemTitles: [Stage]{
+        return viewModel.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })
+    }
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 0) {
-                if itemTitles.isEmpty{
-                    Button(action: {presentSheet.toggle()}){
-                        Image(systemName: "plus.rectangle.on.folder")
-                    }
-                    .foregroundColor(Color(K.Colors.mainColor))
-                    .padding(.top, 45)
-                    .padding(.bottom, 10)
-                }else{
                     ForEach(Array(zip(
                         self.itemTitles.indices, self.itemTitles)),
                             id: \.0,
@@ -43,15 +37,8 @@ struct TopBarView: View {
                             .padding(.horizontal)
                     }
                     .foregroundColor(Color(K.Colors.mainColor))
-                }
                 
             }
-        }
-        .onAppear{
-            if itemTitles.isEmpty{
-                addFirst()
-            }
-
         }
         .sheet(isPresented: $presentSheet){
             NavigationStack{
@@ -107,27 +94,11 @@ struct TopBarView: View {
         }
         .frame(height: 40)
     }
-    func addFirst(){
-        var newItemTitle = ItemsTitle(name: "New Friend")
-            modelContext.insert(newItemTitle)
-         newItemTitle = ItemsTitle(name: "Invited")
-            modelContext.insert(newItemTitle)
-         newItemTitle = ItemsTitle(name: "Attanded")
-        modelContext.insert(newItemTitle)
-        newItemTitle = ItemsTitle(name: "Baptized")
-       modelContext.insert(newItemTitle)
-        newItemTitle = ItemsTitle(name: "Acepted Christ")
-       modelContext.insert(newItemTitle)
-        newItemTitle = ItemsTitle(name: "Serving")
-       modelContext.insert(newItemTitle)
-        newItemTitle = ItemsTitle(name: "Joined Group")
-       modelContext.insert(newItemTitle)
-    }
     func addItemTitle(){
-        let newItemTitle = ItemsTitle(name: title)
-        modelContext.insert(newItemTitle)
-        title = ""
-        self.presentSheet.toggle()
+//        let newItemTitle = ItemsTitle(name: title)
+//        modelContext.insert(newItemTitle)
+//        title = ""
+//        self.presentSheet.toggle()
     }
 }
 
@@ -173,5 +144,4 @@ struct TopBarItem: View {
 //
 //    TopBarView(currentTab: $currentTab)
 //        .environmentObject(AppViewModel())
-//        .modelContainer(for: [UserProfile.self, Items.self, ItemsTitle.self])
 //}

@@ -354,7 +354,7 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $presentingPreview, content: {
                 NavigationStack{
-                    CurrentPersonView(user: .init(name: name, phoneNumber: phone, email: email, cristian: true, notes: notes, country: country, profileImage: profileImage, username: username, timeStamp: timeStamp))
+                    CurrentPersonView(cristian: true, name: name, phone: phone, email: email, country: country, notes: notes, profileImage: profileImage, username: username, timeStamp: timeStamp)
                         .toolbar{
                             ToolbarItem(placement: .topBarLeading){
                                 Button(role: .destructive, action: {
