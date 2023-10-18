@@ -14,11 +14,7 @@ import iPhoneNumberField
 
 
 struct ItemView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query (sort: \ItemsTitle.timeStamp, order: .forward) var titles: [ItemsTitle]
-
     @EnvironmentObject var viewModel: AppViewModel
-    @Query var title: [ItemsTitle]
     @State var showAddPersonView = false
     @State private var searchText = ""
     @State var presentSheet = false
@@ -26,17 +22,17 @@ struct ItemView: View {
     @State var sheetPesonInfo = false
     @State var currentTab: Int = 0
     @State private var currentItem: Person?
-    let notify = NotificationHandler()
     @State private var lastItem: Person?
+    @State private var isShowingDeleteAlert = false
+    let notify = NotificationHandler()
    
+    private var sortedStages: [Stage]{
+        return viewModel.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })
+    }
     
-    private var itemTitles: ItemsTitle{
-        if title.isEmpty{
-            addFirst()
-            return titles[currentTab]
-        }else{
-            return titles[currentTab]
-        }
+    
+    private var itemTitles: Stage{
+        return sortedStages[currentTab]
     }
     private var people: [Person] {
         return viewModel.peopleArray.filter { $0.title.contains(itemTitles.name) }
@@ -70,7 +66,6 @@ struct ItemView: View {
             List{
                 Section(header: TopBarView(currentTab: self.$currentTab)){
                     ForEach(filteredItems){ item in
-//                        if !item.isCheked {
                             Button(action: {
                                 currentItem = item
                                 self.sheetPesonInfo.toggle()
@@ -132,26 +127,42 @@ struct ItemView: View {
                                         .padding()
                                         .onTapGesture {
                                             withAnimation{
-//                                                item.isLiked.toggle()
+                                                viewModel.likePerson(documentId: item.documentId, isLiked: false)
                                             }
                                         }
                                 }
                                 .swipeActions(edge: .trailing) {
                                     Button(role: .destructive, action: {
-//                                        withAnimation{
-//                                            item.isCheked.toggle()
-//                                        }
-//                                        notify.stopNotifying(type: "birthday", name: item.name)
-//                                        lastItem = item
-
+                                        self.lastItem = item
+                                        self.isShowingDeleteAlert.toggle()
                                     } ) {
                                         Label("Delete", systemImage: "trash")
                                     }
                                 }
+                                .alert("Delete Person", isPresented: Binding(
+                                    get: { self.isShowingDeleteAlert && lastItem != nil },
+                                    set: { newValue in
+                                        if !newValue {
+                                            self.isShowingDeleteAlert = false
+                                        }
+                                    }
+                                )) {
+                                    Button("Cancel", role: .cancel) {}
+                                    Button("Delete", role: .destructive) {
+                                        viewModel.deletePerson(documentId: lastItem?.documentId ?? item.documentId)
+                                        isShowingDeleteAlert = false
+                                    }
+                                } message: {
+                                    Text("Do you really want to delete this person? This action cannot be undone.")
+                                }
                                 .contextMenu {
                                     Button{
                                         withAnimation{
-//                                            item.isLiked.toggle()
+                                            if item.isLiked{
+                                                viewModel.likePerson(documentId: item.documentId, isLiked: false)
+                                            }else{
+                                                viewModel.likePerson(documentId: item.documentId, isLiked: true)
+                                            }
                                         }
                                     } label: {
                                         Label("Favourite", systemImage: item.isLiked ? "heart.fill" : "heart")
@@ -159,59 +170,46 @@ struct ItemView: View {
                                             .contentTransition(.symbolEffect(.replace))
 
                                     }
+                                    Button{
+                                        viewModel.naxtStage(documentId: item.documentId, titleNumber: currentTab)
+                                    } label: {
+                                        Label("Next Stage", systemImage: "arrowshape.bounce.right")
+                                    }
                                     Button(role: .destructive) {
-//                                        modelContext.delete(item)
-//                                        try? modelContext.save()
+                                        self.lastItem = item
                                         withAnimation{
-//                                            item.isCheked.toggle()
+                                            self.isShowingDeleteAlert.toggle()
                                         }
-                                        notify.stopNotifying(type: "birthday", name: item.name)
-                                        lastItem = item
                                     } label: {
                                         Label("Delete", systemImage: "trash")
                                     }
                                 }
                             }
-//                            .sheet(item: $currentItem, onDismiss: nil){ item in
-//                                NavigationStack{
-//                                    ItemPersonView(item: item)
-//                                        .toolbar{
-//                                            ToolbarItem(placement: .topBarTrailing){
-//                                                Button(action: {
-//                                                    currentItem = nil
-//                                                }){
-//                                                    Image(systemName: "xmark.circle")
-//                                                }
-//                                            }
-//                                        }
-//                                }
-//                                .accentColor(Color.white)
-//                                
-//                            }
-//                        }
-                    }
-//                    .onDelete(perform: delete)
+                            .sheet(item: $currentItem, onDismiss: nil){ item in
+                                NavigationStack{
+                                    ItemPersonView(item: item)
+                                        .toolbar{
+                                            ToolbarItem(placement: .topBarTrailing){
+                                                Button(action: {
+                                                    currentItem = nil
+                                                }){
+                                                    Image(systemName: "xmark.circle")
+                                                }
+                                            }
+                                        }
+                                }
+                                .accentColor(Color.white)
+                                
+                            }
+                        }
                     .onDelete(perform: { indexSet in
-//                        withAnimation{
-//                            for index in indexSet {
-//                                filteredItems[index].isCheked.toggle()
-//                                let name = filteredItems[index].name
-//                                notify.stopNotifying(type: "birthday", name: name)
-//                                lastItem = filteredItems[index]
-//                            }
-//                        }
-                        
+                        if let firstIndex = indexSet.first {
+                            let itemToDelete = filteredItems[firstIndex]
+                            // Now you can access the documentId of the itemToDelete
+                            self.lastItem = itemToDelete
+                            self.isShowingDeleteAlert.toggle()
+                        }
                     })
-                    .onMove { source, destination in
-                        
-//                        let list = filteredItems
-//                        var updatedItems = list
-//                        updatedItems.move(fromOffsets: source, toOffset: destination)
-//                        for (index, item) in updatedItems.enumerated() {
-//                            item.orderIndex = index
-//                        }
-//                        updatedItems.updateOrderIndices()
-                    }
                     .padding(.horizontal, 0)
                 }
             }
@@ -237,9 +235,12 @@ struct ItemView: View {
             .tabViewStyle(.page(indexDisplayMode: .never))
         }
         
+        
+        
+
         .sheet(isPresented: $showAddPersonView){
             NavigationStack{
-                AddPersonView(showAddPersonView: $showAddPersonView, title: itemTitles, offset: filteredItems.startIndex)
+                AddPersonView(showAddPersonView: $showAddPersonView, offset: filteredItems.startIndex, stageName: itemTitles.name, count: filteredItems.count)
                     .toolbar{
                         ToolbarItem(placement: .topBarLeading){
                             Button(action: {
@@ -252,26 +253,9 @@ struct ItemView: View {
             }
             .accentColor(Color(K.Colors.mainColor))
             .edgesIgnoringSafeArea(.bottom)
-            .presentationDetents([.medium, .large])
+            .presentationDetents([.large])
         }
         .frame(maxHeight: .infinity)
-    }
-    
-    func addFirst(){
-        var newItemTitle = ItemsTitle(name: "New Friend")
-        modelContext.insert(newItemTitle)
-        newItemTitle = ItemsTitle(name: "Invited")
-        modelContext.insert(newItemTitle)
-        newItemTitle = ItemsTitle(name: "Attanded")
-        modelContext.insert(newItemTitle)
-        newItemTitle = ItemsTitle(name: "Baptized")
-        modelContext.insert(newItemTitle)
-        newItemTitle = ItemsTitle(name: "Acepted Christ")
-        modelContext.insert(newItemTitle)
-        newItemTitle = ItemsTitle(name: "Serving")
-        modelContext.insert(newItemTitle)
-        newItemTitle = ItemsTitle(name: "Joined Group")
-        modelContext.insert(newItemTitle)
     }
     
     
@@ -280,7 +264,6 @@ struct ItemView: View {
 //#Preview {
 //    @Query var itemTitles: [ItemsTitle]
 //    ItemView()
-//    .modelContainer(for: [UserProfile.self, Items.self, ItemsTitle.self])
 //
 //}
 

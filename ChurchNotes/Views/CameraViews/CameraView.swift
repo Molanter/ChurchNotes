@@ -14,7 +14,7 @@ struct CameraView: View {
     var message: String
     var size: GeometryProxy
     @State var camera = 0
-    @Bindable var item: Items
+    var item: Person
 
     @StateObject var frontCameraModel = FrontCameraModel()
     @StateObject var backCameraModel = BackCameraModel()

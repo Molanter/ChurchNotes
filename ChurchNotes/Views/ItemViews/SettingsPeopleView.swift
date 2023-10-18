@@ -9,19 +9,17 @@ import SwiftUI
 import SwiftData
 
 struct SettingsPeopleView: View {
-    @Query (sort: \Items.orderIndex, order: .forward) var items: [Items]
-    @Query (sort: \ItemsTitle.timeStamp, order: .forward) var itemTitles: [ItemsTitle]
     @State private var searchText = ""
-    @State private var currentItem: Items?
+    @State private var currentItem: Person?
     let notify = NotificationHandler()
-    @State private var lastItem: Items?
+    @State private var lastItem: Person?
     @EnvironmentObject var viewModel: AppViewModel
     
     var body: some View{
         ScrollView(.vertical){
             VStack(alignment: .leading, spacing: 20){
                 VStack(alignment: .leading){
-                    NavigationLink(destination: AllStagesView()){
+                    NavigationLink(destination: Text("")){
                         HStack(spacing: 29){
                             Image(systemName: "folder")
                                 .font(.system(size: 29))
@@ -44,7 +42,7 @@ struct SettingsPeopleView: View {
                     Divider()
                 }
                 VStack(alignment: .leading){
-                    NavigationLink(destination: AllPeopleView()){
+                    NavigationLink(destination: Text("")){
                         HStack(spacing: 29){
                             Image(systemName: "person.2")
                                 .font(.system(size: 29))
@@ -67,7 +65,7 @@ struct SettingsPeopleView: View {
                     Divider()
                 }
                 VStack{
-                    NavigationLink(destination: LikedPeopleView()){
+                    NavigationLink(destination: Text("")){
                         HStack(spacing: 29){
                             ZStack(alignment: .bottomTrailing){
                                 Image(systemName: "person")
@@ -97,7 +95,7 @@ struct SettingsPeopleView: View {
                     Divider()
                 }
                 VStack{
-                    NavigationLink(destination: DeletedPeopleView()){
+                    NavigationLink(destination: Text("")){
                         HStack(spacing: 29){
                             ZStack(alignment: .bottomTrailing){
                                 Image(systemName: "person")

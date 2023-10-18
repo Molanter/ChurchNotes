@@ -38,7 +38,7 @@ struct AppView: View {
     @State var firebaseErr = ""
     var db = Firestore.firestore()
     var auth = Auth.auth()
-    @State private var selection: Int = 0 // 1
+    @State private var selection: Int = 0
     
     @EnvironmentObject var viewModel: AppViewModel
     @EnvironmentObject var networkMonitor: NetworkMonitor
@@ -398,7 +398,7 @@ struct AppView: View {
                         .padding(.horizontal, 25)
                         VStack(alignment: .leading, spacing: 20){
                             VStack{
-                                NavigationLink(destination: CurrentPersonView(user: .init(name: name, phoneNumber: phone, email: email, cristian: cristian, notes: notes, country: country, profileImage: profileImage, username: username, timeStamp: Date.now))        .accentColor(Color(K.Colors.darkGray))){
+                                NavigationLink(destination: CurrentPersonView(cristian: cristian, name: name, phone: phone, email: email, country: country, notes: notes, profileImage: profileImage, username: username, timeStamp: timeStamp)        .accentColor(Color(K.Colors.darkGray))){
                                     HStack(spacing: 29){
                                         Image(systemName: "person")
                                             .font(.system(size: 29))
@@ -629,22 +629,6 @@ struct AppView: View {
         
     }
     
-    func addFirst(){
-        var newItemTitle = ItemsTitle(name: "New Friend")
-        modelContext.insert(newItemTitle)
-        newItemTitle = ItemsTitle(name: "Invited")
-        modelContext.insert(newItemTitle)
-        newItemTitle = ItemsTitle(name: "Attanded")
-        modelContext.insert(newItemTitle)
-        newItemTitle = ItemsTitle(name: "Baptized")
-        modelContext.insert(newItemTitle)
-        newItemTitle = ItemsTitle(name: "Acepted Christ")
-        modelContext.insert(newItemTitle)
-        newItemTitle = ItemsTitle(name: "Serving")
-        modelContext.insert(newItemTitle)
-        newItemTitle = ItemsTitle(name: "Joined Group")
-        modelContext.insert(newItemTitle)
-    }
     
     func fetchDictionary(){
         if let userID = Auth.auth().currentUser?.uid{
@@ -704,7 +688,6 @@ struct AppView: View {
 
 #Preview {
     AppView()
-        .modelContainer(for: [UserProfile.self, Items.self, ItemsTitle.self])
 }
 
 

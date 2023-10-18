@@ -18,7 +18,9 @@ struct IndexView: View {
                 AppView()
                     .onAppear{
                         viewModel.peopleArray.removeAll()
-                        viewModel.fetchMessages()
+                        viewModel.stagesArray.removeAll()
+                        viewModel.fetchStages()
+                        viewModel.fetchPeople()
                     }
                     .accentColor(Color(K.Colors.mainColor))
                     .environmentObject(networkMonitor)

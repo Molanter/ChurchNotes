@@ -15,7 +15,6 @@
 		9E29A4CF2ABDCA1F00BEE019 /* BackCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E29A4CE2ABDCA1F00BEE019 /* BackCameraView.swift */; };
 		9E3CFF1E2A6878EB0087AFD0 /* TopTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF1D2A6878EB0087AFD0 /* TopTabBar.swift */; };
 		9E3CFF212A688E5C0087AFD0 /* CurrentPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF202A688E5C0087AFD0 /* CurrentPersonView.swift */; };
-		9E3CFF242A68981E0087AFD0 /* AllPeopleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF232A68981E0087AFD0 /* AllPeopleView.swift */; };
 		9E44BEFC2A58E09F0059C56C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9E44BEFB2A58E09F0059C56C /* GoogleService-Info.plist */; };
 		9E44BEFE2A5A0D6D0059C56C /* LoginPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E44BEFD2A5A0D6D0059C56C /* LoginPage.swift */; };
 		9E45B8AA2A87CFC1002D9AF1 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E45B8A92A87CFC1002D9AF1 /* CameraView.swift */; };
@@ -28,7 +27,6 @@
 		9E6F9DFB2A4BC435009B72DC /* ChurchNotesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6F9DFA2A4BC435009B72DC /* ChurchNotesApp.swift */; };
 		9E6F9DFF2A4BC436009B72DC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E6F9DFE2A4BC436009B72DC /* Assets.xcassets */; };
 		9E6F9E022A4BC436009B72DC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E6F9E012A4BC436009B72DC /* Preview Assets.xcassets */; };
-		9E6F9E042A4BC436009B72DC /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6F9E032A4BC436009B72DC /* Item.swift */; };
 		9E6F9E0B2A4BC994009B72DC /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6F9E0A2A4BC994009B72DC /* Constants.swift */; };
 		9E6F9E132A4C6C33009B72DC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6F9E122A4C6C33009B72DC /* ContentView.swift */; };
 		9E7282C82A5235D3004D6483 /* ItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7282C72A5235D3004D6483 /* ItemView.swift */; };
@@ -44,10 +42,7 @@
 		9EC618AC2A82899D00CB3E5C /* SwiftData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EE4A03E2A81D51700C7179F /* SwiftData.framework */; };
 		9ED6F2EE2A5093DE002568DF /* WidgetTaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ED6F2ED2A5093DE002568DF /* WidgetTaskModel.swift */; };
 		9ED71CC22A9F7DCE00613AAD /* ShakeGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ED71CC12A9F7DCE00613AAD /* ShakeGesture.swift */; };
-		9ED71CC42A9FC04600613AAD /* DeletedPeopleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ED71CC32A9FC04600613AAD /* DeletedPeopleView.swift */; };
-		9ED71CC62A9FC09700613AAD /* LikedPeopleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ED71CC52A9FC09700613AAD /* LikedPeopleView.swift */; };
 		9ED71CC82A9FC0ED00613AAD /* SettingsPeopleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ED71CC72A9FC0ED00613AAD /* SettingsPeopleView.swift */; };
-		9ED71CCA2A9FC18100613AAD /* AllStagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ED71CC92A9FC18100613AAD /* AllStagesView.swift */; };
 		E144702C1C07938D3169463A /* Pods_ChurchNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 359489A0CB187CF1DD7C3238 /* Pods_ChurchNotes.framework */; };
 /* End PBXBuildFile section */
 
@@ -64,7 +59,6 @@
 		9E3521C42A73308000B607D7 /* libswiftDataDetection.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftDataDetection.tbd; path = usr/lib/swift/libswiftDataDetection.tbd; sourceTree = SDKROOT; };
 		9E3CFF1D2A6878EB0087AFD0 /* TopTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopTabBar.swift; sourceTree = "<group>"; };
 		9E3CFF202A688E5C0087AFD0 /* CurrentPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentPersonView.swift; sourceTree = "<group>"; };
-		9E3CFF232A68981E0087AFD0 /* AllPeopleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllPeopleView.swift; sourceTree = "<group>"; };
 		9E44BEFB2A58E09F0059C56C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9E44BEFD2A5A0D6D0059C56C /* LoginPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPage.swift; sourceTree = "<group>"; };
 		9E45B8A92A87CFC1002D9AF1 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
@@ -79,7 +73,6 @@
 		9E6F9DFA2A4BC435009B72DC /* ChurchNotesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChurchNotesApp.swift; sourceTree = "<group>"; };
 		9E6F9DFE2A4BC436009B72DC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9E6F9E012A4BC436009B72DC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		9E6F9E032A4BC436009B72DC /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		9E6F9E0A2A4BC994009B72DC /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		9E6F9E122A4C6C33009B72DC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9E7282C72A5235D3004D6483 /* ItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemView.swift; sourceTree = "<group>"; };
@@ -96,10 +89,7 @@
 		9EAB02D72A8FD46F005E3719 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		9ED6F2ED2A5093DE002568DF /* WidgetTaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTaskModel.swift; sourceTree = "<group>"; };
 		9ED71CC12A9F7DCE00613AAD /* ShakeGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShakeGesture.swift; sourceTree = "<group>"; };
-		9ED71CC32A9FC04600613AAD /* DeletedPeopleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeletedPeopleView.swift; sourceTree = "<group>"; };
-		9ED71CC52A9FC09700613AAD /* LikedPeopleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedPeopleView.swift; sourceTree = "<group>"; };
 		9ED71CC72A9FC0ED00613AAD /* SettingsPeopleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsPeopleView.swift; sourceTree = "<group>"; };
-		9ED71CC92A9FC18100613AAD /* AllStagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllStagesView.swift; sourceTree = "<group>"; };
 		9EE4A03E2A81D51700C7179F /* SwiftData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftData.framework; path = System/Library/Frameworks/SwiftData.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -141,12 +131,8 @@
 				9E7282C72A5235D3004D6483 /* ItemView.swift */,
 				9E6F9E122A4C6C33009B72DC /* ContentView.swift */,
 				9E7282E42A57BB6D004D6483 /* ItemPersonView.swift */,
-				9E3CFF232A68981E0087AFD0 /* AllPeopleView.swift */,
 				9EAB02D42A8FBC49005E3719 /* AddPersonView.swift */,
-				9ED71CC32A9FC04600613AAD /* DeletedPeopleView.swift */,
-				9ED71CC52A9FC09700613AAD /* LikedPeopleView.swift */,
 				9ED71CC72A9FC0ED00613AAD /* SettingsPeopleView.swift */,
-				9ED71CC92A9FC18100613AAD /* AllStagesView.swift */,
 			);
 			path = ItemViews;
 			sourceTree = "<group>";
@@ -230,7 +216,6 @@
 			isa = PBXGroup;
 			children = (
 				9E1E39992AD4E339006186DD /* Users.swift */,
-				9E6F9E032A4BC436009B72DC /* Item.swift */,
 				9E6F9E0A2A4BC994009B72DC /* Constants.swift */,
 			);
 			path = Models;
@@ -450,14 +435,11 @@
 				9E14D0C32A8BF487005E0BC0 /* NotificationView.swift in Sources */,
 				9E44BEFE2A5A0D6D0059C56C /* LoginPage.swift in Sources */,
 				9E65DA792A658965000C87FB /* AppViewModel.swift in Sources */,
-				9ED71CCA2A9FC18100613AAD /* AllStagesView.swift in Sources */,
 				9ED71CC82A9FC0ED00613AAD /* SettingsPeopleView.swift in Sources */,
-				9E6F9E042A4BC436009B72DC /* Item.swift in Sources */,
 				9E14D0BF2A8A8C28005E0BC0 /* FinalPreview.swift in Sources */,
 				9E65DA772A64F017000C87FB /* IndexView.swift in Sources */,
 				9E45B8AC2A87D2CE002D9AF1 /* FrontVideoView.swift in Sources */,
 				9E4FD3C42A4C92FB00D46FB8 /* AppView.swift in Sources */,
-				9E3CFF242A68981E0087AFD0 /* AllPeopleView.swift in Sources */,
 				9E3CFF1E2A6878EB0087AFD0 /* TopTabBar.swift in Sources */,
 				9E7282C82A5235D3004D6483 /* ItemView.swift in Sources */,
 				9EAB02D52A8FBC49005E3719 /* AddPersonView.swift in Sources */,
@@ -468,11 +450,9 @@
 				9ED71CC22A9F7DCE00613AAD /* ShakeGesture.swift in Sources */,
 				9E91BDAD2A93C4F5007DD52E /* DismissingKeyboard.swift in Sources */,
 				9E1E399A2AD4E339006186DD /* Users.swift in Sources */,
-				9ED71CC42A9FC04600613AAD /* DeletedPeopleView.swift in Sources */,
 				9E3CFF212A688E5C0087AFD0 /* CurrentPersonView.swift in Sources */,
 				9E6F9E0B2A4BC994009B72DC /* Constants.swift in Sources */,
 				9E29A4CF2ABDCA1F00BEE019 /* BackCameraView.swift in Sources */,
-				9ED71CC62A9FC09700613AAD /* LikedPeopleView.swift in Sources */,
 				9ED6F2EE2A5093DE002568DF /* WidgetTaskModel.swift in Sources */,
 				9E14D0C52A8C20A6005E0BC0 /* SettingsView.swift in Sources */,
 			);

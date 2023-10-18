@@ -11,8 +11,6 @@ import SwiftData
 struct ChurchDataModel: Identifiable{
     var id: ObjectIdentifier
     
-    @Environment(\.modelContext) var modelContext
-    @Query var items: [ItemsTitle]
     
     
 }
