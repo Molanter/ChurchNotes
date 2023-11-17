@@ -18,11 +18,13 @@ struct AddPersonView: View {
     @State var phoneNumber: String = ""
     @State var notes: String = ""
     @State var birthDay: Date = Date.now
+    @State var timestamp: Date = Date.now
     @State var image: UIImage?
     @State private var nameIsEmpty = false
     let notify = NotificationHandler()
     var offset: Int
     var stageName: String
+    var titleNumber: Int
     var count: Int
     @EnvironmentObject var viewModel: AppViewModel
 
@@ -70,15 +72,14 @@ struct AddPersonView: View {
                             .padding(15)
                         }
                         VStack(alignment: .leading, spacing: 20){
-                            VStack{
+                            VStack(alignment: .leading){
                                 HStack{
                                     Text("Write Person Name")
                                         .font(.title2)
                                         .fontWeight(.medium)
-                                    Spacer()
-                                    Text("(required)")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
+                                    Text("*")
+                                        .font(.title2)
+                                        .foregroundStyle(Color(K.Colors.red))
                                         .fontWeight(.medium)
                                 }
                                 HStack{
@@ -90,17 +91,10 @@ struct AddPersonView: View {
                                     RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.gray), lineWidth: 1)
                                 )
                             }
-                            VStack{
-                                HStack{
+                            VStack(alignment: .leading){
                                     Text("Email")
                                         .font(.title2)
                                         .fontWeight(.medium)
-                                    Spacer()
-                                    Text("(optional)")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
-                                        .fontWeight(.medium)
-                                }
                                 HStack{
                                     TextField("Email", text: $email)
                                         .textInputAutocapitalization(.never)
@@ -114,16 +108,9 @@ struct AddPersonView: View {
                                 )
                             }
                             VStack(alignment: .leading, spacing: 20){
-                                HStack{
                                     Text("Phone")
                                         .font(.title2)
                                         .fontWeight(.medium)
-                                    Spacer()
-                                    Text("(optional)")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
-                                        .fontWeight(.medium)
-                                }
                                 HStack(alignment: .center, spacing: 0.0){
                                     ZStack(alignment: .leading){
                                         iPhoneNumberField("Phone Number", text: $phoneNumber)
@@ -147,17 +134,10 @@ struct AddPersonView: View {
                                         .stroke(Color(K.Colors.gray), lineWidth: 1)
                                 )
                             }
-                            VStack{
-                                HStack{
+                            VStack(alignment: .leading){
                                     Text("Notes")
                                         .font(.title2)
                                         .fontWeight(.medium)
-                                    Spacer()
-                                    Text("(optional)")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
-                                        .fontWeight(.medium)
-                                }
                                 HStack{
                                     TextField("Notes", text: $notes)
                                         }
@@ -166,18 +146,11 @@ struct AddPersonView: View {
                                     RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.gray), lineWidth: 1)
                                 )
                             }
-                            VStack{
-                                HStack{
+                            VStack(alignment: .leading){
                                     Text("Birthday")
                                         .font(.title2)
                                         .fontWeight(.medium)
-                                    Spacer()
-                                    Text("(optional)")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
-                                        .fontWeight(.medium)
-                                }
-                                HStack{
+                                    HStack{
                                     Text("Birthday")
 //                                            .foregroundStyle(.secondary.opacity(0.5))
                                     DatePicker(
@@ -269,33 +242,7 @@ struct AddPersonView: View {
         }
         
         func addItem() {
-//            let modifiedDate = Calendar.current.date(byAdding: .day, value: -1, to: birthDay)!
-//
-//            let descriptor = FetchDescriptor<ItemsTitle>()
-//            let count = (try? modelContext.fetchCount(descriptor)) ?? 0
-//            print(count)
-//            withAnimation {
-//                
-//                    
-//                    
-//                    let newItem = Items(name: name, isLiked: false, isCheked: false, notes: notes, imageData: imageData, email: email, birthDay: birthDay >= modifiedDate ? nil : birthDay, title: title.name, phone: phoneNumber.count > 5 ? phoneNumber : "", orderIndex: count, isDone: false)
-//                    title.items.append(newItem)
-//
-//
-                    viewModel.handleSend(name: name, notes: notes, email: email, title: stageName, phone: phoneNumber, imageData: image, orderIndex: count, isCheked: false, isLiked: false, isDone: false, birthDay: birthDay)
-//
-////                    for (index, item) in filteredItems.enumerated() {
-//                            item.orderIndex = index
-////                        }
-//                    notify.sendNotification(
-//                        date: birthDay,
-//                        type: "birthday",
-//                        title: "B-day",
-//                        body: "Today is \(name)'s birthday!",
-//                        name: name
-//                    )
-//                    
-//                    
+            viewModel.handleSend(name: name, notes: notes, email: email, title: stageName, phone: phoneNumber, imageData: image, orderIndex: count, isCheked: false, isLiked: false, isDone: false, birthDay: birthDay, timestamp: timestamp, titleNumber: titleNumber)
                     email = ""
                     name = ""
                     notes = ""

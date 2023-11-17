@@ -34,7 +34,7 @@ struct Person: Identifiable{
     var id: String { documentId}
     let documentId: String
     var userId, name, notes, email, title, phone, imageData: String
-    var orderIndex: Int
+    var orderIndex, titleNumber: Int
     let isCheked, isLiked, isDone: Bool
     let birthDay, timestamp: Date
     init(documentId: String, data: [String: Any]){
@@ -47,12 +47,13 @@ struct Person: Identifiable{
         self.phone = data["phone"] as? String ?? ""
         self.imageData = data["imageData"] as? String ?? ""
         self.orderIndex = data["orderIndex"] as? Int ?? 0
+        self.titleNumber = data["titleNumber"] as? Int ?? 0
         self.isCheked = data["isCheked"] as? Bool ?? false
         self.isLiked = data["isLiked"] as? Bool ?? false
         self.isDone = data["isDone"] as? Bool ?? false
         let bir = data["birthDay"] as? Timestamp ?? Timestamp()
         self.birthDay = bir.dateValue()
-        let tim = data["timestamp"] as? Timestamp ?? Timestamp()
+        let tim = data["timeStamp"] as? Timestamp ?? Timestamp()
         self.timestamp = tim.dateValue()
     }
 }
@@ -62,7 +63,7 @@ struct Person: Identifiable{
 struct Stage: Identifiable {
     var id: String { documentId }
     let documentId: String
-    let userId, name: String
+    let userId, name, createBy: String
     var orderIndex: Int
     
     init(documentId: String, data: [String: Any]) {
@@ -70,6 +71,32 @@ struct Stage: Identifiable {
         self.userId = data["userId"] as? String ?? ""
         self.name = data["name"] as? String ?? ""
         self.orderIndex = data["orderIndex"] as? Int ?? 0
+        self.createBy = data["createBy"] as? String ?? ""
     }
 }
 
+
+struct Notifics: Identifiable {
+    var id: String { documentId }
+    let documentId: String
+    let userId, message: String
+    var date: Date
+    var sunday, monday, tuesday, wednsday, thursday, friday, saturday: Bool
+    var orderIndex: Int
+    
+    init(documentId: String, data: [String: Any]) {
+        self.documentId = documentId
+        self.userId = data["userId"] as? String ?? ""
+        self.message = data["message"] as? String ?? ""
+        let tim = data["date"] as? Timestamp ?? Timestamp()
+        self.date = tim.dateValue()
+        self.sunday = data["sunday"] as? Bool ?? false
+        self.monday = data["monday"] as? Bool ?? false
+        self.tuesday = data["tuesday"] as? Bool ?? false
+        self.wednsday = data["wednsday"] as? Bool ?? false
+        self.thursday = data["thursday"] as? Bool ?? false
+        self.friday = data["friday"] as? Bool ?? false
+        self.saturday = data["saturday"] as? Bool ?? false
+        self.orderIndex = data["orderIndex"] as? Int ?? 0
+    }
+}

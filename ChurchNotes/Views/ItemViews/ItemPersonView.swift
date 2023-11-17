@@ -11,14 +11,21 @@ import iPhoneNumberField
 
 struct ItemPersonView: View {
     @State var item: Person
+    @State var currentTab: Int
     @State var edit = false
-    @State var selectedTheme = ""
+    @State var name = ""
+    @State var email = ""
+    @State var phone = ""
+    @State var notes = ""
     @State var shouldShowImagePicker = false
     @State var image: UIImage?
     @EnvironmentObject var viewModel: AppViewModel
-    @State var showMessageComposeView = false
     @State var phoneError = false
-    @State private var offset = CGFloat.zero
+    @State private var isShowingDeleteAlert = false
+    @State private var editAlert = false
+    
+    @Binding var currentItem: Person?
+    
     var body: some View {
         VStack{
             VStack{
@@ -30,11 +37,35 @@ struct ItemPersonView: View {
             }
             .edgesIgnoringSafeArea(.top)
         }
+        .alert("Save Changes?", isPresented: $editAlert) {
+            Button("No", role: .destructive) {
+                item.name = self.name
+                item.email = self.email
+                item.phone = self.phone
+                item.notes = self.notes
+            }
+            Button("Yes", role: .cancel) {
+                viewModel.editPerson(documentId: item.documentId, name: item.name, email: item.email, phone: item.phone, notes: item.notes, image: image)
+            }
+        } message: {
+            Text("Do you whant to save changes?")
+        }
         .modifier(DismissingKeyboard())
         .toolbar{
-            ToolbarItem(placement: .topBarLeading){
+            ToolbarItem(placement: .topBarTrailing){
                 Button(action: {
-                    self.edit.toggle()
+                    if edit == false{
+                        self.edit = true
+                        self.name = item.name
+                        self.email = item.email
+                        self.phone = item.phone
+                        self.notes = item.notes
+                    }else{
+                        self.edit = false
+                        if self.name != item.name || self.email != item.email || self.phone != item.phone || self.notes != item.notes{
+                            self.editAlert.toggle()
+                        }
+                    }
                 }){
                     Text(edit ? "Done" : "Edit")
                 }
@@ -42,13 +73,6 @@ struct ItemPersonView: View {
         }
         .sheet(isPresented: $shouldShowImagePicker) {
             ImagePicker(image: $image)
-//                .onDisappear{
-//                    if image != nil{
-//                        guard let imageSelected = image else{return}
-//                        guard let imageData = imageSelected.jpegData(compressionQuality: 0.4) else{return}
-//                        item.imageData = imageData
-//                    }
-//                }
         }
     }
     
@@ -113,6 +137,16 @@ struct ItemPersonView: View {
                         self.shouldShowImagePicker.toggle()
                     }){
                         if item.imageData != ""{
+                            if let img = image{
+                                Image(uiImage: img)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 80, height: 80)
+                                    .cornerRadius(40)
+                                    .overlay(
+                                        Circle().stroke(.white, lineWidth: 2)
+                                    )
+                            }else{
                                 AsyncImage(url: URL(string: item.imageData)){image in
                                     image.resizable()
                                     
@@ -121,12 +155,13 @@ struct ItemPersonView: View {
                                         .aspectRatio(contentMode: .fill)
                                         .frame(width: 80, height: 80)
                                 }
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 80, height: 80)
-                                    .cornerRadius(40)
-                                    .overlay(
-                                        Circle().stroke(.white, lineWidth: 2)
-                                    )
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 80, height: 80)
+                                .cornerRadius(40)
+                                .overlay(
+                                    Circle().stroke(.white, lineWidth: 2)
+                                )
+                            }
                         }else{
                             ZStack(alignment: .center){
                                 Circle()
@@ -270,9 +305,7 @@ struct ItemPersonView: View {
                     HStack(spacing: 20){
                         ZStack(alignment: .center){
                             Button(action: {
-//sdczvdxbcf vb
-//xdfv f
-//sdfzx
+                                self.isShowingDeleteAlert.toggle()
                             }){
                                 Text("Delete")
                                     .foregroundStyle(Color.white)
@@ -281,20 +314,9 @@ struct ItemPersonView: View {
                             .frame(maxWidth: .infinity)
                             .background(Color(K.Colors.pink))
                             .cornerRadius(7)
-                            Button(action: {
-//                                modelContext.delete(item)
-//                                try? modelContext.save()
-                                
-                            }){
-                                Text(" ")
-                                    .foregroundStyle(Color.black)
-                                    .padding()
-                            }
-                            .frame(maxWidth: .infinity)
-                            .background(Color.black.opacity(0.25))
-                            .cornerRadius(7)
                         }
                         Button(action: {
+                            viewModel.editPerson(documentId: item.documentId, name: item.name, email: item.email, phone: item.phone, notes: item.notes, image: image)
                             self.edit.toggle()
                         }){
                             Text("Save")
@@ -309,10 +331,23 @@ struct ItemPersonView: View {
                     Spacer()
                 }
             }
+            .onAppear {
+                UIScrollView.appearance().showsVerticalScrollIndicator = false
+                UIScrollView.appearance().showsHorizontalScrollIndicator = false
+            }
             .padding(.horizontal, 15)
             .frame(maxHeight: .infinity)
             Spacer()
             
+        }
+        .alert("Delete Person", isPresented: $isShowingDeleteAlert) {
+            Button("Cancel", role: .cancel) {}
+            Button("Delete", role: .destructive) {
+                viewModel.deletePerson(documentId: item.documentId)
+                isShowingDeleteAlert = false
+            }
+        } message: {
+            Text("Do you really want to delete this person? This action cannot be undone.")
         }
     }
     
@@ -360,6 +395,16 @@ struct ItemPersonView: View {
                             .padding(.bottom)
                         }
                         if item.imageData != ""{
+                            if let img = image{
+                                Image(uiImage: img)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 80, height: 80)
+                                    .cornerRadius(40)
+                                    .overlay(
+                                        Circle().stroke(.white, lineWidth: 2)
+                                    )
+                            }else{
                                 AsyncImage(url: URL(string: item.imageData)){image in
                                     image.resizable()
                                     
@@ -368,12 +413,13 @@ struct ItemPersonView: View {
                                         .aspectRatio(contentMode: .fill)
                                         .frame(width: 80, height: 80)
                                 }
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 80, height: 80)
-                                    .cornerRadius(40)
-                                    .overlay(
-                                        Circle().stroke(.white, lineWidth: 2)
-                                    )
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 80, height: 80)
+                                .cornerRadius(40)
+                                .overlay(
+                                    Circle().stroke(.white, lineWidth: 2)
+                                )
+                            }
                         }else{
                             ZStack(alignment: .center){
                                 Circle()
@@ -505,27 +551,29 @@ struct ItemPersonView: View {
                                 }
                                 Divider()
                             }
-                            VStack(alignment: .leading, spacing: 15){
-                                HStack(spacing: 18){
-                                    ZStack{
-                                        Circle()
-                                            .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
-                                            .frame(width: 40, height: 40)
-                                        Image(systemName: "square.and.pencil")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 20)
-                                            .foregroundStyle(Color(K.Colors.mainColor))
+                            if item.notes != ""{
+                                VStack(alignment: .leading, spacing: 15){
+                                    HStack(spacing: 18){
+                                        ZStack{
+                                            Circle()
+                                                .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
+                                                .frame(width: 40, height: 40)
+                                            Image(systemName: "square.and.pencil")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 20)
+                                                .foregroundStyle(Color(K.Colors.mainColor))
+                                                .fontWeight(.light)
+                                        }
+                                        Text(item.notes)
+                                            .multilineTextAlignment(.leading)
+                                            .lineLimit(10)
+                                            .font(.title3)
                                             .fontWeight(.light)
+                                            .font(.system(size: 18))
                                     }
-                                    Text(item.notes.isEmpty ? "Notes" : item.notes)
-                                        .multilineTextAlignment(.leading)
-                                        .lineLimit(10)
-                                        .font(.title3)
-                                        .fontWeight(.light)
-                                        .font(.system(size: 18))
+                                    Divider()
                                 }
-                                Divider()
                             }
                             VStack(alignment: .leading, spacing: 15){
                                 HStack(spacing: 20){
@@ -586,7 +634,7 @@ struct ItemPersonView: View {
                             }
                         }else{
                             Button{
-                                    phoneIsEmpty()
+                                phoneIsEmpty()
                             } label:{
                                 HStack(spacing: 20){
                                     ZStack{
@@ -614,7 +662,66 @@ struct ItemPersonView: View {
                         }
                         Divider()
                     }
+                    HStack(alignment: .center, spacing: 20){
+                        if item.isDone == false{
+                            if item.title != "New Friend"{
+                                Button(action: {
+                                    viewModel.previousStage(documentId: item.documentId, titleNumber: currentTab)
+                                    self.currentItem = nil
+                                }){
+                                    HStack(alignment: .center){
+                                        Image(systemName: "arrowshape.turn.up.left.fill")
+                                            .foregroundStyle(Color(K.Colors.mainColor))
+                                        Text("Previous")
+                                            .font(.system(size: 20))
+                                            .foregroundStyle(Color(K.Colors.mainColor))
+                                            .padding()
+                                    }
+                                }
+                                .frame(maxWidth: .infinity)
+                                .cornerRadius(7)
+                                .overlay(
+                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
+                                        .stroke(Color(K.Colors.mainColor), lineWidth: 2)
+                                )
+                            }
+                        }
+                        if item.isDone == false{
+                            Button(action: {
+                                if item.title != "Joined Group"{
+                                    viewModel.nextStage(documentId: item.documentId, titleNumber: currentTab)
+                                    self.currentItem = nil
+                                }else{
+                                    viewModel.isDonePerson(documentId: item.documentId, isDone: true)
+                                    self.currentItem = nil
+                                }
+                            }){
+                                HStack(alignment: .center){
+                                    Text(item.title == "Joined Group" ? "Finish" : "Next")
+                                        .font(.system(size: 20))
+                                        .foregroundStyle(Color(K.Colors.mainColor))
+                                        .padding()
+                                    Image(systemName: item.title == "Joined Group" ? "person.fill.checkmark" : "arrowshape.turn.up.right.fill")
+                                        .foregroundStyle(Color(K.Colors.mainColor))
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                            .cornerRadius(7)
+                            .overlay(
+                                RoundedRectangle(cornerSize: .init(width: 7, height: 7))
+                                    .stroke(Color(K.Colors.mainColor), lineWidth: 2)
+                            )
+                        }
+                    }
+                    .padding(.top, 25)
+                    .padding(.horizontal, 5)
+                    .frame(maxWidth: .infinity)
+                    Spacer()
                     
+                }
+                .onAppear {
+                    UIScrollView.appearance().showsVerticalScrollIndicator = false
+                    UIScrollView.appearance().showsHorizontalScrollIndicator = false
                 }
                 .padding(.horizontal, 15)
                 .frame(maxHeight: .infinity)
@@ -622,41 +729,31 @@ struct ItemPersonView: View {
             }
             .alert("Phone number is empty!", isPresented: $phoneError) {
                 Button("Cancel", role: .cancel) {}
-                Button(action: {self.edit = true}) {
+                Button(action: {
+                    if edit == false{
+                        self.edit = true
+                        self.name = item.name
+                        self.email = item.email
+                        self.phone = item.phone
+                        self.notes = item.notes
+                    }else{
+                        self.edit = false
+                        self.editAlert.toggle()
+                    }
+                }) {
                     Text("Add number")
                 }
                 
             }message: {
                 Text("Add person phone number for recording video.")
             }
-//            if phoneError{
-//                HStack(alignment: .center){
-//                        Text("Phone is empty! Add phone to record video.")
-//                    .foregroundStyle(Color(K.Colors.justDarkGray))
-//                }
-//                .frame(height: 40)
-//                .background(Color(K.Colors.justLightGray))
-//                .cornerRadius(7)
-//                .onTapGesture(perform: {
-//                    withAnimation{
-//                        phoneError = false
-//                    }
-//                })
-//                .offset(y: phoneError ? -20 : 150)
-//            }
         }
     }
     
     private func phoneIsEmpty(){
-        self.phoneError.toggle()
-//        withAnimation{
-//            phoneError = true
-//        }
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 7.0) {
-//            withAnimation{
-//                phoneError = false
-//            }
-//            }
+        withAnimation{
+            self.phoneError.toggle()
+        }
     }
 }
 

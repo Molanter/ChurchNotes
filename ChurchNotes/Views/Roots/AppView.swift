@@ -13,7 +13,6 @@ import FirebaseFirestore
 import iPhoneNumberField
 
 struct AppView: View {
-    @Environment(\.modelContext) private var modelContext
     @State var name = "name"
     @State var phone = "+1234567890"
     @State var email = "email@gmail.com"
@@ -36,13 +35,16 @@ struct AppView: View {
     @State var accentColor = false
     @State var firebaseError = false
     @State var firebaseErr = ""
+    @State var bigPhoto = false
     var db = Firestore.firestore()
     var auth = Auth.auth()
     @State private var selection: Int = 0
     
+    
+    
     @EnvironmentObject var viewModel: AppViewModel
     @EnvironmentObject var networkMonitor: NetworkMonitor
-
+    
     var body: some View {
         VStack(alignment: .center, spacing: 0) { // 2
             ZStack { // 3
@@ -50,8 +52,8 @@ struct AppView: View {
                     ItemView()
                 } else if (selection == 1) {
                     settings
-//                } else if (selection == 2) {
-//                    CameraView(recipients: ["3235953205"], message: "Let's goo", item: items)
+                    //                } else if (selection == 2) {
+                    //                    CameraView(recipients: ["3235953205"], message: "Let's goo", item: items)
                 }// else if (selection == 3) {
                 //                            keypadContent()
                 //                        } else if (selection == 4) {
@@ -68,10 +70,10 @@ struct AppView: View {
                                      label: "Settings",
                                      selection: $selection,
                                      tag: 1, settings: true)
-//                    CustomTabBarItem(iconName: "person.crop.circle",
-//                                     label: "Contacts",
-//                                     selection: $selection,
-//                                     tag: 2, settings: false)
+                    //                    CustomTabBarItem(iconName: "person.crop.circle",
+                    //                                     label: "Contacts",
+                    //                                     selection: $selection,
+                    //                                     tag: 2, settings: false)
                     //                CustomTabBarItem(iconName: "circle.grid.3x3.fill",
                     //                                 label: "Keypad",
                     //                                 selection: $selection,
@@ -95,15 +97,17 @@ struct AppView: View {
                 .background(Color(K.Colors.background))
                 .offset(y: width ? 150 : 0)
             }
-        }.frame(maxHeight: .infinity, alignment: .bottom)
+        }
+        .frame(maxHeight: .infinity, alignment: .bottom)
         //        .onAppear(){
         //            if itemTitles.isEmpty{
         //                addFirst()
         //            }
         //        }
-            .accentColor(accentColor ? Color.white : Color(K.Colors.mainColor))
+        .accentColor(accentColor ? Color.white : Color(K.Colors.mainColor))
         
     }
+    
     var update: some View {
         
         NavigationStack{
@@ -337,47 +341,48 @@ struct AppView: View {
         self.fetchDictionary()
         errReg = viewModel.err
     }
-        
+    
     var settings: some View{
         NavigationStack{
             ZStack(alignment: .top){
-                    ScrollView{
-                        HStack(spacing: 19){
-                            if profileImage != ""{
-                                AsyncImage(url: URL(string: profileImage)){image in
-                                    image.resizable()
-                                }placeholder: {
-                                    ProgressView()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: 40, height: 40)
+                ScrollView{
+                    HStack(spacing: 19){
+                        if profileImage != ""{
+                            AsyncImage(url: URL(string: profileImage)){image in
+                                image.resizable()
+                            }placeholder: {
+                                ProgressView()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: bigPhoto ? .infinity : 40, height: bigPhoto ? .infinity : 40)
+                            }
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: bigPhoto ? .infinity : 40, height: bigPhoto ? .infinity : 40)
+                            .cornerRadius(bigPhoto ? 0 : .infinity)
+                            .overlay(
+                                Circle().stroke(bigPhoto ? Color.clear : Color(K.Colors.darkGray).opacity(0.6), lineWidth: 1)
+                            )
+                            .onTapGesture {
+                                withAnimation{
+                                    self.width.toggle()
                                 }
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 40, height: 40)
-                                .cornerRadius(.infinity)
+                            }
+                        }else{
+                            Image(systemName: "person.circle.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: bigPhoto ? .infinity : 40, height: bigPhoto ? .infinity : 40)
+                                .symbolRenderingMode(.multicolor)
+                                .foregroundColor(Color(K.Colors.justLightGray))
                                 .overlay(
-                                    Circle().stroke(Color(K.Colors.darkGray).opacity(0.6), lineWidth: 1)
+                                    Circle().stroke(bigPhoto ? Color.clear : Color(K.Colors.darkGray).opacity(0.6), lineWidth: 1)
                                 )
                                 .onTapGesture {
                                     withAnimation{
                                         self.width.toggle()
                                     }
                                 }
-                            }else{
-                                Image(systemName: "person.circle.fill")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 40, height: 40)
-                                    .symbolRenderingMode(.multicolor)
-                                    .foregroundColor(Color(K.Colors.justLightGray))
-                                    .overlay(
-                                        Circle().stroke(Color(K.Colors.darkGray).opacity(0.6), lineWidth: 1)
-                                    )
-                                    .onTapGesture {
-                                        withAnimation{
-                                            self.width.toggle()
-                                        }
-                                    }
-                            }
+                        }
+                        if !bigPhoto{
                             VStack(alignment: .leading){
                                 HStack{
                                     Text(name)
@@ -392,195 +397,243 @@ struct AppView: View {
                                     .fontWeight(.light)
                                     .font(.system(size: 15))
                             }
-                            Spacer()
                         }
-                        .padding(.top, 16)
-                        .padding(.horizontal, 25)
-                        VStack(alignment: .leading, spacing: 20){
-                            VStack{
-                                NavigationLink(destination: CurrentPersonView(cristian: cristian, name: name, phone: phone, email: email, country: country, notes: notes, profileImage: profileImage, username: username, timeStamp: timeStamp)        .accentColor(Color(K.Colors.darkGray))){
-                                    HStack(spacing: 29){
-                                        Image(systemName: "person")
-                                            .font(.system(size: 29))
-                                            .fontWeight(.light)
-                                        VStack(alignment: .leading, spacing: 5){
-                                            Text("Profile Info")
-                                                .fontWeight(.semibold)
-                                                .font(.system(size: 15))
-                                                .foregroundStyle(.primary)
-                                            Text("Info, email, username...")
-                                                .font(.system(size: 11))
-                                                .foregroundStyle(.secondary)
-                                        }
-                                        Spacer()
-                                        Image(systemName: "chevron.forward")
-                                            .frame(width: 28)
-                                    }
-                                    .padding(.horizontal, 25)
-                                }
-                                Divider()
-                            }
-                            VStack{
-                                NavigationLink(destination: SettingsPeopleView()){
-                                    HStack(spacing: 15){
-                                        Image(systemName: "person.3")
-                                            .font(.system(size: 25))
-                                            .fontWeight(.light)
-                                        VStack(alignment: .leading, spacing: 5){
-                                            Text("People")
-                                                .font(.system(size: 15))
-                                                .fontWeight(.semibold)
-                                                .foregroundStyle(.primary)
-                                            Text("All people, favourite, deleted...")
-                                                .font(.system(size: 11))
-                                                .foregroundStyle(.secondary)
-                                        }
-                                        Spacer()
-                                        Image(systemName: "chevron.forward")
-                                            .frame(width: 28)
-                                    }
-                                    .padding(.leading, 20)
-                                    .padding(.trailing, 25)
-                                }
-                                Divider()
-                            }
-                            VStack{
-                                NavigationLink(destination: NotificationView(notifications: $notifications, documentId: $documentId, notificationTime: $notificationTime)){
-                                    HStack(spacing: 29){
-                                        Image(systemName: "bell.badge")
-                                            .font(.system(size: 29))
-                                            .fontWeight(.light)
-                                        VStack(alignment: .leading, spacing: 5){
-                                            Text("Notifications")
-                                                .fontWeight(.semibold)
-                                                .font(.system(size: 15))
-                                                .foregroundStyle(.primary)
-                                            Text("Notifications, reminders...")
-                                                .font(.system(size: 11))
-                                                .foregroundStyle(.secondary)
-                                        }
-                                        Spacer()
-                                        Image(systemName: "chevron.forward")
-                                            .frame(width: 28)
-                                    }
-                                    .padding(.horizontal, 25)
-                                }
-                                Divider()
-                            }
-                            VStack{
-                                NavigationLink(destination: SettingsView(profileImage: profileImage, name: name, email: email, username: username, phone: phone, country: country, notes: notes, timeStamp: timeStamp)){
-                                    HStack(spacing: 29){
-                                        Image(systemName: "gearshape")
-                                            .font(.system(size: 29))
-                                            .fontWeight(.light)
-                                        VStack(alignment: .leading, spacing: 5){
-                                            Text("Settings")
-                                                .fontWeight(.semibold)
-                                                .font(.system(size: 15))
-                                                .foregroundStyle(.primary)
-                                            Text("Theme, color, password...")
-                                                .font(.system(size: 11))
-                                                .foregroundStyle(.secondary)
-                                        }
-                                        Spacer()
-                                        Image(systemName: "chevron.forward")
-                                            .frame(width: 28)
-                                    }
-                                    .padding(.horizontal, 25)
-                                }
-                                Divider()
-                            }
-                            VStack{
-                                Button(action: {
-                                    self.logoutAlert.toggle()
-                                }){
-                                    HStack(spacing: 29){
-                                        Image(systemName: "rectangle.portrait.and.arrow.right")
-                                            .font(.system(size: 29))
-                                            .fontWeight(.light)
-                                        Text("Log Out")
+                        Spacer()
+                    }
+                    .padding(.top, 16)
+                    .padding(.horizontal, bigPhoto ? 0 : 25)
+                    VStack(alignment: .leading, spacing: 20){
+                        VStack{
+                            NavigationLink(destination: CurrentPersonView(cristian: cristian, name: name, phone: phone, email: email, country: country, notes: notes, profileImage: profileImage, username: username, timeStamp: timeStamp)        .accentColor(Color(K.Colors.darkGray))){
+                                HStack(spacing: 29){
+                                    Image(systemName: "person")
+                                        .font(.system(size: 29))
+                                        .fontWeight(.light)
+                                    VStack(alignment: .leading, spacing: 5){
+                                        Text("Profile Info")
                                             .fontWeight(.semibold)
                                             .font(.system(size: 15))
                                             .foregroundStyle(.primary)
-                                        
-                                        Spacer()
+                                        Text("Info, email, username...")
+                                            .font(.system(size: 11))
+                                            .foregroundStyle(.secondary)
                                     }
-                                    .padding(.horizontal, 25)
+                                    Spacer()
+                                    Image(systemName: "chevron.forward")
+                                        .frame(width: 28)
                                 }
-                                .accentColor(Color(K.Colors.lightGray))
-                                Divider()
-                                    .padding(.bottom, 25)
+                                .padding(.horizontal, 25)
                             }
+                            Divider()
                         }
-                        .accentColor(Color(K.Colors.lightGray))
-                        .padding(.top, 67)
-                        
-                    }
-                    .alert("Logout", isPresented: $logoutAlert) {
-                        Button("Cancel", role: .cancel) {}
-                        Button("Yes", role: .destructive) {
-                            self.logoutAlert.toggle()
-                            viewModel.logOut()
-                        }
-                    }message: {
-                        Text("Are you sure?")
-                    }
-                    if width{
-                        VStack(alignment: .center){
-                            if profileImage != ""{
-                                AsyncImage(url: URL(string: profileImage)){image in
-                                    image.resizable()
-                                }placeholder: {
-                                    ProgressView()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        VStack{
+                            NavigationLink(destination: SettingsPeopleView()){
+                                HStack(spacing: 15){
+                                    Image(systemName: "person.3")
+                                        .font(.system(size: 25))
+                                        .fontWeight(.light)
+                                    VStack(alignment: .leading, spacing: 5){
+                                        Text("People")
+                                            .font(.system(size: 15))
+                                            .fontWeight(.semibold)
+                                            .foregroundStyle(.primary)
+                                        Text("All people, favourite, deleted...")
+                                            .font(.system(size: 11))
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.forward")
+                                        .frame(width: 28)
                                 }
-                                .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            }else{
-                                Image(systemName: "person.circle.fill")
-                                    .resizable()
+                                .padding(.leading, 20)
+                                .padding(.trailing, 25)
+                            }
+                            Divider()
+                        }
+                        VStack{
+                            NavigationLink(destination: NotificationView(notifications: $notifications, documentId: $documentId, notificationTime: $notificationTime)){
+                                HStack(spacing: 29){
+                                    Image(systemName: "bell.badge")
+                                        .symbolRenderingMode(.palette)
+                                        .foregroundStyle(Color(K.Colors.mainColor), Color(K.Colors.lightGray))
+                                        .font(.system(size: 29))
+                                        .fontWeight(.light)
+                                    VStack(alignment: .leading, spacing: 5){
+                                        Text("Notifications")
+                                            .fontWeight(.semibold)
+                                            .font(.system(size: 15))
+                                            .foregroundStyle(.primary)
+                                        Text("Notifications, reminders...")
+                                            .font(.system(size: 11))
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.forward")
+                                        .frame(width: 28)
+                                }
+                                .padding(.horizontal, 25)
+                            }
+                            Divider()
+                        }
+                        VStack{
+                            NavigationLink(destination: AppearanceView(profileImage: profileImage, name: name, email: email, username: username, phone: phone, country: country, notes: notes, timeStamp: timeStamp)){
+                                HStack(spacing: 29){
+                                    Image(systemName: "paintbrush")
+                                        .font(.system(size: 29))
+                                        .fontWeight(.light)
+                                    VStack(alignment: .leading, spacing: 5){
+                                        Text("Appearance")
+                                            .fontWeight(.semibold)
+                                            .font(.system(size: 15))
+                                            .foregroundStyle(.primary)
+                                        Text("Theme, color")
+                                            .font(.system(size: 11))
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.forward")
+                                        .frame(width: 28)
+                                }
+                                .padding(.horizontal, 25)
+                            }
+                            Divider()
+                        }
+                        VStack{
+                            NavigationLink(destination: SettingsView()){
+                                HStack(spacing: 29){
+                                    Image(systemName: "gearshape")
+                                        .font(.system(size: 29))
+                                        .fontWeight(.light)
+                                    VStack(alignment: .leading, spacing: 5){
+                                        Text("Settings")
+                                            .fontWeight(.semibold)
+                                            .font(.system(size: 15))
+                                            .foregroundStyle(.primary)
+                                        Text("Change password")
+                                            .font(.system(size: 11))
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.forward")
+                                        .frame(width: 28)
+                                }
+                                .padding(.horizontal, 25)
+                            }
+                            Divider()
+                        }
+                        VStack{
+                            Button(action: {
+                                self.logoutAlert.toggle()
+                            }){
+                                HStack(spacing: 29){
+                                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                                        .symbolRenderingMode(.palette)
+                                        .foregroundStyle(Color(K.Colors.lightGray), Color(K.Colors.lightGray))
+                                        .font(.system(size: 29))
+                                        .fontWeight(.light)
+                                    Text("Log Out")
+                                        .fontWeight(.semibold)
+                                        .font(.system(size: 15))
+                                        .foregroundStyle(.primary)
+                                    
+                                    Spacer()
+                                }
+                                .padding(.horizontal, 25)
+                            }
+                            .accentColor(Color(K.Colors.lightGray))
+                            Divider()
+                                .padding(.bottom, 25)
+                        }
+                    }
+                    .accentColor(Color(K.Colors.lightGray))
+                    .padding(.top, bigPhoto ? 10 : 67)
+//                    .background(GeometryReader {
+//                        Color.clear.preference(key: ViewOffsetKey.self,
+//                                               value: -$0.frame(in: .named("scroll")).origin.y)
+//                    })
+//                    .onPreferenceChange(ViewOffsetKey.self) {
+//                        print("offset >> \($0)")
+//                        if $0 <= -235 {
+//                            withAnimation{
+//                                bigPhoto = true
+//                            }
+//                        }else if bigPhoto == true && $0 >= -310{
+//                            withAnimation{
+//                                bigPhoto = false
+//                            }
+//                        }else if $0 <= -160{
+//                            withAnimation{
+//                                bigPhoto = false
+//                            }
+//                        }
+//                    }
+                    
+                }
+                .alert("Logout", isPresented: $logoutAlert) {
+                    Button("Cancel", role: .cancel) {}
+                    Button("Yes", role: .destructive) {
+                        self.logoutAlert.toggle()
+                        viewModel.logOut()
+                    }
+                }message: {
+                    Text("Are you sure?")
+                }
+                if width{
+                    VStack(alignment: .center){
+                        if profileImage != ""{
+                            AsyncImage(url: URL(string: profileImage)){image in
+                                image.resizable()
+                            }placeholder: {
+                                ProgressView()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                    .symbolRenderingMode(.multicolor)
-                                    .foregroundColor(Color(K.Colors.justLightGray))
                             }
-                        }
-                        .onAppear{
-                            withAnimation{
-                                self.tabBar = false
-                            }
-                        }
-                        .onDisappear{
-                            withAnimation{
-                                self.tabBar = true
-                            }
-                        }
-                        .background(
-                            Color.black.opacity(0.9)
-                        )
-                        .onTapGesture {
-                            withAnimation{
-                                self.width.toggle()
-                            }
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        }else{
+                            Image(systemName: "person.circle.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .symbolRenderingMode(.multicolor)
+                                .foregroundColor(Color(K.Colors.justLightGray))
                         }
                     }
-                    if firebaseError{
-                        HStack(alignment: .center){
-                            Text(firebaseErr)
-                                .foregroundStyle(Color(K.Colors.justDarkGray))
+                    .onAppear{
+                        withAnimation{
+                            self.tabBar = false
                         }
-                        .frame(height: 40)
-                        .frame(maxWidth: .infinity)
-                        .background(Color(K.Colors.justLightGray))
-                        .cornerRadius(7)
-                        .onTapGesture(perform: {
-                            withAnimation{
-                                firebaseError = false
-                            }
-                        })
-                        .offset(y: firebaseError ? 20 : -150)
                     }
+                    .onDisappear{
+                        withAnimation{
+                            self.tabBar = true
+                        }
+                    }
+                    .background(
+                        Color.black.opacity(0.9)
+                    )
+                    .onTapGesture {
+                        withAnimation{
+                            self.width.toggle()
+                        }
+                    }
+                }
+                if firebaseError{
+                    HStack(alignment: .center){
+                        Text(firebaseErr)
+                            .foregroundStyle(Color(K.Colors.justDarkGray))
+                    }
+                    .frame(height: 40)
+                    .frame(maxWidth: .infinity)
+                    .background(Color(K.Colors.justLightGray))
+                    .cornerRadius(7)
+                    .onTapGesture(perform: {
+                        withAnimation{
+                            firebaseError = false
+                        }
+                    })
+                    .offset(y: firebaseError ? 20 : -150)
+                }
                 if networkMonitor.isConnected{
                     HStack(alignment: .center){
                         HStack{
@@ -603,28 +656,28 @@ struct AppView: View {
                     })
                     .offset(y: firebaseError ? 20 : -150)
                 }
-                }
-                .toolbar(content: {
-                    ToolbarItem(placement: .topBarTrailing, content: {
-                        Button(action: {viewModel.logOut()}){
-                            Image(systemName: "rectangle.portrait.and.arrow.right")
-                                .foregroundStyle(Color(K.Colors.mainColor))
-                        }
-                    })
-                    ToolbarItem(placement: .topBarLeading, content: {
-                        Button(action: {self.showingEditingProfile.toggle()}){
-                            Image(systemName: "square.and.pencil")
-                                .foregroundStyle(Color(K.Colors.mainColor))
-                        }
-                    })
+            }
+            .toolbar(content: {
+                ToolbarItem(placement: .topBarTrailing, content: {
+                    Button(action: {viewModel.logOut()}){
+                        Image(systemName: "rectangle.portrait.and.arrow.right")
+                            .foregroundStyle(Color(K.Colors.mainColor))
+                    }
                 })
-                .frame(maxWidth: .infinity)
+                ToolbarItem(placement: .topBarLeading, content: {
+                    Button(action: {self.showingEditingProfile.toggle()}){
+                        Image(systemName: "square.and.pencil")
+                            .foregroundStyle(Color(K.Colors.mainColor))
+                    }
+                })
+            })
+            .frame(maxWidth: .infinity)
             .onAppear{
                 fetchDictionary()
             }
             .sheet(isPresented: $showingEditingProfile, onDismiss: {}, content: {
                 update
-        })
+            })
         }
         
     }
@@ -672,15 +725,16 @@ struct AppView: View {
             
         }
         
-        func showFirebaseError(error: String){
+    }
+    
+    func showFirebaseError(error: String){
+        withAnimation{
+            firebaseError = true
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 7.0) {
             withAnimation{
-                firebaseError = true
+                firebaseError = false
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 7.0) {
-                withAnimation{
-                    firebaseError = false
-                }
-                }
         }
     }
 }
@@ -689,79 +743,5 @@ struct AppView: View {
 #Preview {
     AppView()
 }
-
-
-struct CustomTabBarItem: View {
-    let iconName: String
-    let label: String
-    let selection: Binding<Int> // 1
-    let tag: Int // 2
-    let settings: Bool
-    @State var backDegree = 0.0
-    @State var frontDegree = 0.0
-    @State private var angle: Double = 0
-
-    var body: some View {
-        VStack(alignment: .center) {
-            ZStack{
-                if settings{
-                    if selection.wrappedValue == tag{
-                        Image(systemName: "\(iconName).fill")
-                            .rotation3DEffect(Angle(degrees: frontDegree), axis: (x: 0, y: 0, z: 1))
-                            .frame(minWidth: 25, minHeight: 25)
-                    }else{
-                        Image(systemName: iconName)
-                            .rotation3DEffect(Angle(degrees: backDegree), axis: (x: 0, y: 0, z: 1))
-                            .frame(minWidth: 25, minHeight: 25)
-                    }
-                }else{
-                        Image(systemName: selection.wrappedValue == tag ? "\(iconName).fill" : iconName)
-                            .frame(minWidth: 25, minHeight: 25)
-                            .contentTransition(.symbolEffect(.replace))
-                }
-            }
-            .onChange(of: selection.wrappedValue){
-                    if settings{
-                        withAnimation(.linear(duration: 0.3)){
-                            backDegree = 90
-                        }
-                        if selection.wrappedValue == tag {
-                            withAnimation(.linear(duration: 0.3)/*.delay(0.3)*/){
-                                frontDegree = 90
-                            }
-                        } else {
-                            withAnimation(.linear(duration: 0.3)) {
-                                frontDegree = 0
-                            }
-                            withAnimation(.linear(duration: 0.3)/*.delay(0.3)*/){
-                                backDegree = 0
-                            }
-                        }
-                    }else{
-                        
-                    }
-                }
-            Text(label)
-                .font(.caption)
-        }
-        .padding([.top, .bottom], 5)
-        .foregroundColor(fgColor()) // 4
-        .frame(maxWidth: .infinity)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            self.selection.wrappedValue = self.tag // 3
-        }
-    }
-    
-    private func fgColor() -> Color {
-        return selection.wrappedValue == tag ? Color(K.Colors.mainColor) : Color(K.Colors.gray)
-    }
-}
-
-
-
-
-
-
 
 

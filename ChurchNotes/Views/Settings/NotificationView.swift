@@ -6,149 +6,131 @@
 //
 
 import SwiftUI
-import FirebaseFirestore
-import FirebaseAuth
 
 struct NotificationView: View {
+    @State var addNotification = false
     @Binding var notifications: Bool
     @Binding var documentId: String
     @Binding var notificationTime: Date
     @State var toggle = false
+    @State var showActionSheet = false
     @State var selectedDate = Date.now
+    @State var deleteItem: Notifics?
     let notify = NotificationHandler()
+    @EnvironmentObject var viewModel: AppViewModel
     
-    var db = Firestore.firestore()
-
+    
     var body: some View{
         NavigationStack{
             VStack(alignment: .leading, spacing: 10){
-                VStack{
-                    HStack{
-                        Text("Every day at time:")
-                        Spacer()
-                        if notifications{
-                            Text(selectedDate.formatted(.dateTime.hour().minute()))
-                                .padding()
-                        }else{
-                            DatePicker(
-                                    "",
-                                    selection: $notificationTime,
-                                    displayedComponents: [.hourAndMinute]
+                    if !viewModel.notificationsArray.isEmpty{
+                        List{
+
+                        ForEach(viewModel.notificationsArray){ notification in
+                            VStack(alignment: .leading){
+                                HStack{
+                                    Text(notification.date, style: .time)
+                                        .bold()
+                                        .font(.title3)
+                                    HStack(spacing: 1){
+                                        Text(notification.sunday ? "Sun " : "")
+                                        Text(notification.monday ? "Mon " : "")
+                                        Text(notification.tuesday ? "Tue " : "")
+                                        Text(notification.wednsday ? "Wed " : "")
+                                        Text(notification.thursday ? "Thu " : "")
+                                        Text(notification.friday ? "Fri " : "")
+                                        Text(notification.saturday ? "Sat " : "")
+                                    }
+                                    .frame(alignment: .leading)
+                                    .foregroundStyle(.secondary)
+                                    .font(.body)
+                                    Spacer()
+                                    Button(action: {
+                                        self.deleteItem = notification
+                                        self.showActionSheet.toggle()
+                                    }){
+                                        Image(systemName: "xmark")
+                                            .font(.title2)
+                                    }
+                                }
+                                Text(notification.message)
+                                    .font(.body)
+                            }
+                            .actionSheet(isPresented: $showActionSheet) {
+                                ActionSheet(title: Text("You want to remove this notification"),
+                                            message: Text("Press '**Remove**' to resume."),
+                                            buttons: [
+                                                .cancel(),
+                                                .destructive(
+                                                    Text("Remove")
+                                                ){
+                                                    removeNotification(item: notification)
+                                                }
+                                            ]
                                 )
+                            }
+                            
+                            //                            .background(
+                            //                                RoundedRectangle(cornerRadius: 10).stroke(Color(K.Colors.darkGray), lineWidth: 1)
+                            //                            )
                         }
+                        .onDelete { indexSet in
+                            if let firstIndex = indexSet.first {
+                                self.deleteItem = viewModel.notificationsArray[firstIndex]
+                                self.showActionSheet.toggle()
+                            }
+                        }
+                        }
+                        .listStyle(.plain)
+                    }else{
+                        VStack(alignment: .leading){
+                            Image(systemName: "bell.slash")
+                            Text("You don't have notifications yet.")
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
-                    Button(action: {everyDayNotify()}){
-                        Text(notifications ? "Stop" : "Set")
-                            .foregroundColor(Color.white)
-                            .padding(.vertical, 10)
-                            .frame(maxWidth: .infinity)
-                            .background(notifications ? Color(K.Colors.pink) : Color(K.Colors.mainColor))
-                            .cornerRadius(7)
-                    }
-                }
-//                VStack{
-//                    HStack{
-//                        Text("Every day at time:")
-//                        Spacer()
-//                        DatePicker(
-//                                "",
-//                                selection: $notificationTime,
-//                                displayedComponents: [.hourAndMinute]
-//                            )
-//                    }
-//                    Button(action: {everyDayNotify()}){
-//                        Text(notifications ? "Stop" : "Set")
-//                            .foregroundColor(Color.white)
-//                            .padding(.vertical, 10)
-//                            .frame(maxWidth: .infinity)
-//                            .background(notifications ? Color(K.Colors.pink) : Color(K.Colors.mainColor))
-//                            .cornerRadius(7)
-//                    }
-//                }
+                    
+                
                 Spacer()
             }
             .padding(.horizontal, 15)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .navigationTitle("Set notifications")
+            .navigationTitle("Notifications")
             .onAppear{
                 notify.askPermission()
-                fetchDictionary()
-                
+                viewModel.fetchNotifications()
             }
+            .sheet(isPresented: $addNotification, content: {
+                NavigationStack{
+                    AddNotificationView(showView: $addNotification)
+                        .accentColor(Color(K.Colors.mainColor))
+                        .toolbar(content: {
+                            ToolbarItem(placement: .topBarLeading) {
+                                Button(action: {
+                                    self.addNotification = false
+                                }){
+                                    Image(systemName: "xmark.circle")
+                                        .foregroundStyle((Color(K.Colors.mainColor)))
+                                }
+                            }
+                        })
+                }
+            })
+            .toolbar(content: {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        self.addNotification.toggle()
+                    }){
+                        Image(systemName: "plus")
+                    }
+                }
+            })
         }
     }
     
-    func fetchDictionary(){
-        if let userID = Auth.auth().currentUser?.uid{
-            db.collection("users").document(userID).getDocument { querySnapshot, err in
-                if let err = err {
-                    print("Error getting documents: \(err)")
-                } else {
-                    if let document = querySnapshot {
-                        let dictionary = document.data()
-                        if let dictionary = dictionary{
-                            let notifications = dictionary["notifications"] as! Bool
-                            let notificationTime = (dictionary["notificationTime"] as? Timestamp)?.dateValue() ?? Date()
-
-                            self.notificationTime = notificationTime
-                            self.selectedDate = notificationTime
-                            print(notificationTime.formatted(.dateTime.hour().minute()))
-                            self.notifications = notifications
-                            
-                            self.toggle = self.notifications
-                            if notifications == true{
-                                self.selectedDate = self.notificationTime
-                            }else{
-                                self.notificationTime = Date.now
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    func everyDayNotify(){
-        self.selectedDate = notificationTime
-        print(String(notificationTime.formatted(.dateTime.hour().minute())))
-        if notifications == false{
-            notifications = true
-            notify.sendNotification(
-                date: notificationTime,
-                type: "everyDay",
-                title: "Praying Time",
-                body: "Every day reminding for praying. Take your time.")
-            
-            if let userID = Auth.auth().currentUser?.uid{
-                let ref = db.collection("users").document(userID)
-                ref.updateData(
-                    ["notifications": notifications,
-                     "notificationTime": notificationTime
-                    ]){error in
-                        if let error = error{
-                            print("Error while updating profile:  -\(error)")
-                        }else{
-                        }
-                    }
-            }
-        }else if notifications == true{
-            notifications = false
-            
-            if let userID = Auth.auth().currentUser?.uid{
-                let ref = db.collection("users").document(userID)
-                ref.updateData(
-                    ["notifications": notifications,
-                     "notificationTime": notificationTime
-                    ]){error in
-                        if let error = error{
-                            print("Error while updating profile:  -\(error)")
-                        }else{
-                        }
-                    }
-            }
-            notify.stopNotifying(type: "everyDay")
-            self.notificationTime = Date.now
-        }
+    private func removeNotification(item: Notifics){
+        notify.stopNotifiing(message: item.message, count: item.orderIndex)
+        viewModel.stopNotifing(item: item)
     }
 }
 

@@ -11,12 +11,23 @@ import FirebaseFirestore
 import SwiftUI
 
 struct K{
-    static var tabStyle: Int = 0
+    @AppStorage("choosedStages") static var choosedStages: Int = 0
+    @AppStorage("favouriteSign") static var favouriteSign: String = "heart"
+
     struct Colors{
-        var db = Firestore.firestore()
+        static let colorsDictionary: [String: String] = [
+            "Purple": "blue-purple",
+            "Light Blue": "light-blue",
+            "Blue": "bluee",
+            "Dark Blue": "dark-blue",
+            "Orange": "orangee",
+            "Green": "greenn",
+            "Yellow": "yelloww",
+            "Red": "redd"
+        ]
         @AppStorage("mainColor") static var mainColor: String = "blue-purple"
         @AppStorage("appearance") static var appearance: Int = 0
-
+        @AppStorage("favouriteSignColor") static var favouriteSignColor = "redd"
         static let red = "redd"
         static let blue = "bluee"
         static let yellow = "yelloww"

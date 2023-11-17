@@ -22,7 +22,7 @@ class FrontCameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecording
     @Published var showPreview: Bool = false
     @Published var recordedDuration: CGFloat = 0
     @Published var maxDuration: CGFloat = 30
-    @Published var camera = 0
+    @Published var camera: Int = 0
     func check(){
         
         switch AVCaptureDevice.authorizationStatus(for: .video){
@@ -44,6 +44,42 @@ class FrontCameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecording
         }
     }
     
+    
+    func switchCamera() {
+            self.session.stopRunning()
+            
+            // Toggle the camera value between front and back
+            if self.session.inputs.count > 0 {
+                let currentInput = self.session.inputs[0] as! AVCaptureInput
+                self.session.removeInput(currentInput)
+            }
+            
+            if self.camera == 0 {
+                if let cameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
+                    let cameraInput = try? AVCaptureDeviceInput(device: cameraDevice)
+                    if let cameraInput = cameraInput {
+                        if self.session.canAddInput(cameraInput) {
+                            self.session.addInput(cameraInput)
+                        }
+                    }
+                }
+                self.camera = 1
+            } else {
+                if let cameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) {
+                    let cameraInput = try? AVCaptureDeviceInput(device: cameraDevice)
+                    if let cameraInput = cameraInput {
+                        if self.session.canAddInput(cameraInput) {
+                            self.session.addInput(cameraInput)
+                        }
+                    }
+                }
+                self.camera = 0
+            }
+            
+            self.session.startRunning()
+        }
+    
+    
     func setUp(){
         print("setUPP")
         
@@ -52,77 +88,41 @@ class FrontCameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecording
             self.session.beginConfiguration ()
             
             
-            if self.camera == 0{
-                if let cameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera,
-                                                        for: .video, position: .front) {
-                    let cameraInput = try AVCaptureDeviceInput (device: cameraDevice)
-                    let audioDevice = AVCaptureDevice.default(for: .audio)
-                    let audioInput = try AVCaptureDeviceInput (device: audioDevice!)
-                    
-                    if self.session.canAddInput (cameraInput) && self.session.canAddInput (audioInput){
-                        self.session.addInput (cameraInput)
-                        self.session.addInput (audioInput)
-                    }
-                    
-                    if self.session.canAddOutput (self.output) {
-                        self.session.addOutput (self.output)
-                    }
-                    self.session.commitConfiguration ()
-                } else if let cameraDevice = AVCaptureDevice.default(.builtInDualCamera,
-                                                               for: .video, position: .front) {
-                    let cameraInput = try AVCaptureDeviceInput (device: cameraDevice)
-                    let audioDevice = AVCaptureDevice.default(for: .audio)
-                    let audioInput = try AVCaptureDeviceInput (device: audioDevice!)
-                    
-                    if self.session.canAddInput (cameraInput) && self.session.canAddInput (audioInput){
-                        self.session.addInput (cameraInput)
-                        self.session.addInput (audioInput)
-                    }
-                    
-                    if self.session.canAddOutput (self.output) {
-                        self.session.addOutput (self.output)
-                    }
-                    self.session.commitConfiguration ()
-                } else {
-                    fatalError("Missing expected back camera device.")
+            if let cameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera,
+                                                          for: .video, position: .front) {
+                let cameraInput = try AVCaptureDeviceInput (device: cameraDevice)
+                let audioDevice = AVCaptureDevice.default(for: .audio)
+                let audioInput = try AVCaptureDeviceInput (device: audioDevice!)
+                
+                if self.session.canAddInput (cameraInput) && self.session.canAddInput (audioInput){
+                    self.session.addInput (cameraInput)
+                    self.session.addInput (audioInput)
                 }
-            }else if self.camera == 1{
-                if let cameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera,
-                                                        for: .video, position: .back) {
-                    let cameraInput = try AVCaptureDeviceInput (device: cameraDevice)
-                    let audioDevice = AVCaptureDevice.default(for: .audio)
-                    let audioInput = try AVCaptureDeviceInput (device: audioDevice!)
-                    
-                    if self.session.canAddInput (cameraInput) && self.session.canAddInput (audioInput){
-                        self.session.addInput (cameraInput)
-                        self.session.addInput (audioInput)
-                    }
-                    
-                    if self.session.canAddOutput (self.output) {
-                        self.session.addOutput (self.output)
-                    }
-                    self.session.commitConfiguration ()
-                } else if let cameraDevice = AVCaptureDevice.default(.builtInDualCamera,
-                                                               for: .video, position: .back) {
-                    let cameraInput = try AVCaptureDeviceInput (device: cameraDevice)
-                    let audioDevice = AVCaptureDevice.default(for: .audio)
-                    let audioInput = try AVCaptureDeviceInput (device: audioDevice!)
-                    
-                    if self.session.canAddInput (cameraInput) && self.session.canAddInput (audioInput){
-                        self.session.addInput (cameraInput)
-                        self.session.addInput (audioInput)
-                    }
-                    
-                    if self.session.canAddOutput (self.output) {
-                        self.session.addOutput (self.output)
-                    }
-                    self.session.commitConfiguration ()
-                } else {
-                    fatalError("Missing expected back camera device.")
+                
+                if self.session.canAddOutput (self.output) {
+                    self.session.addOutput (self.output)
                 }
+                self.session.commitConfiguration ()
+            } else if let cameraDevice = AVCaptureDevice.default(.builtInDualCamera,
+                                                                 for: .video, position: .front) {
+                let cameraInput = try AVCaptureDeviceInput (device: cameraDevice)
+                let audioDevice = AVCaptureDevice.default(for: .audio)
+                let audioInput = try AVCaptureDeviceInput (device: audioDevice!)
+                
+                if self.session.canAddInput (cameraInput) && self.session.canAddInput (audioInput){
+                    self.session.addInput (cameraInput)
+                    self.session.addInput (audioInput)
+                }
+                
+                if self.session.canAddOutput (self.output) {
+                    self.session.addOutput (self.output)
+                }
+                self.session.commitConfiguration ()
+            } else {
+                fatalError("Missing expected back camera device.")
             }
-
         }
+            
         catch{
             print(error.localizedDescription)
         }
@@ -232,7 +232,6 @@ struct FrontCameraPreview: UIViewRepresentable {
     
     func makeUIView(context: Context) -> UIView {
         let view = UIView()
-        if camera.camera == 0{
             camera.preview = AVCaptureVideoPreviewLayer (session: camera.session)
             camera.preview.frame.size = UIScreen.screenSize
             
@@ -240,15 +239,6 @@ struct FrontCameraPreview: UIViewRepresentable {
             view.layer.addSublayer (camera.preview)
             
             camera.session.startRunning()
-        }else if camera.camera == 1{
-            camera.preview = AVCaptureVideoPreviewLayer (session: camera.session)
-            camera.preview.frame.size = UIScreen.screenSize
-            
-            camera.preview.videoGravity = .resizeAspectFill
-            view.layer.addSublayer (camera.preview)
-            
-            camera.session.startRunning()
-        }
         return view
     }
     

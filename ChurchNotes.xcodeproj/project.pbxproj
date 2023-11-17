@@ -10,9 +10,8 @@
 		9E14D0BD2A8A7DAC005E0BC0 /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E14D0BC2A8A7DAC005E0BC0 /* NotificationHandler.swift */; };
 		9E14D0BF2A8A8C28005E0BC0 /* FinalPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E14D0BE2A8A8C28005E0BC0 /* FinalPreview.swift */; };
 		9E14D0C32A8BF487005E0BC0 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E14D0C22A8BF487005E0BC0 /* NotificationView.swift */; };
-		9E14D0C52A8C20A6005E0BC0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E14D0C42A8C20A6005E0BC0 /* SettingsView.swift */; };
+		9E14D0C52A8C20A6005E0BC0 /* ApearanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E14D0C42A8C20A6005E0BC0 /* ApearanceView.swift */; };
 		9E1E399A2AD4E339006186DD /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1E39992AD4E339006186DD /* Users.swift */; };
-		9E29A4CF2ABDCA1F00BEE019 /* BackCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E29A4CE2ABDCA1F00BEE019 /* BackCameraView.swift */; };
 		9E3CFF1E2A6878EB0087AFD0 /* TopTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF1D2A6878EB0087AFD0 /* TopTabBar.swift */; };
 		9E3CFF212A688E5C0087AFD0 /* CurrentPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3CFF202A688E5C0087AFD0 /* CurrentPersonView.swift */; };
 		9E44BEFC2A58E09F0059C56C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9E44BEFB2A58E09F0059C56C /* GoogleService-Info.plist */; };
@@ -21,9 +20,27 @@
 		9E45B8AC2A87D2CE002D9AF1 /* FrontVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E45B8AB2A87D2CE002D9AF1 /* FrontVideoView.swift */; };
 		9E4FD3C42A4C92FB00D46FB8 /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4FD3C32A4C92FB00D46FB8 /* AppView.swift */; };
 		9E563AD32A61A90900F5E52B /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E563AD22A61A90900F5E52B /* ImagePicker.swift */; };
+		9E5661862AE2161C0076591B /* AllPeopleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E5661852AE2161C0076591B /* AllPeopleView.swift */; };
+		9E5661882AE349C20076591B /* Reactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E5661872AE349C20076591B /* Reactions.swift */; };
+		9E56618A2AE360C20076591B /* AllStagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E5661892AE360C10076591B /* AllStagesView.swift */; };
+		9E56618C2AE366840076591B /* PeopleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E56618B2AE366840076591B /* PeopleView.swift */; };
+		9E56618E2AE369340076591B /* LikedPeopleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E56618D2AE369340076591B /* LikedPeopleView.swift */; };
+		9E5661902AE379A50076591B /* ShakeReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E56618F2AE379A50076591B /* ShakeReportView.swift */; };
+		9E5661922AE44D2C0076591B /* DonePeople.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E5661912AE44D2C0076591B /* DonePeople.swift */; };
+		9E5661942AE5EBB30076591B /* GoogleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E5661932AE5EBB30076591B /* GoogleAuth.swift */; };
 		9E65DA772A64F017000C87FB /* IndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E65DA762A64F017000C87FB /* IndexView.swift */; };
 		9E65DA792A658965000C87FB /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E65DA782A658965000C87FB /* AppViewModel.swift */; };
 		9E6830A22A5F0B09000AB299 /* iPhoneNumberField in Frameworks */ = {isa = PBXBuildFile; productRef = 9E6830A12A5F0B09000AB299 /* iPhoneNumberField */; };
+		9E6D32772AF06E5900B65178 /* WhyAuthenticateInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6D32762AF06E5900B65178 /* WhyAuthenticateInfoView.swift */; };
+		9E6D327B2AF09BAA00B65178 /* PeopleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6D327A2AF09BAA00B65178 /* PeopleListView.swift */; };
+		9E6D327E2AF5550B00B65178 /* OAuth2 in Frameworks */ = {isa = PBXBuildFile; productRef = 9E6D327D2AF5550B00B65178 /* OAuth2 */; };
+		9E6D32802AF815D900B65178 /* CreateStageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6D327F2AF815D900B65178 /* CreateStageView.swift */; };
+		9E6D32822AF832A400B65178 /* AddNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6D32812AF832A400B65178 /* AddNotificationView.swift */; };
+		9E6D32842AFC3AB300B65178 /* ResetPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6D32832AFC3AB300B65178 /* ResetPasswordView.swift */; };
+		9E6D32862B02D9CB00B65178 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6D32852B02D9CB00B65178 /* SettingsView.swift */; };
+		9E6D32882B02DAAE00B65178 /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6D32872B02DAAE00B65178 /* ChangePasswordView.swift */; };
+		9E6D328A2B05338500B65178 /* ViewOffsetKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6D32892B05338500B65178 /* ViewOffsetKey.swift */; };
+		9E6D328C2B05345500B65178 /* CustomTabBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6D328B2B05345500B65178 /* CustomTabBarItem.swift */; };
 		9E6F9DFB2A4BC435009B72DC /* ChurchNotesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6F9DFA2A4BC435009B72DC /* ChurchNotesApp.swift */; };
 		9E6F9DFF2A4BC436009B72DC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E6F9DFE2A4BC436009B72DC /* Assets.xcassets */; };
 		9E6F9E022A4BC436009B72DC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E6F9E012A4BC436009B72DC /* Preview Assets.xcassets */; };
@@ -37,9 +54,10 @@
 		9E7282D92A57439A004D6483 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E7282D82A57439A004D6483 /* Assets.xcassets */; };
 		9E7282E52A57BB6D004D6483 /* ItemPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7282E42A57BB6D004D6483 /* ItemPersonView.swift */; };
 		9E91BDAD2A93C4F5007DD52E /* DismissingKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E91BDAC2A93C4F5007DD52E /* DismissingKeyboard.swift */; };
+		9E9F659F2AE759CA00FF743A /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9F659E2AE759CA00FF743A /* EditProfileView.swift */; };
+		9E9F65A32AE85FF100FF743A /* StageButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9F65A22AE85FF100FF743A /* StageButtons.swift */; };
 		9EAB02D52A8FBC49005E3719 /* AddPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EAB02D42A8FBC49005E3719 /* AddPersonView.swift */; };
 		9EAB02D82A8FD46F005E3719 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EAB02D72A8FD46F005E3719 /* NetworkMonitor.swift */; };
-		9EC618AC2A82899D00CB3E5C /* SwiftData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EE4A03E2A81D51700C7179F /* SwiftData.framework */; };
 		9ED6F2EE2A5093DE002568DF /* WidgetTaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ED6F2ED2A5093DE002568DF /* WidgetTaskModel.swift */; };
 		9ED71CC22A9F7DCE00613AAD /* ShakeGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ED71CC12A9F7DCE00613AAD /* ShakeGesture.swift */; };
 		9ED71CC82A9FC0ED00613AAD /* SettingsPeopleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ED71CC72A9FC0ED00613AAD /* SettingsPeopleView.swift */; };
@@ -53,9 +71,8 @@
 		9E14D0BC2A8A7DAC005E0BC0 /* NotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHandler.swift; sourceTree = "<group>"; };
 		9E14D0BE2A8A8C28005E0BC0 /* FinalPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalPreview.swift; sourceTree = "<group>"; };
 		9E14D0C22A8BF487005E0BC0 /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
-		9E14D0C42A8C20A6005E0BC0 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		9E14D0C42A8C20A6005E0BC0 /* ApearanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApearanceView.swift; sourceTree = "<group>"; };
 		9E1E39992AD4E339006186DD /* Users.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
-		9E29A4CE2ABDCA1F00BEE019 /* BackCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackCameraView.swift; sourceTree = "<group>"; };
 		9E3521C42A73308000B607D7 /* libswiftDataDetection.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftDataDetection.tbd; path = usr/lib/swift/libswiftDataDetection.tbd; sourceTree = SDKROOT; };
 		9E3CFF1D2A6878EB0087AFD0 /* TopTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopTabBar.swift; sourceTree = "<group>"; };
 		9E3CFF202A688E5C0087AFD0 /* CurrentPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentPersonView.swift; sourceTree = "<group>"; };
@@ -66,9 +83,27 @@
 		9E4FD3C32A4C92FB00D46FB8 /* AppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppView.swift; sourceTree = "<group>"; };
 		9E4FD3C72A4D2C2500D46FB8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		9E563AD22A61A90900F5E52B /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		9E5661852AE2161C0076591B /* AllPeopleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllPeopleView.swift; sourceTree = "<group>"; };
+		9E5661872AE349C20076591B /* Reactions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reactions.swift; sourceTree = "<group>"; };
+		9E5661892AE360C10076591B /* AllStagesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllStagesView.swift; sourceTree = "<group>"; };
+		9E56618B2AE366840076591B /* PeopleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleView.swift; sourceTree = "<group>"; };
+		9E56618D2AE369340076591B /* LikedPeopleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LikedPeopleView.swift; sourceTree = "<group>"; };
+		9E56618F2AE379A50076591B /* ShakeReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShakeReportView.swift; sourceTree = "<group>"; };
+		9E5661912AE44D2C0076591B /* DonePeople.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonePeople.swift; sourceTree = "<group>"; };
+		9E5661932AE5EBB30076591B /* GoogleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAuth.swift; sourceTree = "<group>"; };
 		9E5671612A6190E5002FCFC5 /* CoreAudioTypes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioTypes.framework; path = System/Library/Frameworks/CoreAudioTypes.framework; sourceTree = SDKROOT; };
 		9E65DA762A64F017000C87FB /* IndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexView.swift; sourceTree = "<group>"; };
 		9E65DA782A658965000C87FB /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
+		9E6D32752AF055AC00B65178 /* ChurchNotes.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ChurchNotes.entitlements; sourceTree = "<group>"; };
+		9E6D32762AF06E5900B65178 /* WhyAuthenticateInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhyAuthenticateInfoView.swift; sourceTree = "<group>"; };
+		9E6D327A2AF09BAA00B65178 /* PeopleListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleListView.swift; sourceTree = "<group>"; };
+		9E6D327F2AF815D900B65178 /* CreateStageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateStageView.swift; sourceTree = "<group>"; };
+		9E6D32812AF832A400B65178 /* AddNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNotificationView.swift; sourceTree = "<group>"; };
+		9E6D32832AFC3AB300B65178 /* ResetPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordView.swift; sourceTree = "<group>"; };
+		9E6D32852B02D9CB00B65178 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		9E6D32872B02DAAE00B65178 /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
+		9E6D32892B05338500B65178 /* ViewOffsetKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewOffsetKey.swift; sourceTree = "<group>"; };
+		9E6D328B2B05345500B65178 /* CustomTabBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarItem.swift; sourceTree = "<group>"; };
 		9E6F9DF72A4BC435009B72DC /* ChurchNotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChurchNotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E6F9DFA2A4BC435009B72DC /* ChurchNotesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChurchNotesApp.swift; sourceTree = "<group>"; };
 		9E6F9DFE2A4BC436009B72DC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -83,6 +118,8 @@
 		9E7282DA2A57439A004D6483 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9E7282E42A57BB6D004D6483 /* ItemPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemPersonView.swift; sourceTree = "<group>"; };
 		9E91BDAC2A93C4F5007DD52E /* DismissingKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissingKeyboard.swift; sourceTree = "<group>"; };
+		9E9F659E2AE759CA00FF743A /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
+		9E9F65A22AE85FF100FF743A /* StageButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StageButtons.swift; sourceTree = "<group>"; };
 		9EA7AB952A508D20004DB3BA /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		9EA7AB972A508D20004DB3BA /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		9EAB02D42A8FBC49005E3719 /* AddPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPersonView.swift; sourceTree = "<group>"; };
@@ -99,8 +136,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E144702C1C07938D3169463A /* Pods_ChurchNotes.framework in Frameworks */,
+				9E6D327E2AF5550B00B65178 /* OAuth2 in Frameworks */,
 				9E6830A22A5F0B09000AB299 /* iPhoneNumberField in Frameworks */,
-				9EC618AC2A82899D00CB3E5C /* SwiftData.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,10 +166,16 @@
 			isa = PBXGroup;
 			children = (
 				9E7282C72A5235D3004D6483 /* ItemView.swift */,
+				9E56618D2AE369340076591B /* LikedPeopleView.swift */,
+				9E5661892AE360C10076591B /* AllStagesView.swift */,
+				9E5661852AE2161C0076591B /* AllPeopleView.swift */,
 				9E6F9E122A4C6C33009B72DC /* ContentView.swift */,
 				9E7282E42A57BB6D004D6483 /* ItemPersonView.swift */,
 				9EAB02D42A8FBC49005E3719 /* AddPersonView.swift */,
 				9ED71CC72A9FC0ED00613AAD /* SettingsPeopleView.swift */,
+				9E56618B2AE366840076591B /* PeopleView.swift */,
+				9E5661912AE44D2C0076591B /* DonePeople.swift */,
+				9E6D327F2AF815D900B65178 /* CreateStageView.swift */,
 			);
 			path = ItemViews;
 			sourceTree = "<group>";
@@ -140,6 +183,7 @@
 		9E3CFF222A688E620087AFD0 /* User */ = {
 			isa = PBXGroup;
 			children = (
+				9E9F659E2AE759CA00FF743A /* EditProfileView.swift */,
 				9E3CFF202A688E5C0087AFD0 /* CurrentPersonView.swift */,
 			);
 			path = User;
@@ -151,9 +195,24 @@
 				9E14D0BE2A8A8C28005E0BC0 /* FinalPreview.swift */,
 				9E45B8A92A87CFC1002D9AF1 /* CameraView.swift */,
 				9E45B8AB2A87D2CE002D9AF1 /* FrontVideoView.swift */,
-				9E29A4CE2ABDCA1F00BEE019 /* BackCameraView.swift */,
 			);
 			path = CameraViews;
+			sourceTree = "<group>";
+		};
+		9E6D32782AF09B8600B65178 /* Info */ = {
+			isa = PBXGroup;
+			children = (
+				9E6D32762AF06E5900B65178 /* WhyAuthenticateInfoView.swift */,
+			);
+			path = Info;
+			sourceTree = "<group>";
+		};
+		9E6D32792AF09B9B00B65178 /* Planing Center */ = {
+			isa = PBXGroup;
+			children = (
+				9E6D327A2AF09BAA00B65178 /* PeopleListView.swift */,
+			);
+			path = "Planing Center";
 			sourceTree = "<group>";
 		};
 		9E6F9DEE2A4BC435009B72DC = {
@@ -179,6 +238,7 @@
 		9E6F9DF92A4BC435009B72DC /* ChurchNotes */ = {
 			isa = PBXGroup;
 			children = (
+				9E6D32752AF055AC00B65178 /* ChurchNotes.entitlements */,
 				9E4FD3C72A4D2C2500D46FB8 /* Info.plist */,
 				9E6F9DFA2A4BC435009B72DC /* ChurchNotesApp.swift */,
 				9E6F9E0C2A4C6B50009B72DC /* Views */,
@@ -202,12 +262,15 @@
 		9E6F9E0C2A4C6B50009B72DC /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				9E6D32792AF09B9B00B65178 /* Planing Center */,
+				9E9F659D2AE758D600FF743A /* Authentication */,
 				9E91BDA92A939DF2007DD52E /* Roots */,
 				9E91BDA82A939DE5007DD52E /* Settings */,
-				9EAB02D62A8FD450005E3719 /* Classes, Structs models */,
+				9EAB02D62A8FD450005E3719 /* Classes, Structs, Models */,
 				9E45B8A82A87CFAC002D9AF1 /* CameraViews */,
 				9E3CFF1F2A688BB70087AFD0 /* ItemViews */,
 				9E3CFF222A688E620087AFD0 /* User */,
+				9E6D32782AF09B8600B65178 /* Info */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -236,7 +299,10 @@
 			isa = PBXGroup;
 			children = (
 				9E14D0C22A8BF487005E0BC0 /* NotificationView.swift */,
-				9E14D0C42A8C20A6005E0BC0 /* SettingsView.swift */,
+				9E14D0C42A8C20A6005E0BC0 /* ApearanceView.swift */,
+				9E56618F2AE379A50076591B /* ShakeReportView.swift */,
+				9E6D32812AF832A400B65178 /* AddNotificationView.swift */,
+				9E6D32852B02D9CB00B65178 /* SettingsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -244,25 +310,39 @@
 		9E91BDA92A939DF2007DD52E /* Roots */ = {
 			isa = PBXGroup;
 			children = (
-				9E44BEFD2A5A0D6D0059C56C /* LoginPage.swift */,
 				9E65DA762A64F017000C87FB /* IndexView.swift */,
 				9E4FD3C32A4C92FB00D46FB8 /* AppView.swift */,
 			);
 			path = Roots;
 			sourceTree = "<group>";
 		};
-		9EAB02D62A8FD450005E3719 /* Classes, Structs models */ = {
+		9E9F659D2AE758D600FF743A /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				9E44BEFD2A5A0D6D0059C56C /* LoginPage.swift */,
+				9E65DA782A658965000C87FB /* AppViewModel.swift */,
+				9E5661932AE5EBB30076591B /* GoogleAuth.swift */,
+				9E6D32832AFC3AB300B65178 /* ResetPasswordView.swift */,
+				9E6D32872B02DAAE00B65178 /* ChangePasswordView.swift */,
+			);
+			path = Authentication;
+			sourceTree = "<group>";
+		};
+		9EAB02D62A8FD450005E3719 /* Classes, Structs, Models */ = {
 			isa = PBXGroup;
 			children = (
 				9E563AD22A61A90900F5E52B /* ImagePicker.swift */,
-				9E65DA782A658965000C87FB /* AppViewModel.swift */,
 				9E3CFF1D2A6878EB0087AFD0 /* TopTabBar.swift */,
 				9E14D0BC2A8A7DAC005E0BC0 /* NotificationHandler.swift */,
 				9EAB02D72A8FD46F005E3719 /* NetworkMonitor.swift */,
 				9E91BDAC2A93C4F5007DD52E /* DismissingKeyboard.swift */,
 				9ED71CC12A9F7DCE00613AAD /* ShakeGesture.swift */,
+				9E5661872AE349C20076591B /* Reactions.swift */,
+				9E9F65A22AE85FF100FF743A /* StageButtons.swift */,
+				9E6D32892B05338500B65178 /* ViewOffsetKey.swift */,
+				9E6D328B2B05345500B65178 /* CustomTabBarItem.swift */,
 			);
-			path = "Classes, Structs models";
+			path = "Classes, Structs, Models";
 			sourceTree = "<group>";
 		};
 		BDB0A59DBE031AA6D1133182 /* Frameworks */ = {
@@ -298,6 +378,7 @@
 			name = ChurchNotes;
 			packageProductDependencies = (
 				9E6830A12A5F0B09000AB299 /* iPhoneNumberField */,
+				9E6D327D2AF5550B00B65178 /* OAuth2 */,
 			);
 			productName = ChurchNotes;
 			productReference = 9E6F9DF72A4BC435009B72DC /* ChurchNotes.app */;
@@ -350,6 +431,9 @@
 			packageReferences = (
 				9E6830A02A5F0B09000AB299 /* XCRemoteSwiftPackageReference "iPhoneNumberField" */,
 				9E99AF4E2A5F5E9800806282 /* XCRemoteSwiftPackageReference "iPhoneNumberField" */,
+				9E5661952AE5EC700076591B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				9E9F659C2AE5F83B00FF743A /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				9E6D327C2AF5534400B65178 /* XCRemoteSwiftPackageReference "OAuth2" */,
 			);
 			productRefGroup = 9E6F9DF82A4BC435009B72DC /* Products */;
 			projectDirPath = "";
@@ -429,32 +513,50 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E9F659F2AE759CA00FF743A /* EditProfileView.swift in Sources */,
+				9E6D32882B02DAAE00B65178 /* ChangePasswordView.swift in Sources */,
 				9E7282E52A57BB6D004D6483 /* ItemPersonView.swift in Sources */,
 				9EAB02D82A8FD46F005E3719 /* NetworkMonitor.swift in Sources */,
+				9E6D32802AF815D900B65178 /* CreateStageView.swift in Sources */,
 				9E14D0BD2A8A7DAC005E0BC0 /* NotificationHandler.swift in Sources */,
+				9E6D32862B02D9CB00B65178 /* SettingsView.swift in Sources */,
 				9E14D0C32A8BF487005E0BC0 /* NotificationView.swift in Sources */,
+				9E56618E2AE369340076591B /* LikedPeopleView.swift in Sources */,
 				9E44BEFE2A5A0D6D0059C56C /* LoginPage.swift in Sources */,
+				9E6D32822AF832A400B65178 /* AddNotificationView.swift in Sources */,
 				9E65DA792A658965000C87FB /* AppViewModel.swift in Sources */,
 				9ED71CC82A9FC0ED00613AAD /* SettingsPeopleView.swift in Sources */,
 				9E14D0BF2A8A8C28005E0BC0 /* FinalPreview.swift in Sources */,
 				9E65DA772A64F017000C87FB /* IndexView.swift in Sources */,
 				9E45B8AC2A87D2CE002D9AF1 /* FrontVideoView.swift in Sources */,
 				9E4FD3C42A4C92FB00D46FB8 /* AppView.swift in Sources */,
+				9E5661942AE5EBB30076591B /* GoogleAuth.swift in Sources */,
+				9E56618C2AE366840076591B /* PeopleView.swift in Sources */,
+				9E5661862AE2161C0076591B /* AllPeopleView.swift in Sources */,
 				9E3CFF1E2A6878EB0087AFD0 /* TopTabBar.swift in Sources */,
 				9E7282C82A5235D3004D6483 /* ItemView.swift in Sources */,
+				9E6D32772AF06E5900B65178 /* WhyAuthenticateInfoView.swift in Sources */,
 				9EAB02D52A8FBC49005E3719 /* AddPersonView.swift in Sources */,
 				9E6F9E132A4C6C33009B72DC /* ContentView.swift in Sources */,
 				9E6F9DFB2A4BC435009B72DC /* ChurchNotesApp.swift in Sources */,
+				9E5661902AE379A50076591B /* ShakeReportView.swift in Sources */,
 				9E45B8AA2A87CFC1002D9AF1 /* CameraView.swift in Sources */,
+				9E5661882AE349C20076591B /* Reactions.swift in Sources */,
+				9E6D32842AFC3AB300B65178 /* ResetPasswordView.swift in Sources */,
 				9E563AD32A61A90900F5E52B /* ImagePicker.swift in Sources */,
+				9E6D328A2B05338500B65178 /* ViewOffsetKey.swift in Sources */,
 				9ED71CC22A9F7DCE00613AAD /* ShakeGesture.swift in Sources */,
 				9E91BDAD2A93C4F5007DD52E /* DismissingKeyboard.swift in Sources */,
 				9E1E399A2AD4E339006186DD /* Users.swift in Sources */,
+				9E56618A2AE360C20076591B /* AllStagesView.swift in Sources */,
+				9E5661922AE44D2C0076591B /* DonePeople.swift in Sources */,
 				9E3CFF212A688E5C0087AFD0 /* CurrentPersonView.swift in Sources */,
 				9E6F9E0B2A4BC994009B72DC /* Constants.swift in Sources */,
-				9E29A4CF2ABDCA1F00BEE019 /* BackCameraView.swift in Sources */,
+				9E9F65A32AE85FF100FF743A /* StageButtons.swift in Sources */,
 				9ED6F2EE2A5093DE002568DF /* WidgetTaskModel.swift in Sources */,
-				9E14D0C52A8C20A6005E0BC0 /* SettingsView.swift in Sources */,
+				9E14D0C52A8C20A6005E0BC0 /* ApearanceView.swift in Sources */,
+				9E6D327B2AF09BAA00B65178 /* PeopleListView.swift in Sources */,
+				9E6D328C2B05345500B65178 /* CustomTabBarItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -596,6 +698,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = ChurchNotes/ChurchNotes.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ChurchNotes/Preview Content\"";
@@ -610,9 +714,8 @@
 				INFOPLIST_KEY_NSCameraUsageDescription = "Allow to use your camera.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Allow to record videos.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Accept to add photos.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -622,6 +725,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.molanter.ChurchNotes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -639,6 +743,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = ChurchNotes/ChurchNotes.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ChurchNotes/Preview Content\"";
@@ -653,9 +759,8 @@
 				INFOPLIST_KEY_NSCameraUsageDescription = "Allow to use your camera.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Allow to record videos.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Accept to add photos.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -665,6 +770,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.molanter.ChurchNotes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -770,12 +876,28 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		9E5661952AE5EC700076591B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.16.0;
+			};
+		};
 		9E6830A02A5F0B09000AB299 /* XCRemoteSwiftPackageReference "iPhoneNumberField" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/MojtabaHs/iPhoneNumberField";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.10.1;
+			};
+		};
+		9E6D327C2AF5534400B65178 /* XCRemoteSwiftPackageReference "OAuth2" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/p2/OAuth2";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.3.2;
 			};
 		};
 		9E99AF4E2A5F5E9800806282 /* XCRemoteSwiftPackageReference "iPhoneNumberField" */ = {
@@ -786,6 +908,14 @@
 				minimumVersion = 0.10.1;
 			};
 		};
+		9E9F659C2AE5F83B00FF743A /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -793,6 +923,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9E6830A02A5F0B09000AB299 /* XCRemoteSwiftPackageReference "iPhoneNumberField" */;
 			productName = iPhoneNumberField;
+		};
+		9E6D327D2AF5550B00B65178 /* OAuth2 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9E6D327C2AF5534400B65178 /* XCRemoteSwiftPackageReference "OAuth2" */;
+			productName = OAuth2;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

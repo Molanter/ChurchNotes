@@ -21,6 +21,7 @@ struct IndexView: View {
                         viewModel.stagesArray.removeAll()
                         viewModel.fetchStages()
                         viewModel.fetchPeople()
+                        viewModel.fetchUser()
                     }
                     .accentColor(Color(K.Colors.mainColor))
                     .environmentObject(networkMonitor)
