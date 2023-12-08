@@ -16,6 +16,7 @@ struct NotificationView: View {
     @State var showActionSheet = false
     @State var selectedDate = Date.now
     @State var deleteItem: Notifics?
+    @State var showInfo = false
     let notify = NotificationHandler()
     @EnvironmentObject var viewModel: AppViewModel
     
@@ -26,34 +27,42 @@ struct NotificationView: View {
                     if !viewModel.notificationsArray.isEmpty{
                         List{
 
-                        ForEach(viewModel.notificationsArray){ notification in
+                        ForEach(viewModel.notificationsArray){ notf in
                             VStack(alignment: .leading){
                                 HStack{
-                                    Text(notification.date, style: .time)
+                                    Text(notf.date, style: .time)
                                         .bold()
                                         .font(.title3)
                                     HStack(spacing: 1){
-                                        Text(notification.sunday ? "Sun " : "")
-                                        Text(notification.monday ? "Mon " : "")
-                                        Text(notification.tuesday ? "Tue " : "")
-                                        Text(notification.wednsday ? "Wed " : "")
-                                        Text(notification.thursday ? "Thu " : "")
-                                        Text(notification.friday ? "Fri " : "")
-                                        Text(notification.saturday ? "Sat " : "")
+                                        if notf.sunday && notf.monday && notf.tuesday && notf.wednsday && notf.thursday && notf.friday && notf.saturday{
+                                            Text("All Days")
+                                        }else if notf.sunday && !notf.monday && !notf.tuesday && !notf.wednsday && !notf.thursday && !notf.friday && notf.saturday{
+                                            Text("Weekends")
+                                        }else if !notf.sunday && notf.monday && notf.tuesday && notf.wednsday && notf.thursday && notf.friday && !notf.saturday{
+                                            Text("Weekdays")
+                                        }else{
+                                            Text(notf.sunday ? "Sun " : "")
+                                            Text(notf.monday ? "Mon " : "")
+                                            Text(notf.tuesday ? "Tue " : "")
+                                            Text(notf.wednsday ? "Wed " : "")
+                                            Text(notf.thursday ? "Thu " : "")
+                                            Text(notf.friday ? "Fri " : "")
+                                            Text(notf.saturday ? "Sat " : "")
+                                        }
                                     }
                                     .frame(alignment: .leading)
                                     .foregroundStyle(.secondary)
                                     .font(.body)
                                     Spacer()
                                     Button(action: {
-                                        self.deleteItem = notification
+                                        self.deleteItem = notf
                                         self.showActionSheet.toggle()
                                     }){
                                         Image(systemName: "xmark")
                                             .font(.title2)
                                     }
                                 }
-                                Text(notification.message)
+                                Text(notf.message)
                                     .font(.body)
                             }
                             .actionSheet(isPresented: $showActionSheet) {
@@ -64,15 +73,11 @@ struct NotificationView: View {
                                                 .destructive(
                                                     Text("Remove")
                                                 ){
-                                                    removeNotification(item: notification)
+                                                    removeNotification(item: notf)
                                                 }
                                             ]
                                 )
                             }
-                            
-                            //                            .background(
-                            //                                RoundedRectangle(cornerRadius: 10).stroke(Color(K.Colors.darkGray), lineWidth: 1)
-                            //                            )
                         }
                         .onDelete { indexSet in
                             if let firstIndex = indexSet.first {
@@ -92,14 +97,41 @@ struct NotificationView: View {
                     
                 
                 Spacer()
+                HStack{
+                    Spacer()
+                    Button(action: {
+                        self.showInfo = true
+                    }){
+                        Image(systemName: "info.circle")
+                            .font(.system(size: 22))
+                            .aspectRatio(contentMode: .fit)
+                            .foregroundStyle(Color(K.Colors.mainColor))
+                            .padding(15)
+                    }
+                }
             }
-            .padding(.horizontal, 15)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationTitle("Notifications")
             .onAppear{
                 notify.askPermission()
                 viewModel.fetchNotifications()
             }
+            .sheet(isPresented: $showInfo, content: {
+                NavigationStack{
+                    NotificationsInfo()
+                        .toolbar(content: {
+                            ToolbarItem(placement: .topBarLeading) {
+                                Button(action: {
+                                    self.showInfo = false
+                                }){
+                                    Image(systemName: "xmark.circle")
+                                        .foregroundStyle(Color(K.Colors.mainColor))
+                                }
+                            }
+                        })
+                }
+                    .presentationDetents([.height(250)])
+            })
             .sheet(isPresented: $addNotification, content: {
                 NavigationStack{
                     AddNotificationView(showView: $addNotification)
@@ -126,10 +158,31 @@ struct NotificationView: View {
                 }
             })
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     private func removeNotification(item: Notifics){
-        notify.stopNotifiing(message: item.message, count: item.orderIndex)
+        if item.sunday{
+            notify.stopNotifying(day: 1, count: item.orderIndex)
+        }
+        if item.monday{
+            notify.stopNotifying(day: 2, count: item.orderIndex)
+        }
+        if item.tuesday{
+            notify.stopNotifying(day: 3, count: item.orderIndex)
+        }
+        if item.wednsday{
+            notify.stopNotifying(day: 4, count: item.orderIndex)
+        }
+        if item.thursday{
+            notify.stopNotifying(day: 5, count: item.orderIndex)
+        }
+        if item.friday{
+            notify.stopNotifying(day: 6, count: item.orderIndex)
+        }
+        if item.saturday{
+            notify.stopNotifying(day: 7, count: item.orderIndex)
+        }
         viewModel.stopNotifing(item: item)
     }
 }

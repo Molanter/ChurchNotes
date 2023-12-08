@@ -26,15 +26,14 @@ struct ChurchNotesApp: App {
 
     var body: some Scene {
         WindowGroup {
+            let published = PublishedVariebles()
             let viewModel = AppViewModel()
             let googleModel = AuthenticationViewModel()
-//            let peopleViewModel = PeopleViewModel()
 
             IndexView()
-//            PeopleListView()
                 .environmentObject(viewModel)
+                .environmentObject(published)
                 .environmentObject(googleModel)
-//                .environmentObject(peopleViewModel)
                 .onAppear{
                     utilities.overrideDisplayMode()
                 }

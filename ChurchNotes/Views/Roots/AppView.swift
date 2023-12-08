@@ -31,7 +31,6 @@ struct AppView: View {
     @State var errReg = ""
     @State var documentId = ""
     @State var logoutAlert = false
-    @State var tabBar = true
     @State var accentColor = false
     @State var firebaseError = false
     @State var firebaseErr = ""
@@ -40,8 +39,7 @@ struct AppView: View {
     var auth = Auth.auth()
     @State private var selection: Int = 0
     
-    
-    
+    @EnvironmentObject var published: PublishedVariebles
     @EnvironmentObject var viewModel: AppViewModel
     @EnvironmentObject var networkMonitor: NetworkMonitor
     
@@ -50,6 +48,9 @@ struct AppView: View {
             ZStack { // 3
                 if (selection == 0) {
                     ItemView()
+                        .searchable(text: $published.searchText,
+                                    placement: .navigationBarDrawer(displayMode: .automatic),
+                                    prompt: "Search Name")
                 } else if (selection == 1) {
                     settings
                     //                } else if (selection == 2) {
@@ -59,11 +60,15 @@ struct AppView: View {
                 //                        } else if (selection == 4) {
                 //                            voicemailContent()
                 //                        }
-            }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            if !width{
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            Divider()
+                .frame(maxWidth: .infinity)
+                .padding(0)
+            if !published.tabsAreHidden{
                 HStack(alignment: .lastTextBaseline) {
                     CustomTabBarItem(iconName: "list.bullet.clipboard",
-                                     label: "Notes",
+                                     label: "People",
                                      selection: $selection,
                                      tag: 0, settings: false)
                     CustomTabBarItem(iconName: "gearshape",
@@ -83,19 +88,20 @@ struct AppView: View {
                     //                                 selection: $selection,
                     //                                 tag: 4)
                 }
+                .frame(height: 45)
                 .frame(maxWidth: .infinity)
-                .background(
-                    GeometryReader { parentGeometry in
-                        if !width{
-                            Rectangle()
-                                .fill(Color(K.Colors.background))
-                                .frame(width: parentGeometry.size.width, height: 0.5)
-                                .position(x: parentGeometry.size.width / 2, y: 0)
-                        }
-                    }
-                )
-                .background(Color(K.Colors.background))
-                .offset(y: width ? 150 : 0)
+                //                .background(
+                //                    GeometryReader { parentGeometry in
+                //                        if !width{
+                //                            Rectangle()
+                //                                .fill(Color(K.Colors.background))
+                //                                .frame(width: parentGeometry.size.width, height: 1)
+                //                                .position(x: parentGeometry.size.width / 2, y: 0)
+                //                        }
+                //                    }
+                //                )
+                .background(Color(K.Colors.background).opacity(0.5))
+                .opacity(published.tabsAreHidden ? 0 : 1)
             }
         }
         .frame(maxHeight: .infinity, alignment: .bottom)
@@ -104,235 +110,9 @@ struct AppView: View {
         //                addFirst()
         //            }
         //        }
+        .background(published.tabsAreHidden ? Color.black.opacity(0.9) : Color.clear)
         .accentColor(accentColor ? Color.white : Color(K.Colors.mainColor))
         
-    }
-    
-    var update: some View {
-        
-        NavigationStack{
-            ScrollView{
-                VStack{
-                    Spacer()
-                    VStack(alignment: .center){
-                        VStack(alignment: .center){
-                            Text("Update Profile")
-                                .font(.title)
-                                .fontWeight(.bold)
-                                .padding(.bottom, 5)
-                            Text("Your email: '\(email)'")
-                                .foregroundStyle(.secondary)
-                                .font(.system(size: 14))
-                                .padding(.bottom, 10)
-                        }
-                        Button (action: {
-                            showImagePicker.toggle()
-                        }){
-                            VStack(alignment: . center){
-                                if profileImage != "" && image == nil{
-                                    AsyncImage(url: URL(string: profileImage)){image in
-                                        image.resizable()
-                                        
-                                    }placeholder: {
-                                        ProgressView()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: 100, height: 100)
-                                    }
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 100, height: 100)
-                                    .cornerRadius(width ? 0 : .infinity)
-                                }else{
-                                    if let image = self.image{
-                                        Image(uiImage: image)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: 100, height: 100)
-                                            .cornerRadius(50)
-                                            .overlay(
-                                                Circle().stroke(Color(K.Colors.mainColor), lineWidth: 2)
-                                            )
-                                            .padding(15)
-                                        
-                                    }else{
-                                        Image(systemName: "person.fill.viewfinder")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 100, height: 100)
-                                            .foregroundColor(Color(K.Colors.mainColor))
-                                            .padding(15)
-                                            .fontWeight(.regular)
-                                    }
-                                }
-                                Text("tap to change Image")
-                                    .foregroundColor(Color(K.Colors.mainColor))
-                                    .font(.system(size: 14))
-                                    .fontWeight(.regular)
-                            }
-                        }
-                        .sheet(isPresented: $showImagePicker) {
-                            ImagePicker(image: $image)
-                        }
-                        .padding(.bottom, 30)
-                        VStack(alignment: .leading, spacing: 20){
-                            VStack(alignment: .leading, spacing: 20){
-                                Text("Full Name")
-                                    .fontWeight(.semibold)
-                                    .font(.system(size: 15))
-                                HStack(alignment: .center, spacing: 0.0){
-                                    ZStack(alignment: .leading){
-                                        if name.isEmpty {
-                                            Text("Name")
-                                                .padding(.leading)
-                                                .foregroundColor(Color(K.Colors.lightGray))
-                                        }
-                                        TextField("", text: $name)
-                                            .padding(.leading)
-                                            .disableAutocorrection(true)
-                                            .textInputAutocapitalization(.never)
-                                            .opacity(0.75)
-                                            .padding(0)
-                                            .keyboardType(.namePhonePad)
-                                            .textContentType(.name)
-                                    }
-                                    Spacer()
-                                    Image(systemName: "person.fill")
-                                        .foregroundStyle(Color(K.Colors.lightGray))
-                                        .padding(.trailing)
-                                }
-                                .frame(height: 50)
-                                .overlay(
-                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                        .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-                                )
-                            }
-                            VStack(alignment: .leading, spacing: 20){
-                                Text("Create Username")
-                                    .fontWeight(.semibold)
-                                    .font(.system(size: 15))
-                                HStack(alignment: .center, spacing: 0.0){
-                                    ZStack(alignment: .leading){
-                                        if username.isEmpty {
-                                            Text("Username")
-                                                .padding(.leading)
-                                                .foregroundColor(Color(K.Colors.lightGray))
-                                        }
-                                        TextField("", text: $username)
-                                            .padding(.leading)
-                                            .disableAutocorrection(true)
-                                            .textInputAutocapitalization(.never)
-                                            .opacity(0.75)
-                                            .padding(0)
-                                            .keyboardType(.namePhonePad)
-                                            .textCase(.lowercase)
-                                            .textContentType(.username)
-                                    }
-                                    Spacer()
-                                    Image(systemName: "at")
-                                        .foregroundStyle(Color(K.Colors.lightGray))
-                                        .padding(.trailing)
-                                }
-                                .frame(height: 50)
-                                .overlay(
-                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                        .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-                                )
-                            }
-                            VStack(alignment: .leading, spacing: 20){
-                                Text("Country")
-                                    .fontWeight(.semibold)
-                                    .font(.system(size: 15))
-                                HStack(alignment: .center, spacing: 0.0){
-                                    ZStack(alignment: .leading){
-                                        if country.isEmpty {
-                                            Text("Country")
-                                                .padding(.leading)
-                                                .foregroundColor(Color(K.Colors.lightGray))
-                                        }
-                                        TextField("", text: $country)
-                                            .padding(.leading)
-                                            .disableAutocorrection(true)
-                                            .textInputAutocapitalization(.never)
-                                            .opacity(0.75)
-                                            .padding(0)
-                                            .textContentType(.countryName)
-                                    }
-                                    Spacer()
-                                    Image(systemName: "flag.fill")
-                                        .foregroundStyle(Color(K.Colors.lightGray))
-                                        .padding(.trailing)
-                                }
-                                .frame(height: 50)
-                                .overlay(
-                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                        .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-                                )
-                            }
-                            VStack(alignment: .leading, spacing: 20){
-                                Text("Phone")
-                                    .fontWeight(.semibold)
-                                    .font(.system(size: 15))
-                                HStack(alignment: .center, spacing: 0.0){
-                                    ZStack(alignment: .leading){
-                                        iPhoneNumberField("Phone Number", text: $phone)
-                                            .maximumDigits(15)
-                                            .prefixHidden(false)
-                                            .flagHidden(false)
-                                            .flagSelectable(true)
-                                            .placeholderColor(Color(K.Colors.lightGray))
-                                            .frame(height: 45)
-                                            .disableAutocorrection(true)
-                                            .textInputAutocapitalization(.never)
-                                            .padding(0)
-                                            .textContentType(.telephoneNumber)
-                                    }
-                                    .padding(.leading)
-                                    Spacer()
-                                    Image(systemName: "phone.fill")
-                                        .foregroundStyle(Color(K.Colors.lightGray))
-                                        .padding(.trailing)
-                                }
-                                .frame(height: 50)
-                                .overlay(
-                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                        .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-                                )
-                            }
-                            
-                            
-                        }
-                        
-                        Button(action: {
-                            updateFunc()
-                            fetchDictionary()
-                        }){
-                            Text("Update Profile")
-                                .foregroundStyle(Color.white)
-                                .frame(maxWidth: .infinity)
-                        }
-                        .padding()
-                        .background(Color(K.Colors.mainColor))
-                        .cornerRadius(7)
-                        .padding(.vertical)
-                    }
-                    .padding(.horizontal, 15)
-                    
-                    if errReg != ""{
-                        Text(errReg)
-                            .foregroundStyle(Color(K.Colors.pink))
-                            .padding(.horizontal, 15)
-                    }
-                }
-                .modifier(DismissingKeyboard())
-            }
-            .toolbar(content: {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button(action: {self.showingEditingProfile.toggle()}){
-                        Text("Cancel")
-                            .foregroundStyle(Color(K.Colors.mainColor))
-                    }
-                }
-            })
-        }
     }
     
     private func updateFunc(){
@@ -363,7 +143,8 @@ struct AppView: View {
                             )
                             .onTapGesture {
                                 withAnimation{
-                                    self.width.toggle()
+                                    self.width = true
+                                    published.tabsAreHidden = true
                                 }
                             }
                         }else{
@@ -378,7 +159,8 @@ struct AppView: View {
                                 )
                                 .onTapGesture {
                                     withAnimation{
-                                        self.width.toggle()
+                                        self.width = true
+                                        published.tabsAreHidden.toggle()
                                     }
                                 }
                         }
@@ -447,6 +229,29 @@ struct AppView: View {
                                 }
                                 .padding(.leading, 20)
                                 .padding(.trailing, 25)
+                            }
+                            Divider()
+                        }
+                        VStack{
+                            NavigationLink(destination: AchievementsMainView()){
+                                HStack(spacing: 29){
+                                    Image(systemName: "medal")
+                                        .font(.system(size: 29))
+                                        .fontWeight(.light)
+                                    VStack(alignment: .leading, spacing: 5){
+                                        Text("Achievements")
+                                            .font(.system(size: 15))
+                                            .fontWeight(.semibold)
+                                            .foregroundStyle(.primary)
+                                        Text("Your achievements, score")
+                                            .font(.system(size: 11))
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.forward")
+                                        .frame(width: 28)
+                                }
+                                .padding(.horizontal, 25)
                             }
                             Divider()
                         }
@@ -547,26 +352,26 @@ struct AppView: View {
                     }
                     .accentColor(Color(K.Colors.lightGray))
                     .padding(.top, bigPhoto ? 10 : 67)
-//                    .background(GeometryReader {
-//                        Color.clear.preference(key: ViewOffsetKey.self,
-//                                               value: -$0.frame(in: .named("scroll")).origin.y)
-//                    })
-//                    .onPreferenceChange(ViewOffsetKey.self) {
-//                        print("offset >> \($0)")
-//                        if $0 <= -235 {
-//                            withAnimation{
-//                                bigPhoto = true
-//                            }
-//                        }else if bigPhoto == true && $0 >= -310{
-//                            withAnimation{
-//                                bigPhoto = false
-//                            }
-//                        }else if $0 <= -160{
-//                            withAnimation{
-//                                bigPhoto = false
-//                            }
-//                        }
-//                    }
+                    //                    .background(GeometryReader {
+                    //                        Color.clear.preference(key: ViewOffsetKey.self,
+                    //                                               value: -$0.frame(in: .named("scroll")).origin.y)
+                    //                    })
+                    //                    .onPreferenceChange(ViewOffsetKey.self) {
+                    //                        print("offset >> \($0)")
+                    //                        if $0 <= -235 {
+                    //                            withAnimation{
+                    //                                bigPhoto = true
+                    //                            }
+                    //                        }else if bigPhoto == true && $0 >= -310{
+                    //                            withAnimation{
+                    //                                bigPhoto = false
+                    //                            }
+                    //                        }else if $0 <= -160{
+                    //                            withAnimation{
+                    //                                bigPhoto = false
+                    //                            }
+                    //                        }
+                    //                    }
                     
                 }
                 .alert("Logout", isPresented: $logoutAlert) {
@@ -599,22 +404,16 @@ struct AppView: View {
                                 .foregroundColor(Color(K.Colors.justLightGray))
                         }
                     }
-                    .onAppear{
-                        withAnimation{
-                            self.tabBar = false
-                        }
-                    }
-                    .onDisappear{
-                        withAnimation{
-                            self.tabBar = true
-                        }
-                    }
                     .background(
-                        Color.black.opacity(0.9)
+                        Color
+                            .black
+                            .ignoresSafeArea(.all)
+                            .opacity(0.9)
                     )
                     .onTapGesture {
                         withAnimation{
-                            self.width.toggle()
+                            self.width = false
+                            published.tabsAreHidden = false
                         }
                     }
                 }
@@ -676,7 +475,17 @@ struct AppView: View {
                 fetchDictionary()
             }
             .sheet(isPresented: $showingEditingProfile, onDismiss: {}, content: {
-                update
+                NavigationStack{
+                    EditProfileView(showingEditingProfile: $showingEditingProfile)
+                        .toolbar(content: {
+                            ToolbarItem(placement: .topBarLeading) {
+                                Button(action: {self.showingEditingProfile = false}){
+                                    Text("Cancel")
+                                        .foregroundStyle(Color(K.Colors.mainColor))
+                                }
+                            }
+                        })
+                }
             })
         }
         
@@ -731,7 +540,7 @@ struct AppView: View {
         withAnimation{
             firebaseError = true
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 7.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
             withAnimation{
                 firebaseError = false
             }

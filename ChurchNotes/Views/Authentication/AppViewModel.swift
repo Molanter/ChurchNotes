@@ -18,6 +18,7 @@ class AppViewModel: ObservableObject{
     @Published var errorMessage = ""
     @Published var peopleArray = [Person]()
     @Published var stagesArray = [Stage]()
+    @Published var achievementsArray = [Achievements]()
     @Published var notificationsArray = [Notifics]()
     @Published var usernameIsTaken = false
     @Published var isAvailable = false
@@ -37,8 +38,8 @@ class AppViewModel: ObservableObject{
         return auth.currentUser != nil
     }
     
-    private var sortedStages: [Stage]{
-        return stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })
+    private var sortedStages: [AppStage]{
+        return K.AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })
     }
     
     
@@ -71,47 +72,28 @@ class AppViewModel: ObservableObject{
     
     
     //MARK: Stages
-    func nextStage(documentId: String, titleNumber: Int){
-        let ref = db.collection("people").document(documentId)
-        
-        if titleNumber != 6{
-            let newName = sortedStages[titleNumber + 1].name
-            
-            ref.updateData(
-                [
-                    "title": newName,
-                    "titleNumber": titleNumber + 1]
-            ){error in
-                if let error = error{
-                    self.moved = 0
-                    print("Error while updating profile:  -\(error)")
-                }else{
-                    self.moved = 1
-                    print("profile is updated! \(newName) \(titleNumber)")
-                }
+    func deleteStage(documentId: String){
+        db.collection("stages").document(documentId).delete() { err in
+            if let err = err {
+                print("Error removing document: \(err)")
+            } else {
+                print("Document successfully removed!")
             }
         }
     }
     
-    func previousStage(documentId: String, titleNumber: Int){
-        let ref = db.collection("people").document(documentId)
-        
-        if titleNumber != 0{
-            let newName = sortedStages[titleNumber - 1].name
-            
-            ref.updateData(
-                [
-                    "title": newName,
-                    "titleNumber": titleNumber - 1
-                ]){error in
-                    if let error = error{
-                        self.moved = 0
-                        print("Error while updating profile:  -\(error)")
-                    }else{
-                        self.moved = 2
-                        print("profile is updated! \(newName) \(titleNumber)")
-                    }
-                }
+    func editStage(name: String, documentId: String){
+        let ref = db.collection("stages").document(documentId)
+        ref.updateData(
+            ["name": name]
+        ){error in
+            if let error = error{
+                self.moved = 0
+                print("Error while updating profile:  -\(error)")
+            }else{
+                self.moved = 1
+                print("profile is updated! \(name)")
+            }
         }
     }
     
@@ -140,38 +122,13 @@ class AppViewModel: ObservableObject{
             }
     }
     
-    func saveStages(_ first: Bool = false, name: String = "") {
+    func saveStages(name: String = "") {
         // Create a reference to Firestore
         
         // Specify the path to the collection
         let collectionPath = "stages"
         guard let userId = auth.currentUser?.uid else {return}
         
-        // Create an array of data to save as documents
-        if first == true{
-            let dataArray: [[String: Any]] = [
-                ["name": "New Friend", "orderIndex": 0, "userId": userId, "createBy": "app"],
-                ["name": "Invited", "orderIndex": 1, "userId": userId, "createBy": "app"],
-                ["name": "Attanded", "orderIndex": 2, "userId": userId, "createBy": "app"],
-                ["name": "Baptized", "orderIndex": 3, "userId": userId, "createBy": "app"],
-                ["name": "Acepted Christ", "orderIndex": 4, "userId": userId, "createBy": "app"],
-                ["name": "Serving", "orderIndex": 5, "userId": userId, "createBy": "app"],
-                ["name": "Joined Group", "orderIndex": 6, "userId": userId, "createBy": "app"],
-                // Add more data as needed
-            ]
-            
-            // Iterate through the array and save each document
-            for (index, data) in dataArray.enumerated() {
-                let documentPath = "\(userId)\(index)" // You can use a unique identifier here
-                db.collection(collectionPath).document(documentPath).setData(data, merge: true) { error in
-                    if let error = error {
-                        print("Error writing document: \(error)")
-                    } else {
-                        print("Document \(documentPath) successfully written!   First  1")
-                    }
-                }
-            }
-        }else{
             let stageData: [String: Any] = [
                 "name": name,
                 "orderIndex": stagesArray.count - 1,
@@ -187,12 +144,55 @@ class AppViewModel: ObservableObject{
                     print("Document \(documentPath) successfully written!")
                 }
             }
-        }
     }
     
     
     
     //MARK: People
+    
+    func nextStage(documentId: String, titleNumber: Int){
+        let ref = db.collection("people").document(documentId)
+
+        if titleNumber != 6{
+            let newName = sortedStages[titleNumber + 1].name
+            
+            ref.updateData(
+                [
+                    "title": newName,
+                    "titleNumber": titleNumber + 1]
+            ){error in
+                if let error = error{
+                    self.moved = 0
+                    print("Error while updating profile:  -\(error)")
+                }else{
+                    self.moved = 1
+                    print("profile is updated! \(newName) \(titleNumber)")
+                }
+            }
+        }
+    }
+    
+    func previousStage(documentId: String, titleNumber: Int){
+        let ref = db.collection("people").document(documentId)
+
+        if titleNumber != 0{
+            let newName = sortedStages[titleNumber - 1].name
+            
+            ref.updateData(
+                [
+                    "title": newName,
+                    "titleNumber": titleNumber - 1
+                ]){error in
+                    if let error = error{
+                        self.moved = 0
+                        print("Error while updating profile:  -\(error)")
+                    }else{
+                        print("profile is updated! \(newName) \(titleNumber)")
+                    }
+                }
+        }
+    }
+    
     func fetchPeople(){
         guard let userId = auth.currentUser?.uid else {return}
         db.collection("people")
@@ -356,11 +356,10 @@ class AppViewModel: ObservableObject{
             })
         }
     }
-    
+     
     
     func isDonePerson(documentId: String, isDone: Bool){
         let ref = db.collection("people").document(documentId)
-        
         ref.updateData(
             ["isDone": isDone]){error in
                 if let error = error{
@@ -582,7 +581,6 @@ class AppViewModel: ObservableObject{
                             }
                         }
                     print("User created succesfuly! with no image!)")
-                    self!.saveStages(true)
                     self!.isProfileFinished = true
                     
                 }else{
@@ -653,7 +651,6 @@ class AppViewModel: ObservableObject{
                         }
                     })
                     print("User created succesfuly!")
-                    self!.saveStages(true)
                     self!.isProfileFinished = true
                 }
             }
@@ -696,6 +693,21 @@ class AppViewModel: ObservableObject{
     //
     //    }
     
+    func addAchiv(name: String, int: Int){
+        guard let userID = auth.currentUser?.uid else{return}
+        
+        self.db.collection("users").document(userID).updateData(
+            [name: int
+            ]) { error in
+                if let error = error {
+                    print("Error adding document: \(error)")
+                } else {
+                    self.fetchUser()
+                    print("Document added with ID: \(name) \(int)")
+                }
+            }
+    }
+    
     func updateProfile(image: UIImage?, name: String, username: String, country: String, phone: String, documentId: String, oldImageLink: String){
         if let userID = auth.currentUser?.uid{
             let ref = db.collection("users").document(userID)
@@ -718,7 +730,6 @@ class AppViewModel: ObservableObject{
                                         self.errorMessage = err.localizedDescription
                                         print("err l:  _ \(err.localizedDescription)")
                                     } else {
-                                        peopleArray.removeAll()
                                         querySnapshot?.documents.forEach({ queryDocumentSnapshot in
                                             let data = queryDocumentSnapshot.data()
                                             let docId = queryDocumentSnapshot.documentID
@@ -889,5 +900,73 @@ class AppViewModel: ObservableObject{
                 print("Document successfully removed!")
             }
         }
+    }
+    
+    
+    
+    //MARK: Achievements
+
+    func fetchAchievements() {
+        guard let userId = auth.currentUser?.uid else {
+            return
+        }
+        
+        db.collection("achievements")
+            .whereField("userId", isEqualTo: userId)
+            .addSnapshotListener { [weak self] querySnapshot, error in
+                guard let self = self else { return }
+                
+                if let error = error {
+                    self.errorMessage = error.localizedDescription
+                    print("Error: \(error.localizedDescription)")
+                } else {
+                    achievementsArray.removeAll() // Clear the array here, after error check
+                    querySnapshot?.documents.forEach({ queryDocumentSnapshot in
+                        let data = queryDocumentSnapshot.data()
+                        let docId = queryDocumentSnapshot.documentID
+                        let achievementModel = Achievements(documentId: docId, data: data)
+                        self.achievementsArray.append(achievementModel)
+                    })
+                }
+            }
+    }
+
+    func createAchievement(name: String = "") {
+        // Create a reference to Firestore
+        
+        // Specify the path to the collection
+        let collectionPath = "achievements"
+        guard let userId = auth.currentUser?.uid else { return }
+        
+        let achievementData: [String: Any] = [
+            "name": name,
+            "int": 0,
+            "userId": userId,
+        ]
+        
+        let documentPath = "\(userId)_\(achievementsArray.count - 1)" // Unique identifier based on name
+        db.collection(collectionPath).document(documentPath).setData(achievementData, merge: true) { error in
+            if let error = error {
+                print("Error writing document: \(error)")
+            } else {
+                print("Document \(documentPath) successfully written!")
+            }
+        }
+    }
+
+    func editAchievements(documentId: String, int: Int){
+        let ref = db.collection("achievements").document(documentId)
+            
+            ref.updateData(
+                [
+                    "int": int
+                ]){error in
+                    if let error = error{
+                        self.moved = 0
+                        print("Error while updating profile:  -\(error)")
+                    }else{
+                        print("achievements is updated!")
+                    }
+                }
     }
 }

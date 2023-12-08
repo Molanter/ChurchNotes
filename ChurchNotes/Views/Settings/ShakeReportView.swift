@@ -28,7 +28,7 @@ struct ShakeReportView: View {
                 }
                 .padding(10)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.darkGray), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.gray), lineWidth: 1)
                 )
                 HStack{
                     Image(systemName: anonymously ? "checkmark.square.fill" : "square")
@@ -42,7 +42,7 @@ struct ShakeReportView: View {
                     viewModel.shakeReport(anonymously, errorText: errorText)
                     self.errorText = ""
                 }){
-                    Text("Add")
+                    Text("Report")
                         .foregroundColor(Color.white)
                 }
                 .padding(.vertical, 10)

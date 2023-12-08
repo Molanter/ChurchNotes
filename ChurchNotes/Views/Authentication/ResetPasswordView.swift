@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ResetPasswordView: View{
-    @State var email = ""
+    @State var email: String
     @State var minute = 60
     @State var sended = false
     
@@ -18,10 +18,10 @@ struct ResetPasswordView: View{
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     @EnvironmentObject var viewModel: AppViewModel
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10){
-            Spacer()
             Text("Send reset password email")
                 .foregroundStyle(.primary)
                 .font(.largeTitle)
@@ -39,7 +39,6 @@ struct ResetPasswordView: View{
                     .opacity(0.75)
                     .padding(0)
                     .keyboardType(.namePhonePad)
-                    .textCase(.lowercase)
                     .textContentType(.emailAddress)
                     .onChange(of: email, perform: { newValue in
                         if email != ""{
@@ -84,7 +83,22 @@ struct ResetPasswordView: View{
             self.email = self.loginEmail ?? ""
         }
         .padding(.horizontal, 15)
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .accentColor(Color(K.Colors.mainColor))
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    HStack {
+                        Image(systemName: "chevron.backward")
+                        Text("Back")
+                    }
+                    .foregroundStyle(Color(K.Colors.mainColor))
+                }
+            }
+        }
     }
     func timerSend(){
         self.sended = true

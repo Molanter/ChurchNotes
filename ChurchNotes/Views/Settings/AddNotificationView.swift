@@ -220,9 +220,9 @@ struct AddNotificationView: View {
                             .font(.title2)
                         ZStack(alignment: .leading){
                             if message.isEmpty {
-                                Text("Write here...")
+                                Text("Pray for Mady.")
                                     .padding(.leading)
-                                    .foregroundColor(Color(K.Colors.lightGray))
+                                    .foregroundStyle(.secondary)
                             }
                             TextField("", text: $message)
                                 .padding(.leading)
@@ -231,7 +231,6 @@ struct AddNotificationView: View {
                                 .opacity(0.75)
                                 .padding(0)
                                 .keyboardType(.namePhonePad)
-                                .textCase(.lowercase)
                                 .textContentType(.username)
                         }
                         .frame(minHeight: 50, maxHeight: .infinity)
@@ -284,31 +283,29 @@ struct AddNotificationView: View {
     
     private func setNotifications(){
         let count = viewModel.notificationsArray.count
-        if picked != 4{
-            notify.scheduleNotifications(days: picked == 1 ? [1, 2, 3, 4, 5, 6, 7] : (picked == 2 ? [2, 3, 4, 5, 6] : [1, 7]), message: message, date: notificationTime, count: count)
-            viewModel.createNotification(sunday: sunday, monday: monday, tuesday: tuesday, wednsday: wednsday, thursday: thursday, friday: friday, saturday: saturday, date: notificationTime, message: message, count: count)
-            self.showView = false
-        }else{
-            var array: [Int] = []
-            if sunday{
-                array.append(1)
-            }else if monday{
-                array.append(2)
-            }else if tuesday{
-                array.append(3)
-            }else if wednsday{
-                array.append(4)
-            }else if thursday{
-                array.append(5)
-            }else if friday{
-                array.append(6)
-            }else if saturday{
-                array.append(7)
-            }
-            notify.scheduleNotifications(days: array, message: message, date: notificationTime, count: count)
-            viewModel.createNotification(sunday: sunday, monday: monday, tuesday: tuesday, wednsday: wednsday, thursday: thursday, friday: friday, saturday: saturday, date: notificationTime, message: message, count: count)
-            self.showView = false
+        if sunday{
+            notify.scheduleNotifications(days: [1], message: message, date: notificationTime, count: count)
         }
+        if monday{
+            notify.scheduleNotifications(days: [2], message: message, date: notificationTime, count: count)
+        }
+        if tuesday{
+            notify.scheduleNotifications(days: [3], message: message, date: notificationTime, count: count)
+        }
+        if wednsday{
+            notify.scheduleNotifications(days: [4], message: message, date: notificationTime, count: count)
+        }
+        if thursday{
+            notify.scheduleNotifications(days: [5], message: message, date: notificationTime, count: count)
+        }
+        if friday{
+            notify.scheduleNotifications(days: [6], message: message, date: notificationTime, count: count)
+        }
+        if saturday{
+            notify.scheduleNotifications(days: [7], message: message, date: notificationTime, count: count)
+        }
+        viewModel.createNotification(sunday: sunday, monday: monday, tuesday: tuesday, wednsday: wednsday, thursday: thursday, friday: friday, saturday: saturday, date: notificationTime, message: message, count: count)
+        self.showView = false
     }
 }
 

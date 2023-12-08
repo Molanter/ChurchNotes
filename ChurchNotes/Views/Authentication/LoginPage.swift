@@ -13,9 +13,12 @@ import FirebaseStorage
 import iPhoneNumberField
 import SwiftData
 import AuthenticationServices
+import Combine
 
 
 struct LoginPage: View {
+    @FocusState var focus: FocusedField?
+
     @State var phone = ""
     @State var email = ""
     @State var createPassword = ""
@@ -37,7 +40,6 @@ struct LoginPage: View {
     @State private var presentingLoginScreen = false
     @State private var presentingProfileScreen = false
     @State var showWhyAuthInfo = false
-    @State var showResetView = false
     @State var showProgressView = false
     let restrictedUsernameSet = "!@#$%^&*()+?/.>,<~`±§}{[]|\"÷≥≤µ˜∫√ç≈Ω`åß∂ƒ©˙∆˚¬…æ«‘“πøˆ¨¥†®´∑œ§¡™£¢∞§¶•ªº–≠"
     let restrictedEmaileSet = "!#$%^&*()?/>,<~`±§}{[]|\"÷≥≤µ˜∫√ç≈Ω`åß∂ƒ©˙∆˚¬…æ«‘“πøˆ¨¥†®´∑œ§¡™£¢∞§¶•ªº≠"
@@ -79,7 +81,7 @@ struct LoginPage: View {
                         .foregroundStyle(.primary)
                         .font(.largeTitle)
                         .fontWeight(.bold)
-                    Text("Prayer Diary 🙏🏻")
+                    Text("Prayer Navigator 🙏🏻")
                         .foregroundStyle(.primary)
                         .font(.title)
                         .fontWeight(.bold)
@@ -244,24 +246,6 @@ struct LoginPage: View {
                         .frame(maxWidth: .infinity)
                     //                }
                 }
-                    .sheet(isPresented: $showResetView, content: {
-                        NavigationStack{
-                            ResetPasswordView(loginEmail: email)
-                            .onDisappear(perform: {
-                                self.showResetView = false
-                            })
-                                .toolbar(content: {
-                                    ToolbarItem(placement: .topBarLeading) {
-                                        Button(action: {
-                                            self.showResetView = false
-                                        }){
-                                            Image(systemName: "xmark.circle")
-                                                .foregroundStyle(Color(K.Colors.mainColor))
-                                        }
-                                    }
-                                })
-                        }
-                    })
                 .sheet(isPresented: $showWhyAuthInfo, content: {
                     NavigationStack{
                         WhyAuthenticateInfoView()
@@ -270,7 +254,7 @@ struct LoginPage: View {
                                     Button(action: {
                                         self.showWhyAuthInfo = false
                                     }){
-                                        Image(systemName: "xmark.circle")
+                                        Text("Done")
                                             .foregroundStyle(Color(K.Colors.mainColor))
                                     }
                                 }
@@ -290,6 +274,7 @@ struct LoginPage: View {
                 ProgressView()
             }
         }
+        .accentColor(Color(K.Colors.mainColor))
         .modifier(DismissingKeyboard())
         .frame(maxWidth: .infinity)
     }
@@ -352,17 +337,18 @@ struct LoginPage: View {
                                 HStack(alignment: .center, spacing: 0.0){
                                     ZStack(alignment: .leading){
                                         if name.isEmpty {
-                                            Text("Name")
+                                            Text("Max Vinice")
                                                 .padding(.leading)
-                                                .foregroundColor(Color(K.Colors.lightGray))
+                                                .foregroundStyle(.secondary)
                                         }
                                         TextField("", text: $name)
+                                            .focused($focus, equals: .name)
                                             .padding(.leading)
                                             .disableAutocorrection(true)
+                                            .textInputAutocapitalization(.words)
                                             .textInputAutocapitalization(.never)
                                             .opacity(0.75)
                                             .padding(0)
-                                            .keyboardType(.namePhonePad)
                                             .textContentType(.name)
                                     }
                                     Spacer()
@@ -383,12 +369,12 @@ struct LoginPage: View {
                                 HStack(alignment: .center, spacing: 0.0){
                                     ZStack(alignment: .leading){
                                         if username.isEmpty {
-                                            Text("Username")
+                                            Text("mathew_kirow")
                                                 .padding(.leading)
-                                                .foregroundColor(Color(K.Colors.lightGray))
+                                                .foregroundStyle(.secondary)
                                         }
                                         TextField("", text: $username)
-                                        
+                                            .focused($focus, equals: .username)
                                             .padding(.leading)
                                             .disableAutocorrection(true)
                                             .textInputAutocapitalization(.never)
@@ -408,13 +394,15 @@ struct LoginPage: View {
                                     RoundedRectangle(cornerSize: .init(width: 7, height: 7))
                                         .stroke((username == "" ? Color(K.Colors.justLightGray) : Color(viewModel.isAvailable ? K.Colors.justLightGray : K.Colors.red)).opacity(0.5), lineWidth: 1)
                                 )
+                                .onReceive(Just(username)) { newText in
+                                    username = newText.filter { $0.isEnglishCharacter || $0.isNumber || $0.isAllowedSymbol }
+                                            }
                                 .onChange(of: username, perform: { newValue in
                                     if username != ""{
                                         username = String(newValue.filter { !restrictedUsernameSet.contains($0) })
                                         if username.count > maxLength {
                                             username = String(newValue.prefix(maxLength))
                                         }
-                                        print(username)
                                         viewModel.checkUsernameAvailability(username: newValue)
                                     }
                                 })
@@ -426,11 +414,12 @@ struct LoginPage: View {
                                 HStack(alignment: .center, spacing: 0.0){
                                     ZStack(alignment: .leading){
                                         if email.isEmpty {
-                                            Text("Email")
+                                            Text(verbatim: "j.marin@example.com")
                                                 .padding(.leading)
-                                                .foregroundColor(Color(K.Colors.lightGray))
+                                                .foregroundStyle(.secondary)
                                         }
                                         TextField("", text: $email)
+                                            .focused($focus, equals: .registerEmail)
                                             .textCase(.lowercase)
                                             .padding(.leading)
                                             .foregroundColor(Color(K.Colors.lightGray))
@@ -475,6 +464,7 @@ struct LoginPage: View {
                                                 .foregroundColor(Color(K.Colors.lightGray))
                                         }
                                         TextField("", text: $country)
+                                            .focused($focus, equals: .country)
                                             .padding(.leading)
                                             .disableAutocorrection(true)
                                             .textInputAutocapitalization(.never)
@@ -506,19 +496,12 @@ struct LoginPage: View {
                                     .fontWeight(.semibold)
                                     .font(.system(size: 15))
                                 HStack(alignment: .center, spacing: 0.0){
-                                    ZStack(alignment: .leading){
-                                        iPhoneNumberField("Phone Number", text: $phone)
-                                            .maximumDigits(15)
-                                            .prefixHidden(false)
-                                            .flagHidden(false)
-                                            .flagSelectable(true)
-                                            .placeholderColor(Color(K.Colors.lightGray))
-                                            .frame(height: 45)
-                                            .disableAutocorrection(true)
-                                            .textInputAutocapitalization(.never)
-                                            .padding(0)
-                                            .textContentType(.telephoneNumber)
-                                    }
+                                    TextField("Phone", text: $phone)
+                                        .focused($focus, equals: .phone)
+                                        .textInputAutocapitalization(.never)
+                                        .disableAutocorrection(true)
+                                        .textContentType(.telephoneNumber)
+                                        .keyboardType(.numberPad)
                                     .padding(.leading)
                                     Spacer()
                                     Image(systemName: "phone.fill")
@@ -539,14 +522,16 @@ struct LoginPage: View {
                                 HStack(alignment: .center, spacing: 0.0){
                                     ZStack(alignment: .leading){
                                         if createPassword.isEmpty{
-                                            Text("Create Password")
+                                            Text(showPassword ? "Password" : "∙∙∙∙∙∙∙∙")
+                                                .fontWeight(showPassword ? .regular : .semibold)
                                                 .padding(.leading)
-                                                .foregroundColor(Color(K.Colors.lightGray))
+                                                .foregroundStyle(.secondary)
                                         }
                                         HStack{
                                             Group{
                                                 if !showPassword{
                                                     SecureField("", text: $createPassword)
+                                                        .focused($focus, equals: .createPass)
                                                         .disableAutocorrection(true)
                                                         .textInputAutocapitalization(.never)
                                                         .padding(0)
@@ -554,6 +539,7 @@ struct LoginPage: View {
                                                         .padding(.leading)
                                                 }else{
                                                     TextField("", text: $createPassword)
+                                                        .focused($focus, equals: .phone)
                                                         .foregroundColor(Color(K.Colors.lightGray))
                                                         .disableAutocorrection(true)
                                                         .textInputAutocapitalization(.never)
@@ -584,14 +570,16 @@ struct LoginPage: View {
                                 HStack(alignment: .center, spacing: 0.0){
                                     ZStack(alignment: .leading){
                                         if repeatPassword.isEmpty{
-                                            Text("Repeat Password")
+                                            Text(showPassword ? "Password" : "∙∙∙∙∙∙∙∙")
+                                                .fontWeight(showPassword ? .regular : .semibold)
                                                 .padding(.leading)
-                                                .foregroundColor(Color(K.Colors.lightGray))
+                                                .foregroundStyle(.secondary)
                                         }
                                         HStack{
                                             Group{
                                                 if !showPassword{
                                                     SecureField("", text: $repeatPassword)
+                                                        .focused($focus, equals: .phone)
                                                         .disableAutocorrection(true)
                                                         .textInputAutocapitalization(.never)
                                                         .padding(0)
@@ -599,6 +587,7 @@ struct LoginPage: View {
                                                         .padding(.leading)
                                                 }else{
                                                     TextField("", text: $repeatPassword)
+                                                        .focused($focus, equals: .phone)
                                                         .foregroundColor(Color(K.Colors.lightGray))
                                                         .disableAutocorrection(true)
                                                         .textInputAutocapitalization(.never)
@@ -627,7 +616,27 @@ struct LoginPage: View {
                             }
                             
                         }
-                        
+                        .onSubmit {
+                                    switch focus {
+                                    case .name:
+                                        focus = .username
+                                    case .username:
+                                        focus = .registerEmail
+                                    case .registerEmail:
+                                        focus = .country
+                                    case .country:
+                                        focus = .phone
+                                    case .phone:
+                                        focus = .createPass
+                                    case .createPass:
+                                        focus = .repeatPass
+                                    case .repeatPass:
+                                        registerFunc()
+                                        self.showProgressView = true
+                                    default:
+                                        break
+                                    }
+                                }
                         Button(action: {
                             registerFunc()
                             self.showProgressView = true
@@ -642,8 +651,8 @@ struct LoginPage: View {
                     }
                     .padding(.horizontal, 15)
                     
-                    if errReg != ""{
-                        Text(errReg)
+                    if viewModel.err != ""{
+                        Text(viewModel.err)
                             .foregroundStyle(Color(K.Colors.red))
                             .padding(.horizontal, 15)
                     }
@@ -667,7 +676,6 @@ struct LoginPage: View {
                     }
                 })
             }
-            .modifier(DismissingKeyboard())
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: {self.showRegister.toggle()}){
@@ -684,11 +692,11 @@ struct LoginPage: View {
             viewModel.register(email: email, password: createPassword, image: image, name: name, userName: username.lowercased(), country: country, phone: phone)
             errReg = viewModel.err
         }else if name == ""{
-            errReg = "Name field is empty, enter your name."
+            viewModel.err = "Name field is empty, enter your name."
         }else if viewModel.isAvailable == false{
-            errReg = "Username is not available, create another one."
+            viewModel.err = "Username is not available, create another one."
         }else if createPassword != repeatPassword{
-            errReg = "Passwords do not match."
+            viewModel.err = "Passwords do not match."
         }
     }
     var login: some View {
@@ -709,11 +717,12 @@ struct LoginPage: View {
                             
                             ZStack(alignment: .leading){
                                 if email.isEmpty {
-                                    Text("Email")
+                                    Text(verbatim: "j.marin@example.com")
                                         .padding(.leading)
-                                        .foregroundColor(Color(K.Colors.lightGray))
+                                        .foregroundStyle(.secondary)
                                 }
                                 TextField("", text: $email)
+                                    .focused($focus, equals: .loginEmail)
                                     .padding(.leading)
                                     .foregroundColor(Color(K.Colors.lightGray))
                                     .disableAutocorrection(true)
@@ -742,14 +751,16 @@ struct LoginPage: View {
                         HStack(alignment: .center, spacing: 0.0){
                             ZStack(alignment: .leading){
                                 if password.isEmpty{
-                                    Text("Password")
+                                    Text(showPassword ? "Password" : "∙∙∙∙∙∙∙∙")
+                                        .fontWeight(showPassword ? .regular : .semibold)
                                         .padding(.leading)
-                                        .foregroundColor(Color(K.Colors.lightGray))
+                                        .foregroundStyle(.secondary)
                                 }
                                 HStack{
                                     Group{
                                         if !showPassword{
                                             SecureField("", text: $password)
+                                                .focused($focus, equals: .loginPass)
                                                 .foregroundColor(Color(K.Colors.lightGray))
                                                 .disableAutocorrection(true)
                                                 .textInputAutocapitalization(.never)
@@ -758,6 +769,7 @@ struct LoginPage: View {
                                                 .padding(.leading)
                                         }else{
                                             TextField("", text: $password)
+                                                .focused($focus, equals: .loginPass)
                                                 .foregroundColor(Color(K.Colors.lightGray))
                                                 .disableAutocorrection(true)
                                                 .textInputAutocapitalization(.never)
@@ -766,7 +778,6 @@ struct LoginPage: View {
                                                 .padding(.leading)
                                         }
                                     }
-                                    .frame(height: 45)
                                     Spacer()
                                     Button(action: {
                                         self.showPassword.toggle()
@@ -779,33 +790,26 @@ struct LoginPage: View {
                                     }
                                 }
                             }
+                            .frame(height: 45)
                         }
                         .overlay(
                             RoundedRectangle(cornerSize: .init(width: 7, height: 7))
                                 .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
                         )
+                        .padding(.top, 10)
                         HStack{
                             Spacer()
-                            Button(action: {
-                                self.showRegister = false
-                                self.showLogin = false
-                                self.showResetView = true
-                            }){
+                            NavigationLink(destination: ResetPasswordView(email: email), label: {
                                 Text("Forgot password?")
                                     .padding(.vertical, 5)
                                     .font(.system(size: 14))
-                                    .foregroundColor(Color(K.Colors.mainColor))
-                            }
+                                    .foregroundStyle(Color(K.Colors.mainColor))
+                            })
                         }
                         Button(action: {
-                            if email != "" && password != ""{
-                                viewModel.login(email: email, password: password)
-                                errLog = viewModel.err
-                                self.showProgressView = true
-                            }else{
-                                email = "12@2.com"
-                                password = "123456"
-                            }
+                            viewModel.login(email: email, password: password)
+                            errLog = viewModel.err
+                            self.showProgressView = true
                         }){
                             Text("Log In")
                                 .foregroundStyle(Color.white)
@@ -816,9 +820,21 @@ struct LoginPage: View {
                         .cornerRadius(7)
                         .padding(.vertical)
                     }
+                    .onSubmit {
+                                switch focus {
+                                case .loginEmail:
+                                    focus = .loginPass
+                                case .loginPass:
+                                    viewModel.login(email: email, password: password)
+                                    errLog = viewModel.err
+                                    self.showProgressView = true
+                                default:
+                                    break
+                                }
+                            }
                     .padding(.horizontal, 15)
-                    if errLog != ""{
-                        Text(errLog)
+                    if viewModel.err != ""{
+                        Text(viewModel.err)
                             .foregroundStyle(Color(K.Colors.pink))
                             .padding(.horizontal, 15)
                     }
@@ -828,7 +844,7 @@ struct LoginPage: View {
                         self.showLogin = false
                         self.showRegister = true
                     }){
-                        Text("Don't have an acount? - Rerister")
+                        Text("Don't have an account? - Register")
                             .font(.system(size: 16))
                             .padding(.top, 20)
                             .foregroundColor(Color(K.Colors.mainColor))
@@ -836,7 +852,6 @@ struct LoginPage: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .modifier(DismissingKeyboard())
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: {self.showLogin.toggle()}){
@@ -852,6 +867,10 @@ struct LoginPage: View {
     }
     
     
+    
+    enum FocusedField:Hashable{
+        case name, username, loginEmail, registerEmail, phone, country, loginPass, createPass, repeatPass
+        }
 }
 
 #Preview {

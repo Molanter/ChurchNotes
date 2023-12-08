@@ -46,39 +46,73 @@ class FrontCameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecording
     
     
     func switchCamera() {
-            self.session.stopRunning()
-            
-            // Toggle the camera value between front and back
-            if self.session.inputs.count > 0 {
-                let currentInput = self.session.inputs[0] as! AVCaptureInput
-                self.session.removeInput(currentInput)
-            }
-            
-            if self.camera == 0 {
-                if let cameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
-                    let cameraInput = try? AVCaptureDeviceInput(device: cameraDevice)
-                    if let cameraInput = cameraInput {
-                        if self.session.canAddInput(cameraInput) {
-                            self.session.addInput(cameraInput)
-                        }
-                    }
-                }
-                self.camera = 1
-            } else {
-                if let cameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) {
-                    let cameraInput = try? AVCaptureDeviceInput(device: cameraDevice)
-                    if let cameraInput = cameraInput {
-                        if self.session.canAddInput(cameraInput) {
-                            self.session.addInput(cameraInput)
-                        }
-                    }
-                }
-                self.camera = 0
-            }
-            
-            self.session.startRunning()
+        // Toggle the camera value between front and back
+        if self.camera == 0 {
+            self.camera = 1
+        } else {
+            self.camera = 0
         }
+
+        // Stop and reconfigure the session with the new camera input
+        self.session.stopRunning()
+
+        // Remove the current camera input
+        if self.session.inputs.count > 0 {
+            let currentInput = self.session.inputs[0] as! AVCaptureInput
+            self.session.removeInput(currentInput)
+        }
+
+        // Add the new camera input
+        if let cameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: self.camera == 0 ? .front : .back) {
+            let cameraInput = try? AVCaptureDeviceInput(device: cameraDevice)
+            if let cameraInput = cameraInput {
+                if self.session.canAddInput(cameraInput) {
+                    self.session.addInput(cameraInput)
+                }
+            }
+        }
+
+        // Restart the session
+        self.session.startRunning()
+    }
     
+    func deleteAllVideos() {
+           // Delete all videos in the array
+           for url in recordedURLs {
+               do {
+                   try FileManager.default.removeItem(at: url)
+               } catch {
+                   print("Error deleting video file: \(error.localizedDescription)")
+               }
+           }
+
+           // Clear the recordedURLs array
+           recordedURLs.removeAll()
+
+           // Set previewURL to nil
+           previewURL = nil
+       }
+    
+    func deleteVideo(at index: Int) {
+            guard index >= 0, index < recordedURLs.count else {
+                return
+            }
+
+            let deletedURL = recordedURLs.remove(at: index)
+
+            // Update the preview URL if it was the deleted video
+            if previewURL == deletedURL {
+                previewURL = nil
+            }
+
+            // Optional: Delete the file from the file system
+            do {
+                try FileManager.default.removeItem(at: deletedURL)
+                print("ok")
+            } catch {
+                print("Error deleting video file: \(error.localizedDescription)")
+            }
+        }
     
     func setUp(){
         print("setUPP")

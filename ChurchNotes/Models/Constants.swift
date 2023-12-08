@@ -13,6 +13,8 @@ import SwiftUI
 struct K{
     @AppStorage("choosedStages") static var choosedStages: Int = 0
     @AppStorage("favouriteSign") static var favouriteSign: String = "heart"
+    @AppStorage("testFeatures") static var testFeatures: Bool = false
+    @AppStorage("swipeStage") static var swipeStage: Bool = false
 
     struct Colors{
         static let colorsDictionary: [String: String] = [
@@ -279,7 +281,20 @@ struct K{
                 "VG": "284",
                 "VI": "340", "EH": "121"]
     }
-    
+    struct AppStages{
+        static let stagesArray: [AppStage] = [
+            AppStage(name: "New Friend", orderIndex: 0),
+            AppStage(name: "Invited", orderIndex: 1),
+            AppStage(name: "Attanded", orderIndex: 2),
+            AppStage(name: "Acepted Christ", orderIndex: 3),
+            AppStage(name: "Baptized", orderIndex: 4),
+            AppStage(name: "Serving", orderIndex: 5),
+            AppStage(name: "Joined Group", orderIndex: 6)
+        ]
+    }
+    struct Hiden{
+        static let ok:[String] = ["Ok", "ok", "Ok", "Ok"]
+    }
 }
 
 class Utilities {
@@ -301,5 +316,20 @@ class Utilities {
         }
     
         UIApplication.shared.windows.first?.overrideUserInterfaceStyle = userInterfaceStyle
+    }
+}
+
+extension Character {
+    var isEnglishCharacter: Bool {
+        return ("A"..."Z" ~= self) || ("a"..."z" ~= self)
+    }
+
+    var isNumber: Bool {
+        return "0"..."9" ~= self
+    }
+
+    var isAllowedSymbol: Bool {
+        let allowedSymbols: Set<Character> = ["-", "_", "."]
+        return allowedSymbols.contains(self)
     }
 }
