@@ -25,12 +25,16 @@ struct ItemView: View {
     @State var finishImage: Data?
     @State var sheetPesonInfo = false
     @State var currentTab: Int = 0
+    @State var searchTab: Int = 0
     @State private var currentItem: Person?
     @State private var lastItem: Person?
     @State private var isShowingDeleteAlert = false
     @State private var isShaked = false
     @State var presentStageSheet = false
     @State var nowStage: Int = 2
+    @State var showActionSheet = false
+    @State var deleteItem: Notifics?
+
     let notify = NotificationHandler()
     
     private var sortedAppStages: [AppStage]{
@@ -69,90 +73,241 @@ struct ItemView: View {
                         .padding()
                 }else{
                     if isSearching{
-                        List{
-                            if isSearching && !filteredItems.isEmpty{
-                                ForEach(filteredItems){ item in
-                                    if item.isCheked == false && item.isDone == false{
-                                        Button(action: {
-                                            currentItem = item
-                                            self.sheetPesonInfo.toggle()
-                                            dismissSearch()
-                                        }){
-                                            RowPersonModel(item: item)
-                                            .alert("Delete Person", isPresented: Binding(
-                                                get: { self.isShowingDeleteAlert && lastItem != nil },
-                                                set: { newValue in
-                                                    if !newValue {
-                                                        self.isShowingDeleteAlert = false
-                                                    }
-                                                }
-                                            )) {
-                                                Button("Cancel", role: .cancel) {}
-                                                Button("Delete", role: .destructive) {
-                                                    viewModel.deletePerson(documentId: lastItem?.documentId ?? item.documentId)
-                                                    isShowingDeleteAlert = false
-                                                }
-                                            } message: {
-                                                Text("Do you really want to delete this person? This action cannot be undone.")
-                                            }
-                                            
-                                            .contextMenu {
-                                                Button{
-                                                    withAnimation{
-                                                        if item.isLiked{
-                                                            viewModel.likePerson(documentId: item.documentId, isLiked: false)
-                                                        }else{
-                                                            viewModel.likePerson(documentId: item.documentId, isLiked: true)
+                        VStack(spacing: 0){
+                            SearchSlider(currentTab: $searchTab)
+                                    TabView(selection: $searchTab){
+                                        List{
+                                            if isSearching && !filteredItems.isEmpty{
+                                                ForEach(filteredItems){ item in
+                                                    if item.isCheked == false && item.isDone == false{
+                                                        Button(action: {
+                                                            currentItem = item
+                                                            self.sheetPesonInfo.toggle()
+                                                            dismissSearch()
+                                                            self.searchTab = 0
+                                                        }){
+                                                            RowPersonModel(item: item)
+                                                            .alert("Delete Person", isPresented: Binding(
+                                                                get: { self.isShowingDeleteAlert && lastItem != nil },
+                                                                set: { newValue in
+                                                                    if !newValue {
+                                                                        self.isShowingDeleteAlert = false
+                                                                    }
+                                                                }
+                                                            )) {
+                                                                Button("Cancel", role: .cancel) {}
+                                                                Button("Delete", role: .destructive) {
+                                                                    viewModel.deletePerson(documentId: lastItem?.documentId ?? item.documentId)
+                                                                    isShowingDeleteAlert = false
+                                                                }
+                                                            } message: {
+                                                                Text("Do you really want to delete this person? This action cannot be undone.")
+                                                            }
+                                                            
+                                                            .contextMenu {
+                                                                Button{
+                                                                    withAnimation{
+                                                                        if item.isLiked{
+                                                                            viewModel.likePerson(documentId: item.documentId, isLiked: false)
+                                                                        }else{
+                                                                            viewModel.likePerson(documentId: item.documentId, isLiked: true)
+                                                                        }
+                                                                    }
+                                                                } label: {
+                                                                    Label("Favourite", systemImage: item.isLiked ? "\(K.favouriteSign).fill" : "\(K.favouriteSign)")
+                                                                        .accentColor(Color(K.Colors.favouriteSignColor))
+                                                                        .contentTransition(.symbolEffect(.replace))
+                                                                }
+                                                                
+                                                                Button(role: .destructive) {
+                                                                    self.lastItem = item
+                                                                    withAnimation{
+                                                                        self.isShowingDeleteAlert = true
+                                                                    }
+                                                                } label: {
+                                                                    Label("Delete", systemImage: "trash")
+                                                                }
+                                                            }
                                                         }
                                                     }
-                                                } label: {
-                                                    Label("Favourite", systemImage: item.isLiked ? "\(K.favouriteSign).fill" : "\(K.favouriteSign)")
-                                                        .accentColor(Color(K.Colors.favouriteSignColor))
-                                                        .contentTransition(.symbolEffect(.replace))
                                                 }
-                                                
-                                                Button(role: .destructive) {
-                                                    self.lastItem = item
-                                                    withAnimation{
-                                                        self.isShowingDeleteAlert = true
+                                                .onDelete(perform: { indexSet in
+                                                    if let firstIndex = indexSet.first {
+                                                        let itemToDelete = filteredItems[firstIndex]
+                                                        self.lastItem = itemToDelete
+                                                        withAnimation{
+                                                            self.isShowingDeleteAlert = true
+                                                        }                        }
+                                                })
+                                                .padding(.horizontal, 0)
+                                            }else if isSearching && filteredItems.isEmpty{
+                                                Section(header: Text("You don't have Person with name '\(published.searchText)'")){
+                                                    Button(action: {
+                                                        self.published.searchText = ""
+                                                        self.showAddPersonView = true
+                                                    }){
+                                                        Label("Create", systemImage: "person.badge.plus")
+                                                            .foregroundColor(Color.black)
+                                                            .padding(.vertical, 10)
+                                                            .frame(maxWidth: .infinity)
+                                                            .background(Color(K.Colors.mainColor))
+                                                            .cornerRadius(7)
                                                     }
-                                                } label: {
-                                                    Label("Delete", systemImage: "trash")
                                                 }
                                             }
                                         }
+                                        .scrollContentBackground(.hidden)
+                                        .listStyle(.plain)
+                                        .frame(maxHeight: .infinity)
+                                        .tag(0)
+                                        List{
+                                            ForEach(filteredItems){ item in
+                                                if item.isCheked == false && item.isDone == false && item.isLiked == true{
+                                                    Button(action: {
+                                                        currentItem = item
+                                                        self.sheetPesonInfo.toggle()
+                                                        dismissSearch()
+                                                        self.searchTab = 0
+                                                    }){
+                                                        RowPersonModel(item: item)
+                                                        .alert("Delete Person", isPresented: Binding(
+                                                            get: { self.isShowingDeleteAlert && lastItem != nil },
+                                                            set: { newValue in
+                                                                if !newValue {
+                                                                    self.isShowingDeleteAlert = false
+                                                                }
+                                                            }
+                                                        )) {
+                                                            Button("Cancel", role: .cancel) {}
+                                                            Button("Delete", role: .destructive) {
+                                                                viewModel.deletePerson(documentId: lastItem?.documentId ?? item.documentId)
+                                                                isShowingDeleteAlert = false
+                                                            }
+                                                        } message: {
+                                                            Text("Do you really want to delete this person? This action cannot be undone.")
+                                                        }
+                                                        
+                                                        .contextMenu {
+                                                            Button{
+                                                                withAnimation{
+                                                                    if item.isLiked{
+                                                                        viewModel.likePerson(documentId: item.documentId, isLiked: false)
+                                                                    }else{
+                                                                        viewModel.likePerson(documentId: item.documentId, isLiked: true)
+                                                                    }
+                                                                }
+                                                            } label: {
+                                                                Label("Favourite", systemImage: item.isLiked ? "\(K.favouriteSign).fill" : "\(K.favouriteSign)")
+                                                                    .accentColor(Color(K.Colors.favouriteSignColor))
+                                                                    .contentTransition(.symbolEffect(.replace))
+                                                            }
+                                                            
+                                                            Button(role: .destructive) {
+                                                                self.lastItem = item
+                                                                withAnimation{
+                                                                    self.isShowingDeleteAlert = true
+                                                                }
+                                                            } label: {
+                                                                Label("Delete", systemImage: "trash")
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            .onDelete(perform: { indexSet in
+                                                if let firstIndex = indexSet.first {
+                                                    let itemToDelete = filteredItems[firstIndex]
+                                                    self.lastItem = itemToDelete
+                                                    withAnimation{
+                                                        self.isShowingDeleteAlert = true
+                                                    }                        }
+                                            })
+                                            .padding(.horizontal, 0)
+                                        }
+                                        .scrollContentBackground(.hidden)
+                                        .listStyle(.plain)
+                                        .frame(maxHeight: .infinity)
+                                        .tag(1)
+                                        Group{
+                                            if !viewModel.notificationsArray.isEmpty{
+                                                List{
+
+                                                ForEach(viewModel.notificationsArray){ notf in
+                                                    VStack(alignment: .leading){
+                                                        HStack{
+                                                            Text(notf.date, style: .time)
+                                                                .bold()
+                                                                .font(.title3)
+                                                            HStack(spacing: 1){
+                                                                if notf.sunday && notf.monday && notf.tuesday && notf.wednsday && notf.thursday && notf.friday && notf.saturday{
+                                                                    Text("All Days")
+                                                                }else if notf.sunday && !notf.monday && !notf.tuesday && !notf.wednsday && !notf.thursday && !notf.friday && notf.saturday{
+                                                                    Text("Weekends")
+                                                                }else if !notf.sunday && notf.monday && notf.tuesday && notf.wednsday && notf.thursday && notf.friday && !notf.saturday{
+                                                                    Text("Weekdays")
+                                                                }else{
+                                                                    Text(notf.sunday ? "Sun " : "")
+                                                                    Text(notf.monday ? "Mon " : "")
+                                                                    Text(notf.tuesday ? "Tue " : "")
+                                                                    Text(notf.wednsday ? "Wed " : "")
+                                                                    Text(notf.thursday ? "Thu " : "")
+                                                                    Text(notf.friday ? "Fri " : "")
+                                                                    Text(notf.saturday ? "Sat " : "")
+                                                                }
+                                                            }
+                                                            .frame(alignment: .leading)
+                                                            .foregroundStyle(.secondary)
+                                                            .font(.body)
+                                                            Spacer()
+                                                            Button(action: {
+                                                                self.deleteItem = notf
+                                                                self.showActionSheet.toggle()
+                                                            }){
+                                                                Image(systemName: "xmark")
+                                                                    .font(.title2)
+                                                            }
+                                                        }
+                                                        Text(notf.message)
+                                                            .font(.body)
+                                                    }
+                                                    .actionSheet(isPresented: $showActionSheet) {
+                                                        ActionSheet(title: Text("You want to remove this notification"),
+                                                                    message: Text("Press '**Remove**' to resume."),
+                                                                    buttons: [
+                                                                        .cancel(),
+                                                                        .destructive(
+                                                                            Text("Remove")
+                                                                        ){
+                                                                            removeNotification(item: notf)
+                                                                        }
+                                                                    ]
+                                                        )
+                                                    }
+                                                }
+                                                .onDelete { indexSet in
+                                                    if let firstIndex = indexSet.first {
+                                                        self.deleteItem = viewModel.notificationsArray[firstIndex]
+                                                        self.showActionSheet.toggle()
+                                                    }
+                                                }
+                                                }
+                                                .listStyle(.plain)
+                                            }else{
+                                                VStack(alignment: .leading){
+                                                    Image(systemName: "bell.slash")
+                                                    Text("You don't have notifications yet.")
+                                                }
+                                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                            }
+                                        }
+                                        .onAppear(perform: {
+                                            viewModel.fetchNotifications()
+                                        })
+                                            .tag(2)
                                     }
-                                }
-                                .onDelete(perform: { indexSet in
-                                    if let firstIndex = indexSet.first {
-                                        let itemToDelete = filteredItems[firstIndex]
-                                        self.lastItem = itemToDelete
-                                        withAnimation{
-                                            self.isShowingDeleteAlert = true
-                                        }                        }
-                                })
-                                .padding(.horizontal, 0)
-                            }else if isSearching && filteredItems.isEmpty{
-                                Section(header: Text("You don't have Person with name '\(published.searchText)'")){
-                                    Button(action: {
-                                        self.published.searchText = ""
-                                        self.showAddPersonView = true
-                                    }){
-                                        Label("Create", systemImage: "person.badge.plus")
-                                            .foregroundColor(Color.black)
-                                            .padding(.vertical, 10)
-                                            .frame(maxWidth: .infinity)
-                                            .background(Color(K.Colors.mainColor))
-                                            .cornerRadius(7)
-                                    }
-                                }
+                                    .tabViewStyle(.page(indexDisplayMode: .never))
                             }
-                            
-                        }
-                        
-                        .scrollContentBackground(.hidden)
-                        .listStyle(.plain)
-                        .frame(maxHeight: .infinity)
+                        .frame(maxHeight: .infinity, alignment: .top)
                     }else{
                             List{
                                 if nowStage == 0{
@@ -196,6 +351,7 @@ struct ItemView: View {
                     }
                 }
             }
+            
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onAppear(perform: {
                 self.nowStage = K.choosedStages
@@ -203,6 +359,7 @@ struct ItemView: View {
             .onChange(of: K.choosedStages) { oldValue, newValue in
                 self.nowStage = newValue
             }
+            
             .toolbar(content: {
                 if !sortedStages.isEmpty {
                     ToolbarItem(placement: .topBarTrailing, content: {
@@ -213,14 +370,14 @@ struct ItemView: View {
                     })
                 }
                 if !filteredItems.isEmpty{
-                    ToolbarItem(placement: .topBarTrailing) {
+                    ToolbarItem(placement: .topBarLeading) {
                         EditButton()
                     }
                 }
                 
                 ToolbarItem(placement: .principal) {
-                    VStack(alignment: .center){
-                        HStack(spacing: 0){
+//                    VStack(alignment: .center){
+//                        HStack(spacing: 0){
 //                            Button(action: {
 //                                withAnimation{
 //                                    K.choosedStages = 0
@@ -229,17 +386,7 @@ struct ItemView: View {
 //                                }
 //                            }){
                             Text(nowStage == 0 ? "App Stages" : "Your Stages")
-                                    .font(.system(size: 15))
-                                    .foregroundStyle(/*nowStage == 0 ? */Color(K.Colors.blackAndWhite)/* : Color(K.Colors.lightGray).opacity(0.5)*/)
-                                    .bold()
-                                    .padding(.vertical, 5)
-                                    .padding(.horizontal, 10)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: .infinity)
-                                            .foregroundStyle(/*nowStage == 0 ? */Color(K.Colors.mainColor)/* : Color.clear*/)
-//                                            .offset(x: nowStage == 0 ? 0 : 145)
-                                        
-                                    )
+//                                .foregroundStyle(Color(K.Colors.mainColor))
 //                            }
 //                            Button(action: {
 //                                withAnimation{
@@ -261,13 +408,21 @@ struct ItemView: View {
 //                                        
 //                                    )
 //                            }
-                        }
+//                        }
                         
                     }
-                    .onAppear(perform: {
-                        nowStage = K.choosedStages
-                    })
-                }
+            })
+            .toolbarTitleMenu { // ADD THIS!
+                            Button("App Stages") {
+                                    nowStage = 0
+                            }.buttonStyle(.borderedProminent)
+                            
+                            Button("Your Stages") {
+                                nowStage = 1
+                            }.buttonStyle(.borderedProminent)
+                        }
+            .onAppear(perform: {
+                nowStage = K.choosedStages
             })
             .sheet(isPresented: $presentStageSheet){
                 NavigationStack{
@@ -342,6 +497,7 @@ struct ItemView: View {
             .onShake{
                 self.isShaked.toggle()
             }
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
     
@@ -570,6 +726,31 @@ struct ItemView: View {
             }
         }
         self.lastItem = nil
+    }
+    
+    private func removeNotification(item: Notifics){
+        if item.sunday{
+            notify.stopNotifying(day: 1, count: item.orderIndex)
+        }
+        if item.monday{
+            notify.stopNotifying(day: 2, count: item.orderIndex)
+        }
+        if item.tuesday{
+            notify.stopNotifying(day: 3, count: item.orderIndex)
+        }
+        if item.wednsday{
+            notify.stopNotifying(day: 4, count: item.orderIndex)
+        }
+        if item.thursday{
+            notify.stopNotifying(day: 5, count: item.orderIndex)
+        }
+        if item.friday{
+            notify.stopNotifying(day: 6, count: item.orderIndex)
+        }
+        if item.saturday{
+            notify.stopNotifying(day: 7, count: item.orderIndex)
+        }
+        viewModel.stopNotifing(item: item)
     }
 }
 

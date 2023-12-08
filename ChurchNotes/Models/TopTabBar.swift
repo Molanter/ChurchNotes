@@ -94,7 +94,7 @@ struct TopBarView: View {
             .background(Color(K.Colors.mainColor))
             .presentationDetents([.medium])
         }
-        .frame(height: 40)
+        .frame(height: 30)
     }
     func addItemTitle(){
         viewModel.saveStages(name: title)
@@ -102,6 +102,8 @@ struct TopBarView: View {
         title = ""
     }
 }
+
+
 
 struct TopBarItem: View {
     @Binding var currentTab: Int

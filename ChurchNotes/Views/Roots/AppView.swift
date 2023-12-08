@@ -256,7 +256,7 @@ struct AppView: View {
                             Divider()
                         }
                         VStack{
-                            NavigationLink(destination: NotificationView(notifications: $notifications, documentId: $documentId, notificationTime: $notificationTime)){
+                            NavigationLink(destination: NotificationView()){
                                 HStack(spacing: 29){
                                     Image(systemName: "bell.badge")
                                         .symbolRenderingMode(.palette)

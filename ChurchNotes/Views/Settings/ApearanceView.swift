@@ -113,21 +113,15 @@ struct AppearanceView: View {
                             K.testFeatures = new
                         }
                         if testFeatures == true{
-                            Toggle(isOn: $swipeStage) {
-                                Text("Swipe to change Stages")
-                            }
-                            .onChange(of: swipeStage) { old, new in
-                                K.swipeStage = new
-                            }
-                            Text("Item 2")
-                            Text("Item 3")
+//                            Toggle(isOn: $swipeStage) {
+//                                Text("Swipe to change Stages")
+//                            }
+//                            .onChange(of: swipeStage) { old, new in
+//                                K.swipeStage = new
+//                            }
+//                            Text("Item 2")
+//                            Text("Item 3")
                         }
-//                        Text("Item 1")
-//                            .opacity(testFeatures ? 1 : 0.3)
-//                        Text("Item 2")
-//                            .opacity(testFeatures ? 1 : 0.3)
-//                        Text("Item 3")
-//                            .opacity(testFeatures ? 1 : 0.3)
                     }
                     .listRowBackground(Color.clear)
                 }

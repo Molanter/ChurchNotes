@@ -9,9 +9,6 @@ import SwiftUI
 
 struct NotificationView: View {
     @State var addNotification = false
-    @Binding var notifications: Bool
-    @Binding var documentId: String
-    @Binding var notificationTime: Date
     @State var toggle = false
     @State var showActionSheet = false
     @State var selectedDate = Date.now

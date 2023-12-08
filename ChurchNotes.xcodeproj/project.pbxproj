@@ -59,6 +59,7 @@
 		9E7282D92A57439A004D6483 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E7282D82A57439A004D6483 /* Assets.xcassets */; };
 		9E7282E52A57BB6D004D6483 /* ItemPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7282E42A57BB6D004D6483 /* ItemPersonView.swift */; };
 		9E7D0F952B22AF0A00F52051 /* RowPersonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7D0F942B22AF0A00F52051 /* RowPersonModel.swift */; };
+		9E7D0F972B22DBB300F52051 /* SearchSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7D0F962B22DBB300F52051 /* SearchSlider.swift */; };
 		9E86F45A2B0D358300993C74 /* EditStageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E86F4592B0D358300993C74 /* EditStageView.swift */; };
 		9E91BDAD2A93C4F5007DD52E /* DismissingKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E91BDAC2A93C4F5007DD52E /* DismissingKeyboard.swift */; };
 		9E9F659F2AE759CA00FF743A /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9F659E2AE759CA00FF743A /* EditProfileView.swift */; };
@@ -128,6 +129,7 @@
 		9E7282DA2A57439A004D6483 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9E7282E42A57BB6D004D6483 /* ItemPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemPersonView.swift; sourceTree = "<group>"; };
 		9E7D0F942B22AF0A00F52051 /* RowPersonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowPersonModel.swift; sourceTree = "<group>"; };
+		9E7D0F962B22DBB300F52051 /* SearchSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSlider.swift; sourceTree = "<group>"; };
 		9E86F4592B0D358300993C74 /* EditStageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditStageView.swift; sourceTree = "<group>"; };
 		9E86F45C2B0E6BEF00993C74 /* ChurchNotes.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ChurchNotes.entitlements; sourceTree = "<group>"; };
 		9E86F45D2B0E6BEF00993C74 /* WidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgetExtension.entitlements; sourceTree = "<group>"; };
@@ -318,6 +320,7 @@
 				9E5A17B82B12E51400F2A801 /* Buttons.swift */,
 				9E5A17BD2B16726600F2A801 /* AchievementsItem.swift */,
 				9E7D0F942B22AF0A00F52051 /* RowPersonModel.swift */,
+				9E7D0F962B22DBB300F52051 /* SearchSlider.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -595,6 +598,7 @@
 				9E5661922AE44D2C0076591B /* DonePeople.swift in Sources */,
 				9E3CFF212A688E5C0087AFD0 /* CurrentPersonView.swift in Sources */,
 				9E6F9E0B2A4BC994009B72DC /* Constants.swift in Sources */,
+				9E7D0F972B22DBB300F52051 /* SearchSlider.swift in Sources */,
 				9ED6F2EE2A5093DE002568DF /* WidgetTaskModel.swift in Sources */,
 				9E14D0C52A8C20A6005E0BC0 /* ApearanceView.swift in Sources */,
 				9E6D327B2AF09BAA00B65178 /* PeopleListView.swift in Sources */,
