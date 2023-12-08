@@ -44,27 +44,18 @@ struct AppView: View {
     @EnvironmentObject var networkMonitor: NetworkMonitor
     
     var body: some View {
-        VStack(alignment: .center, spacing: 0) { // 2
-            ZStack { // 3
-                if (selection == 0) {
-                    ItemView()
-                        .searchable(text: $published.searchText,
-                                    placement: .navigationBarDrawer(displayMode: .automatic),
-                                    prompt: "Search Name")
-                } else if (selection == 1) {
-                    settings
-                    //                } else if (selection == 2) {
-                    //                    CameraView(recipients: ["3235953205"], message: "Let's goo", item: items)
-                }// else if (selection == 3) {
-                //                            keypadContent()
-                //                        } else if (selection == 4) {
-                //                            voicemailContent()
-                //                        }
+        ZStack(alignment: .bottom){
+            TabView(selection: $selection){
+                
+                ItemView()
+                    .searchable(text: $published.searchText,
+                                placement: .navigationBarDrawer(displayMode: .automatic),
+                                prompt: "Search Name")
+                    .tag(0)
+                settings
+                    .tag(1)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            Divider()
-                .frame(maxWidth: .infinity)
-                .padding(0)
+            .accentColor(accentColor ? Color.white : Color(K.Colors.mainColor))
             if !published.tabsAreHidden{
                 HStack(alignment: .lastTextBaseline) {
                     CustomTabBarItem(iconName: "list.bullet.clipboard",
@@ -90,28 +81,10 @@ struct AppView: View {
                 }
                 .frame(height: 45)
                 .frame(maxWidth: .infinity)
-                //                .background(
-                //                    GeometryReader { parentGeometry in
-                //                        if !width{
-                //                            Rectangle()
-                //                                .fill(Color(K.Colors.background))
-                //                                .frame(width: parentGeometry.size.width, height: 1)
-                //                                .position(x: parentGeometry.size.width / 2, y: 0)
-                //                        }
-                //                    }
-                //                )
-                .background(Color(K.Colors.background).opacity(0.5))
+                .background(Color(K.Colors.background).opacity(0))
                 .opacity(published.tabsAreHidden ? 0 : 1)
             }
         }
-        .frame(maxHeight: .infinity, alignment: .bottom)
-        //        .onAppear(){
-        //            if itemTitles.isEmpty{
-        //                addFirst()
-        //            }
-        //        }
-        .background(published.tabsAreHidden ? Color.black.opacity(0.9) : Color.clear)
-        .accentColor(accentColor ? Color.white : Color(K.Colors.mainColor))
         
     }
     
