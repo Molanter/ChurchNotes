@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct SearchSlider: View {
+    @State var people = String(localized: "people")
+    @State var favourite = String(localized: "favourite")
+    @State var notification = String(localized: "notifications")
+
     @Binding var currentTab: Int
     @Namespace var namespace
 
@@ -16,7 +20,7 @@ struct SearchSlider: View {
             HStack(spacing: 10){
                 SearchSliderItem(currentTab: $currentTab,
                            namespace: namespace.self,
-                           tabBarItemName: "People",
+                           tabBarItemName: people,
                            tab: 0)
                 .onTapGesture {
                         withAnimation{
@@ -25,7 +29,7 @@ struct SearchSlider: View {
                     }
                 SearchSliderItem(currentTab: $currentTab,
                            namespace: namespace.self,
-                           tabBarItemName: "Favourite",
+                           tabBarItemName: favourite,
                            tab: 1)
                 .onTapGesture {
                         withAnimation{
@@ -34,7 +38,7 @@ struct SearchSlider: View {
                     }
                 SearchSliderItem(currentTab: $currentTab,
                            namespace: namespace.self,
-                           tabBarItemName: "Notification",
+                           tabBarItemName: notification,
                            tab: 2)
                 .onTapGesture {
                         withAnimation{

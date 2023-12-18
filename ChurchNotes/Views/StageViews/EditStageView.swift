@@ -18,13 +18,13 @@ struct EditStageView: View {
     var body: some View {
         ZStack(alignment: .bottom){
             VStack(alignment: .leading, spacing: 20){
-                Text("Write New Stage Name")
+                Text("write-new-stage-name")
                     .font(.title2)
                     .fontWeight(.medium)
                 HStack{
                     ZStack(alignment: .leading){
                         if title.isEmpty {
-                            Text("Have Coffee")
+                            Text("have-coffee")
                                 .foregroundStyle(.secondary)
                         }
                         TextField("", text: $title)
@@ -44,7 +44,7 @@ struct EditStageView: View {
                 
                 HStack(spacing: 10){
                     Button(action: {self.showActionSheet = false}){
-                        Label("Delete", systemImage: "trash")
+                        Label("delete", systemImage: "trash")
                             .foregroundColor(Color.white)
                             .padding(.vertical, 10)
                             .frame(maxWidth: .infinity)
@@ -52,7 +52,7 @@ struct EditStageView: View {
                             .cornerRadius(7)
                     }
                     Button(action: {editStage()}){
-                        Label("Save", systemImage: "checkmark.circle")
+                        Label("save", systemImage: "checkmark.circle")
                             .foregroundColor(Color.white)
                             .padding(.vertical, 10)
                             .frame(maxWidth: .infinity)
@@ -70,13 +70,13 @@ struct EditStageView: View {
                     Button(action: {
                         self.stage = nil
                     }){
-                        Text("Cancel")
+                        Text("cancel")
                             .foregroundColor(Color(K.Colors.mainColor))
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {editStage()}){
-                        Text("Save")
+                        Text("save")
                             .foregroundColor(Color(K.Colors.mainColor))
                     }
                 }
@@ -85,7 +85,7 @@ struct EditStageView: View {
             Spacer()
             if nameIsEmpty{
                 HStack(alignment: .center){
-                    Text("Stage name is empty")
+                    Text("stage-name-is-empty")
                         .foregroundStyle(Color(K.Colors.justDarkGray))
                 }
                 .frame(height: 40)
@@ -105,19 +105,19 @@ struct EditStageView: View {
             self.title = stage?.name ?? ""
         })
         .actionSheet(isPresented: $showActionSheet) {
-            ActionSheet(title: Text("You want to remove this Stage '\(stage?.name ?? "")'?"),
-                        message: Text("Press '**Remove**' to resume."),
+            ActionSheet(title: Text("you-want-to-remove-this-stage '\(stage?.name ?? "")'?"),
+                        message: Text("press-remove-to-resume"),
                         buttons: [
                             .cancel(),
                             .destructive(
-                                Text("Remove")
+                                Text("remove")
                             ){
                                 viewModel.deleteStage(documentId: stage?.documentId ?? "")
                             }
                         ]
             )
         }
-        .navigationTitle("Edit \(stage?.name ?? "")")
+        .navigationTitle("edit \(stage?.name ?? "")")
     }
     
     private func nameError(){

@@ -110,7 +110,7 @@ struct CurrentPersonView: View {
                                 .foregroundStyle(Color(K.Colors.mainColor))
                                 .fontWeight(.light)
                         }
-                        Text(name.isEmpty ? "Name" : name)
+                        Text(name.isEmpty ? "name" : name)
                             .font(.title3)
                             .fontWeight(.light)
                             .font(.system(size: 20))
@@ -195,7 +195,7 @@ struct CurrentPersonView: View {
                                     .foregroundStyle(Color(K.Colors.mainColor))
                                     .fontWeight(.light)
                             }
-                            Text(phone.isEmpty ? "Phone" : phone)
+                            Text(phone.isEmpty ? "pphone" : phone)
                                 .multilineTextAlignment(.leading)
                                 .lineLimit(10)
                                 .font(.title3)

@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct SettingsPeopleView: View {
     @State private var searchText = ""
@@ -25,11 +24,11 @@ struct SettingsPeopleView: View {
                                 .font(.system(size: 29))
                                 .fontWeight(.light)
                             VStack(alignment: .leading, spacing: 5){
-                                Text("All people")
+                                Text("all-people")
                                     .fontWeight(.semibold)
                                     .font(.system(size: 15))
                                     .foregroundStyle(.primary)
-                                Text("List of all people")
+                                Text("list-of-all-people")
                                     .font(.system(size: 11))
                                     .foregroundStyle(.secondary)
                             }
@@ -48,11 +47,11 @@ struct SettingsPeopleView: View {
                                 .font(.system(size: 29))
                                 .fontWeight(.light)
                             VStack(alignment: .leading, spacing: 5){
-                                Text("All your stages")
+                                Text("all-your-stages")
                                     .fontWeight(.semibold)
                                     .font(.system(size: 15))
                                     .foregroundStyle(.primary)
-                                Text("List of all stages")
+                                Text("list-of-all-stages")
                                     .font(.system(size: 11))
                                     .foregroundStyle(.secondary)
                             }
@@ -80,11 +79,11 @@ struct SettingsPeopleView: View {
                                         .fontWeight(.light)
                                 }
                                 VStack(alignment: .leading, spacing: 5){
-                                    Text("Done People")
+                                    Text("done-people")
                                         .fontWeight(.semibold)
                                         .font(.system(size: 15))
                                         .foregroundStyle(.primary)
-                                    Text("List of people that Joined Group")
+                                    Text("list-of-people-that-joined-group")
                                         .frame(alignment: .leading)
                                         .font(.system(size: 11))
                                         .foregroundStyle(.secondary)
@@ -106,11 +105,11 @@ struct SettingsPeopleView: View {
                                     .font(.system(size: 35))
                                     .fontWeight(.light)
                             VStack(alignment: .leading, spacing: 5){
-                                Text("Favourite people")
+                                Text("favourite-people")
                                     .fontWeight(.semibold)
                                     .font(.system(size: 15))
                                     .foregroundStyle(.primary)
-                                Text("List of favourite People")
+                                Text("list-of-favourite-people")
                                     .font(.system(size: 11))
                                     .foregroundStyle(.secondary)
                             }
@@ -126,7 +125,7 @@ struct SettingsPeopleView: View {
             .accentColor(Color(K.Colors.lightGray))
             
         }
-        .navigationTitle("People")
+        .navigationTitle("people")
     }
 }
 

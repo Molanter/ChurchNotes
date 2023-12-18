@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct AllStagesView: View {
     @EnvironmentObject var viewModel: AppViewModel
@@ -53,7 +52,7 @@ struct AllStagesView: View {
                                             .fontWeight(.semibold)
                                             .font(.system(size: 15))
                                             .foregroundStyle(.primary)
-                                        Text("\(viewModel.peopleArray.filter { $0.title.contains(item.name) }.count) people in stage")
+                                        Text("\(viewModel.peopleArray.filter { $0.title.contains(item.name) }.count) people-in-stage")
                                             .font(.system(size: 11))
                                             .foregroundStyle(.secondary)
                                     }
@@ -87,7 +86,7 @@ struct AllStagesView: View {
                                             .fontWeight(.semibold)
                                             .font(.system(size: 15))
                                             .foregroundStyle(.primary)
-                                        Text("\(viewModel.peopleArray.filter { $0.title.contains(item.name) }.count) people in stage")
+                                        Text("\(viewModel.peopleArray.filter { $0.title.contains(item.name) }.count) people-in-stage")
                                             .font(.system(size: 11))
                                             .foregroundStyle(.secondary)
                                     }
@@ -103,23 +102,23 @@ struct AllStagesView: View {
                             Button {
                                 self.stage = item
                             } label: {
-                                Label("Edit", systemImage: "square.and.pencil")
+                                Label("edit", systemImage: "square.and.pencil")
                             }
                             Button(role: .destructive) {
                                 withAnimation{
                                     self.showActionSheet = true
                                 }
                             } label: {
-                                Label("Delete", systemImage: "trash")
+                                Label("delete", systemImage: "trash")
                             }
                         }
                         .actionSheet(isPresented: $showActionSheet) {
-                            ActionSheet(title: Text("You want to remove this Stage '\(item.name)'?"),
-                                        message: Text("Press '**Remove**' to resume."),
+                            ActionSheet(title: Text("you-want-to-remove-this-stage '\(item.name)'?"),
+                                        message: Text("press-remove-to-resume"),
                                         buttons: [
                                             .cancel(),
                                             .destructive(
-                                                Text("Remove")
+                                                Text("remove")
                                             ){
                                                 viewModel.deleteStage(documentId: stage?.documentId ?? "")
                                             }
@@ -132,11 +131,11 @@ struct AllStagesView: View {
             }
             .searchable(text: $searchText,
                         placement: .navigationBarDrawer(displayMode: .automatic),
-                        prompt: "Search Stage")
+                        prompt: "search-stage")
             Button(action: {
                 self.presentSheet.toggle()
             }){
-                Label("Add Stage", systemImage: "plus.rectangle.on.folder")
+                Label("add-stage", systemImage: "plus.rectangle.on.folder")
                     .foregroundColor(Color.white)
                     .padding(.vertical, 10)
                     .frame(maxWidth: .infinity)
@@ -163,7 +162,7 @@ struct AllStagesView: View {
             .background(Color(K.Colors.mainColor))
             .presentationDetents([.medium])
         }
-        .navigationTitle("Stages")
+        .navigationTitle("sstages")
     }
 }
 

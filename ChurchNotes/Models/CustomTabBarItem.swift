@@ -18,7 +18,7 @@ struct CustomTabBarItem: View {
     @State private var angle: Double = 0
     
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .center, spacing: 5) {
             ZStack{
                 if settings{
                     if selection.wrappedValue == tag{
@@ -60,7 +60,7 @@ struct CustomTabBarItem: View {
             Text(label)
                 .font(.caption)
         }
-        .padding([.top], 5)
+//        .padding([.top], 5)
         .foregroundColor(fgColor()) // 4
         .frame(maxWidth: .infinity)
         .contentShape(Rectangle())

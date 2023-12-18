@@ -10,13 +10,17 @@ import FirebaseCore
 import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
-import iPhoneNumberField
-import SwiftData
 import AuthenticationServices
 import Combine
 
 
 struct LoginPage: View {
+    @EnvironmentObject var viewModel: AppViewModel
+    @EnvironmentObject var googleModel: AuthenticationViewModel
+    @StateObject private var appleModel = AuthenticationViewModel()
+    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var published: PublishedVariebles
+    
     @FocusState var focus: FocusedField?
 
     @State var phone = ""
@@ -44,12 +48,7 @@ struct LoginPage: View {
     let restrictedUsernameSet = "!@#$%^&*()+?/.>,<~`±§}{[]|\"÷≥≤µ˜∫√ç≈Ω`åß∂ƒ©˙∆˚¬…æ«‘“πøˆ¨¥†®´∑œ§¡™£¢∞§¶•ªº–≠"
     let restrictedEmaileSet = "!#$%^&*()?/>,<~`±§}{[]|\"÷≥≤µ˜∫√ç≈Ω`åß∂ƒ©˙∆˚¬…æ«‘“πøˆ¨¥†®´∑œ§¡™£¢∞§¶•ªº≠"
     let maxLength = 20
-    
-    @EnvironmentObject var viewModel: AppViewModel
-    @EnvironmentObject var googleModel: AuthenticationViewModel
-    @StateObject private var appleModel = AuthenticationViewModel()
-    @Environment(\.dismiss) var dismiss
-    
+
     private func signInWithEmailPassword() {
         Task {
             if await googleModel.signInWithEmailPassword() == true {
@@ -73,20 +72,20 @@ struct LoginPage: View {
                 Spacer()
                     .frame(maxWidth: .infinity)
                 VStack(alignment: .leading, spacing: 10){
-                    Text("Hey 😃")
+                    Text("hey-login")
                         .foregroundStyle(.primary)
                         .font(.title)
                         .fontWeight(.bold)
-                    Text("Welcome to")
+                    Text("welcome-to-login")
                         .foregroundStyle(.primary)
                         .font(.largeTitle)
                         .fontWeight(.bold)
-                    Text("Prayer Navigator 🙏🏻")
+                    Text("app-name-login")
                         .foregroundStyle(.primary)
                         .font(.title)
                         .fontWeight(.bold)
                     HStack{
-                        Text("Chose method of authentification")
+                        Text("why-authentificate")
                             .foregroundStyle(.secondary)
                             .font(.body)
                         Button(action:{
@@ -102,7 +101,7 @@ struct LoginPage: View {
                     
                     
                     Button(action: {self.showLogin.toggle()}){
-                        Text("Log In")
+                        Text("log-in")
                             .foregroundStyle(Color.white)
                             .padding()
                             .frame(maxWidth: .infinity)
@@ -110,7 +109,7 @@ struct LoginPage: View {
                     .background(Color(K.Colors.mainColor))
                     .cornerRadius(7)
                     Button(action: {self.showRegister.toggle()}){
-                        Text("Sign Up")
+                        Text("sign-up")
                             .foregroundStyle(Color.white)
                             .padding()
                             .frame(maxWidth: .infinity)
@@ -254,7 +253,7 @@ struct LoginPage: View {
                                     Button(action: {
                                         self.showWhyAuthInfo = false
                                     }){
-                                        Text("Done")
+                                        Text("done")
                                             .foregroundStyle(Color(K.Colors.mainColor))
                                     }
                                 }
@@ -286,11 +285,11 @@ struct LoginPage: View {
                     Spacer()
                     VStack(alignment: .center){
                         VStack(alignment: .center){
-                            Text("Sign Up")
+                            Text("sign-up")
                                 .font(.title)
                                 .fontWeight(.bold)
                                 .padding(.bottom, 5)
-                            Text("Sign Up with email")
+                            Text("sign-up-with-email")
                                 .foregroundStyle(.secondary)
                                 .font(.system(size: 14))
                                 .padding(.bottom, 10)
@@ -319,7 +318,7 @@ struct LoginPage: View {
                                         .padding(15)
                                         .fontWeight(.regular)
                                 }
-                                Text("tap to change Image")
+                                Text("tap-to-change-image")
                                     .foregroundColor(Color(K.Colors.mainColor))
                                     .font(.system(size: 14))
                                     .fontWeight(.regular)
@@ -331,7 +330,7 @@ struct LoginPage: View {
                         .padding(.bottom, 30)
                         VStack(alignment: .leading, spacing: 20){
                             VStack(alignment: .leading, spacing: 20){
-                                Text("Full Name")
+                                Text("full-name")
                                     .fontWeight(.semibold)
                                     .font(.system(size: 15))
                                 HStack(alignment: .center, spacing: 0.0){
@@ -342,6 +341,7 @@ struct LoginPage: View {
                                                 .foregroundStyle(.secondary)
                                         }
                                         TextField("", text: $name)
+                                            .submitLabel(.next)
                                             .focused($focus, equals: .name)
                                             .padding(.leading)
                                             .disableAutocorrection(true)
@@ -361,9 +361,10 @@ struct LoginPage: View {
                                     RoundedRectangle(cornerSize: .init(width: 7, height: 7))
                                         .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
                                 )
+                                .ignoresSafeArea(.keyboard, edges: .bottom)
                             }
                             VStack(alignment: .leading, spacing: 20){
-                                Text("Create Username")
+                                Text("create-username")
                                     .fontWeight(.semibold)
                                     .font(.system(size: 15))
                                 HStack(alignment: .center, spacing: 0.0){
@@ -374,6 +375,7 @@ struct LoginPage: View {
                                                 .foregroundStyle(.secondary)
                                         }
                                         TextField("", text: $username)
+                                            .submitLabel(.next)
                                             .focused($focus, equals: .username)
                                             .padding(.leading)
                                             .disableAutocorrection(true)
@@ -394,6 +396,7 @@ struct LoginPage: View {
                                     RoundedRectangle(cornerSize: .init(width: 7, height: 7))
                                         .stroke((username == "" ? Color(K.Colors.justLightGray) : Color(viewModel.isAvailable ? K.Colors.justLightGray : K.Colors.red)).opacity(0.5), lineWidth: 1)
                                 )
+                                .ignoresSafeArea(.keyboard, edges: .bottom)
                                 .onReceive(Just(username)) { newText in
                                     username = newText.filter { $0.isEnglishCharacter || $0.isNumber || $0.isAllowedSymbol }
                                             }
@@ -408,7 +411,7 @@ struct LoginPage: View {
                                 })
                             }
                             VStack(alignment: .leading, spacing: 20){
-                                Text("Email")
+                                Text("eemail")
                                     .fontWeight(.semibold)
                                     .font(.system(size: 15))
                                 HStack(alignment: .center, spacing: 0.0){
@@ -419,6 +422,7 @@ struct LoginPage: View {
                                                 .foregroundStyle(.secondary)
                                         }
                                         TextField("", text: $email)
+                                            .submitLabel(.next)
                                             .focused($focus, equals: .registerEmail)
                                             .textCase(.lowercase)
                                             .padding(.leading)
@@ -451,19 +455,21 @@ struct LoginPage: View {
                                     RoundedRectangle(cornerSize: .init(width: 7, height: 7))
                                         .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
                                 )
+                                .ignoresSafeArea(.keyboard, edges: .bottom)
                             }
                             VStack(alignment: .leading, spacing: 20){
-                                Text("Country")
+                                Text("country")
                                     .fontWeight(.semibold)
                                     .font(.system(size: 15))
                                 HStack(alignment: .center, spacing: 0.0){
                                     ZStack(alignment: .leading){
                                         if country.isEmpty {
-                                            Text("Country")
+                                            Text("country")
                                                 .padding(.leading)
                                                 .foregroundColor(Color(K.Colors.lightGray))
                                         }
                                         TextField("", text: $country)
+                                            .submitLabel(.next)
                                             .focused($focus, equals: .country)
                                             .padding(.leading)
                                             .disableAutocorrection(true)
@@ -490,39 +496,49 @@ struct LoginPage: View {
                                     RoundedRectangle(cornerSize: .init(width: 7, height: 7))
                                         .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
                                 )
+                                .ignoresSafeArea(.keyboard, edges: .bottom)
                             }
                             VStack(alignment: .leading, spacing: 20){
-                                Text("Phone")
+                                Text("pphone")
                                     .fontWeight(.semibold)
                                     .font(.system(size: 15))
                                 HStack(alignment: .center, spacing: 0.0){
-                                    TextField("Phone", text: $phone)
-                                        .focused($focus, equals: .phone)
-                                        .textInputAutocapitalization(.never)
-                                        .disableAutocorrection(true)
-                                        .textContentType(.telephoneNumber)
-                                        .keyboardType(.numberPad)
-                                    .padding(.leading)
-                                    Spacer()
-                                    Image(systemName: "phone.fill")
-                                        .foregroundStyle(Color(K.Colors.lightGray))
-                                        .padding(.trailing)
+                                    ZStack(alignment: .leading){
+                                        if phone.isEmpty {
+                                            Text("pphone")
+                                                .padding(.leading)
+                                                .foregroundColor(Color(K.Colors.lightGray))
+                                        }
+                                        TextField("pphone", text: $phone)
+                                            .submitLabel(.next)
+                                            .focused($focus, equals: .phone)
+                                            .textInputAutocapitalization(.never)
+                                            .disableAutocorrection(true)
+                                            .textContentType(.telephoneNumber)
+                                            .keyboardType(.numberPad)
+                                            .padding(.leading)
+                                    }
+                                        Spacer()
+                                        Image(systemName: "phone.fill")
+                                            .foregroundStyle(Color(K.Colors.lightGray))
+                                            .padding(.trailing)
                                 }
                                 .frame(height: 50)
                                 .overlay(
                                     RoundedRectangle(cornerSize: .init(width: 7, height: 7))
                                         .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
                                 )
+                                .ignoresSafeArea(.keyboard, edges: .bottom)
                             }
                             
                             VStack(alignment: .leading, spacing: 20){
-                                Text("Password")
+                                Text("password")
                                     .fontWeight(.semibold)
                                     .font(.system(size: 15))
                                 HStack(alignment: .center, spacing: 0.0){
                                     ZStack(alignment: .leading){
                                         if createPassword.isEmpty{
-                                            Text(showPassword ? "Password" : "∙∙∙∙∙∙∙∙")
+                                            Text(showPassword ? "password" : "∙∙∙∙∙∙∙∙")
                                                 .fontWeight(showPassword ? .regular : .semibold)
                                                 .padding(.leading)
                                                 .foregroundStyle(.secondary)
@@ -531,6 +547,7 @@ struct LoginPage: View {
                                             Group{
                                                 if !showPassword{
                                                     SecureField("", text: $createPassword)
+                                                        .submitLabel(.next)
                                                         .focused($focus, equals: .createPass)
                                                         .disableAutocorrection(true)
                                                         .textInputAutocapitalization(.never)
@@ -539,7 +556,7 @@ struct LoginPage: View {
                                                         .padding(.leading)
                                                 }else{
                                                     TextField("", text: $createPassword)
-                                                        .focused($focus, equals: .phone)
+                                                        .submitLabel(.next)
                                                         .foregroundColor(Color(K.Colors.lightGray))
                                                         .disableAutocorrection(true)
                                                         .textInputAutocapitalization(.never)
@@ -565,12 +582,13 @@ struct LoginPage: View {
                                     RoundedRectangle(cornerSize: .init(width: 7, height: 7))
                                         .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
                                 )
+                                .ignoresSafeArea(.keyboard, edges: .bottom)
                             }
                             VStack(alignment: .leading, spacing: 20){
                                 HStack(alignment: .center, spacing: 0.0){
                                     ZStack(alignment: .leading){
                                         if repeatPassword.isEmpty{
-                                            Text(showPassword ? "Password" : "∙∙∙∙∙∙∙∙")
+                                            Text(showPassword ? "password" : "∙∙∙∙∙∙∙∙")
                                                 .fontWeight(showPassword ? .regular : .semibold)
                                                 .padding(.leading)
                                                 .foregroundStyle(.secondary)
@@ -579,7 +597,8 @@ struct LoginPage: View {
                                             Group{
                                                 if !showPassword{
                                                     SecureField("", text: $repeatPassword)
-                                                        .focused($focus, equals: .phone)
+                                                        .submitLabel(.done)
+                                                        .focused($focus, equals: .repeatPass)
                                                         .disableAutocorrection(true)
                                                         .textInputAutocapitalization(.never)
                                                         .padding(0)
@@ -587,7 +606,7 @@ struct LoginPage: View {
                                                         .padding(.leading)
                                                 }else{
                                                     TextField("", text: $repeatPassword)
-                                                        .focused($focus, equals: .phone)
+                                                        .submitLabel(.done)
                                                         .foregroundColor(Color(K.Colors.lightGray))
                                                         .disableAutocorrection(true)
                                                         .textInputAutocapitalization(.never)
@@ -613,6 +632,7 @@ struct LoginPage: View {
                                     RoundedRectangle(cornerSize: .init(width: 7, height: 7))
                                         .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
                                 )
+                                .ignoresSafeArea(.keyboard, edges: .bottom)
                             }
                             
                         }
@@ -632,22 +652,21 @@ struct LoginPage: View {
                                         focus = .repeatPass
                                     case .repeatPass:
                                         registerFunc()
-                                        self.showProgressView = true
                                     default:
                                         break
                                     }
                                 }
                         Button(action: {
                             registerFunc()
-                            self.showProgressView = true
                         }){
-                            Text("Sign Up")
+                            Text("sign-up")
                                 .foregroundStyle(Color.white)
                                 .frame(maxWidth: .infinity)
                                 .padding()
                         }
                         .background(Color(K.Colors.mainColor))
                         .cornerRadius(7)
+                        .padding(.top, 20)
                     }
                     .padding(.horizontal, 15)
                     
@@ -661,7 +680,7 @@ struct LoginPage: View {
                         self.showRegister = false
                         self.showLogin = true
                     }){
-                        Text("Already have an acount? - Log In")
+                        Text("already-acount")
                             .font(.system(size: 16))
                             .padding(.top, 20)
                             .foregroundColor(Color(K.Colors.mainColor))
@@ -679,24 +698,26 @@ struct LoginPage: View {
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: {self.showRegister.toggle()}){
-                        Text("Cancel")
+                        Text("cancel")
                             .foregroundStyle(Color(K.Colors.mainColor))
                     }
                 }
             })
         }
+        .modifier(DismissingKeyboard())
     }
     
     private func registerFunc(){
         if createPassword == repeatPassword && viewModel.isAvailable == true{
             viewModel.register(email: email, password: createPassword, image: image, name: name, userName: username.lowercased(), country: country, phone: phone)
             errReg = viewModel.err
+            self.showProgressView = true
         }else if name == ""{
-            viewModel.err = "Name field is empty, enter your name."
+            viewModel.err = "name-field-is-empty"
         }else if viewModel.isAvailable == false{
-            viewModel.err = "Username is not available, create another one."
+            viewModel.err = "username-is-not-available"
         }else if createPassword != repeatPassword{
-            viewModel.err = "Passwords do not match."
+            viewModel.err = "passwords-do-not-match"
         }
     }
     var login: some View {
@@ -706,11 +727,11 @@ struct LoginPage: View {
                 VStack{
                     Spacer()
                     VStack(alignment: .center){
-                        Text("Log In")
+                        Text("log-in")
                             .font(.title)
                             .fontWeight(.bold)
                             .padding(.bottom, 5)
-                        Text("Sign In with email")
+                        Text("sign-in-with-email")
                             .foregroundStyle(.secondary)
                             .padding(.bottom, 40)
                         HStack(alignment: .center, spacing: 0.0){
@@ -722,6 +743,7 @@ struct LoginPage: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 TextField("", text: $email)
+                                    .submitLabel(.next)
                                     .focused($focus, equals: .loginEmail)
                                     .padding(.leading)
                                     .foregroundColor(Color(K.Colors.lightGray))
@@ -731,6 +753,7 @@ struct LoginPage: View {
                                     .padding(0)
                                     .keyboardType(.emailAddress)
                                     .textContentType(.emailAddress)
+                                    .onSubmit {focus = .loginPass}
                             }
                             .frame(height: 45)
                             Spacer()
@@ -748,10 +771,11 @@ struct LoginPage: View {
                             RoundedRectangle(cornerSize: .init(width: 7, height: 7))
                                 .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
                         )
+                        .ignoresSafeArea(.keyboard, edges: .bottom)
                         HStack(alignment: .center, spacing: 0.0){
                             ZStack(alignment: .leading){
                                 if password.isEmpty{
-                                    Text(showPassword ? "Password" : "∙∙∙∙∙∙∙∙")
+                                    Text(showPassword ? "password" : "∙∙∙∙∙∙∙∙")
                                         .fontWeight(showPassword ? .regular : .semibold)
                                         .padding(.leading)
                                         .foregroundStyle(.secondary)
@@ -760,6 +784,7 @@ struct LoginPage: View {
                                     Group{
                                         if !showPassword{
                                             SecureField("", text: $password)
+                                                .submitLabel(.done)
                                                 .focused($focus, equals: .loginPass)
                                                 .foregroundColor(Color(K.Colors.lightGray))
                                                 .disableAutocorrection(true)
@@ -769,7 +794,7 @@ struct LoginPage: View {
                                                 .padding(.leading)
                                         }else{
                                             TextField("", text: $password)
-                                                .focused($focus, equals: .loginPass)
+                                                .submitLabel(.done)
                                                 .foregroundColor(Color(K.Colors.lightGray))
                                                 .disableAutocorrection(true)
                                                 .textInputAutocapitalization(.never)
@@ -796,11 +821,12 @@ struct LoginPage: View {
                             RoundedRectangle(cornerSize: .init(width: 7, height: 7))
                                 .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
                         )
+                        .ignoresSafeArea(.keyboard, edges: .bottom)
                         .padding(.top, 10)
                         HStack{
                             Spacer()
                             NavigationLink(destination: ResetPasswordView(email: email), label: {
-                                Text("Forgot password?")
+                                Text("forgot-password")
                                     .padding(.vertical, 5)
                                     .font(.system(size: 14))
                                     .foregroundStyle(Color(K.Colors.mainColor))
@@ -809,9 +835,11 @@ struct LoginPage: View {
                         Button(action: {
                             viewModel.login(email: email, password: password)
                             errLog = viewModel.err
-                            self.showProgressView = true
+                            if viewModel.err == ""{
+                                self.showProgressView = true
+                            }
                         }){
-                            Text("Log In")
+                            Text("log-in")
                                 .foregroundStyle(Color.white)
                                 .frame(maxWidth: .infinity)
                                 .padding()
@@ -827,7 +855,9 @@ struct LoginPage: View {
                                 case .loginPass:
                                     viewModel.login(email: email, password: password)
                                     errLog = viewModel.err
-                                    self.showProgressView = true
+                                    if viewModel.err == ""{
+                                        self.showProgressView = true
+                                    }
                                 default:
                                     break
                                 }
@@ -844,7 +874,7 @@ struct LoginPage: View {
                         self.showLogin = false
                         self.showRegister = true
                     }){
-                        Text("Don't have an account? - Register")
+                        Text("do-not-have-an-account")
                             .font(.system(size: 16))
                             .padding(.top, 20)
                             .foregroundColor(Color(K.Colors.mainColor))
@@ -855,7 +885,7 @@ struct LoginPage: View {
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: {self.showLogin.toggle()}){
-                        Text("Cancel")
+                        Text("cancel")
                             .foregroundStyle(Color(K.Colors.mainColor))
                     }
                 }
@@ -864,6 +894,7 @@ struct LoginPage: View {
                 errReg = viewModel.err
             }
         }
+        .modifier(DismissingKeyboard())
     }
     
     

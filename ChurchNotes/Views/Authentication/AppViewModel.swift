@@ -11,7 +11,6 @@ import FirebaseCore
 import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
-import SwiftData
 
 class AppViewModel: ObservableObject{
     //    var ref: DatabaseReference! = Database.database().reference()
@@ -216,7 +215,7 @@ class AppViewModel: ObservableObject{
     
     func handleSend(name: String, notes: String, email: String, title: String, phone: String, imageData: UIImage?, orderIndex: Int, isCheked: Bool, isLiked: Bool, isDone: Bool, birthDay: Date, timestamp: Date, titleNumber: Int) {
         guard let userId = auth.currentUser?.uid else {
-            self.errorMessage = "User ID is missing."
+            self.errorMessage = "user-id-is-missing"
             return
         }
         
@@ -387,6 +386,43 @@ class AppViewModel: ObservableObject{
     
     //MARK: Current User
     
+    func changeEmail(currentPassword: String, newEmail: String) {
+        guard let user = Auth.auth().currentUser else {
+            self.err = "no-user-logged-in"
+            return
+        }
+        guard let userID = auth.currentUser?.uid else{return}
+        let ref = db.collection("users").document(userID)
+        
+        let credential = EmailAuthProvider.credential(withEmail: user.email!, password: currentPassword)
+        
+        user.reauthenticate(with: credential) { _, error in
+            if let error = error {
+                self.err = error.localizedDescription
+            } else {
+                user.updateEmail(to: newEmail) { error in
+                    if let error = error {
+                        self.err = error.localizedDescription
+                    } else {
+                        // Email changed successfully
+                        // You might want to sign out the user and ask them to log in with the new email
+                        self.err = "email-changed-successfully"
+                        ref.updateData(
+                            ["email": newEmail
+                            ]){error in
+                                if let error = error{
+                                    print("Error while updating profile:  -\(error)")
+                                }else{
+                                    
+                                }
+                            }
+                        self.logOut()
+                    }
+                }
+            }
+        }
+    }
+    
     func fetchUser(){
         if let userID = Auth.auth().currentUser?.uid{
             db.collection("users").document(userID).getDocument { querySnapshot, err in
@@ -415,12 +451,12 @@ class AppViewModel: ObservableObject{
     
     func changePassword(currentPassword: String, newPassword: String, confirmPassword: String) {
         guard newPassword == confirmPassword else {
-            self.err = "Passwords do not match"
+            self.err = "passwords-do-not-match"
             return
         }
         
         guard let user = Auth.auth().currentUser, let email = user.email else {
-            self.err = "User not authenticated or email not available"
+            self.err = "user-not-authenticated-or-email-not-available"
             return
         }
         
@@ -429,16 +465,16 @@ class AppViewModel: ObservableObject{
         // Reauthenticate the user with their current password
         user.reauthenticate(with: credential) { _, error in
             if let error = error {
-                self.err = "Reauthentication failed: \(error.localizedDescription)"
+                self.err = "reauthentication-failed: \(error.localizedDescription)"
                 return
             }
             
             // If reauthentication is successful, update the password
             user.updatePassword(to: newPassword) { error in
                 if let error = error {
-                    self.err = "Password update failed: \(error.localizedDescription)"
+                    self.err = "password-update-failed: \(error.localizedDescription)"
                 } else {
-                    self.err = "Password updated successfully"
+                    self.err = "password-updated-successfully"
                 }
             }
         }
@@ -449,7 +485,7 @@ class AppViewModel: ObservableObject{
             if let error = error {
                 self.err = error.localizedDescription
             } else {
-                self.passwordReseted = "Password reset email sent. Please check your email."
+                self.passwordReseted = "password-reset-email-sent"
             }
         }
     }
@@ -858,7 +894,7 @@ class AppViewModel: ObservableObject{
             "saturday": saturday,
             "date": date,
             "orderIndex": count,
-            "message": message == "" ? "Time to pray, take you time." : message
+            "message": message == "" ? "time-to-pray_take-you-time" : message
         ]
         self.db.collection("notifications").document().setData(dictionary) { err in
             if let err = err {
@@ -889,6 +925,20 @@ class AppViewModel: ObservableObject{
                     })
                 }
             }
+    }
+    
+    func removeAllNotifications(){
+        guard let userId = auth.currentUser?.uid else {return}
+        
+        for notific in notificationsArray{
+            db.collection("notifications").document(notific.documentId).delete() { err in
+                if let err = err {
+                    print("Error removing document: \(err)")
+                } else {
+                    print("Document successfully removed!")
+                }
+            }
+        }
     }
     
     func stopNotifing(item: Notifics){

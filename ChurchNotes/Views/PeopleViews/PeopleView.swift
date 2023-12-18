@@ -6,11 +6,9 @@
 //
 
 import SwiftUI
-import SwiftData
 import FirebaseAuth
 import FirebaseStorage
 import FirebaseFirestore
-import iPhoneNumberField
 
 struct PeopleView: View {
     @EnvironmentObject var viewModel: AppViewModel
@@ -133,10 +131,10 @@ struct PeopleView: View {
                                             self.lastItem = item
                                             self.isShowingDeleteAlert.toggle()
                                         } ) {
-                                            Label("Delete", systemImage: "trash")
+                                            Label("delete", systemImage: "trash")
                                         }
                                     }
-                                    .alert("Delete Person", isPresented: Binding(
+                                    .alert("delete-person", isPresented: Binding(
                                         get: { self.isShowingDeleteAlert && lastItem != nil },
                                         set: { newValue in
                                             if !newValue {
@@ -144,13 +142,13 @@ struct PeopleView: View {
                                             }
                                         }
                                     )) {
-                                        Button("Cancel", role: .cancel) {}
-                                        Button("Delete", role: .destructive) {
+                                        Button("cancel", role: .cancel) {}
+                                        Button("delete", role: .destructive) {
                                             viewModel.deletePerson(documentId: lastItem?.documentId ?? item.documentId)
                                             isShowingDeleteAlert = false
                                         }
                                     } message: {
-                                        Text("Do you really want to delete this person? This action cannot be undone.")
+                                        Text("do-you-really-want-to-delete-this-person")
                                     }
                                     
                                     .contextMenu {
@@ -163,7 +161,7 @@ struct PeopleView: View {
                                                 }
                                             }
                                         } label: {
-                                            Label("Favourite", systemImage: item.isLiked ? "\(K.favouriteSign).fill" : "\(K.favouriteSign)")
+                                            Label("favourite", systemImage: item.isLiked ? "\(K.favouriteSign).fill" : "\(K.favouriteSign)")
                                                 .accentColor(Color(K.Colors.favouriteSignColor))
                                                 .contentTransition(.symbolEffect(.replace))
                                         }
@@ -173,14 +171,14 @@ struct PeopleView: View {
                                                 self.isShowingDeleteAlert.toggle()
                                             }
                                         } label: {
-                                            Label("Delete", systemImage: "trash")
+                                            Label("delete", systemImage: "trash")
                                         }
                                     }
                                 }
                                 
                                 .sheet(item: $currentItem, onDismiss: nil){ item in
                                     NavigationStack{
-                                        ItemPersonView(item: item, currentTab: item.titleNumber, currentItem: $currentItem)
+                                        ItemPersonView(item: item, currentItem: $currentItem)
                                             .toolbar{
                                                 ToolbarItem(placement: .topBarLeading){
                                                     Button(action: {
@@ -225,7 +223,7 @@ struct PeopleView: View {
             .scrollContentBackground(.hidden)
             .listStyle(.plain)
             .frame(maxHeight: .infinity)
-            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Name")
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "search-name")
             .tabViewStyle(.page(indexDisplayMode: .never))
         }
         
@@ -240,7 +238,7 @@ struct PeopleView: View {
                             Button(action: {
                                 self.showAddPersonView.toggle()
                             }){
-                                Text("Cancel")
+                                Text("cancel")
                             }
                         }
                     }

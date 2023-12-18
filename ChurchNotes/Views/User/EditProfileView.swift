@@ -8,7 +8,6 @@
 import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
-import iPhoneNumberField
 import Combine
 
 struct EditProfileView: View {
@@ -49,7 +48,7 @@ struct EditProfileView: View {
                     Spacer()
                     VStack(alignment: .center){
                         VStack(alignment: .center){
-                            Text("Editing profile")
+                            Text("editing-profile")
                                 .font(.title)
                                 .fontWeight(.bold)
                                 .padding(.bottom, 5)
@@ -96,7 +95,7 @@ struct EditProfileView: View {
                                             .fontWeight(.regular)
                                     }
                                 }
-                                Text("tap to change Image")
+                                Text("tap-to-change-image")
                                     .foregroundColor(Color(K.Colors.mainColor))
                                     .font(.system(size: 14))
                                     .fontWeight(.regular)
@@ -108,7 +107,7 @@ struct EditProfileView: View {
                         .padding(.bottom, 30)
                         VStack(alignment: .leading, spacing: 20){
                             VStack(alignment: .leading, spacing: 20){
-                                Text("Full Name")
+                                Text("full-name")
                                     .fontWeight(.semibold)
                                     .font(.system(size: 15))
                                 HStack(alignment: .center, spacing: 0.0){
@@ -119,6 +118,7 @@ struct EditProfileView: View {
                                                 .foregroundColor(Color(K.Colors.lightGray))
                                         }
                                         TextField("", text: $name)
+                                            .ignoresSafeArea(.keyboard, edges: .bottom)
                                             .focused($focus, equals: .name)
                                             .padding(.leading)
                                             .disableAutocorrection(true)
@@ -140,17 +140,18 @@ struct EditProfileView: View {
                                 )
                             }
                             VStack(alignment: .leading, spacing: 20){
-                                Text("Create Username")
+                                Text("username")
                                     .fontWeight(.semibold)
                                     .font(.system(size: 15))
                                 HStack(alignment: .center, spacing: 0.0){
                                     ZStack(alignment: .leading){
                                         if username.isEmpty {
-                                            Text("Username")
+                                            Text("username")
                                                 .padding(.leading)
                                                 .foregroundColor(Color(K.Colors.lightGray))
                                         }
                                         TextField("", text: $username)
+                                            .ignoresSafeArea(.keyboard, edges: .bottom)
                                             .focused($focus, equals: .username)
                                             .padding(.leading)
                                             .disableAutocorrection(true)
@@ -185,17 +186,18 @@ struct EditProfileView: View {
                                 })
                             }
                             VStack(alignment: .leading, spacing: 20){
-                                Text("Country")
+                                Text("country")
                                     .fontWeight(.semibold)
                                     .font(.system(size: 15))
                                 HStack(alignment: .center, spacing: 0.0){
                                     ZStack(alignment: .leading){
                                         if country.isEmpty {
-                                            Text("Country")
+                                            Text("country")
                                                 .padding(.leading)
                                                 .foregroundColor(Color(K.Colors.lightGray))
                                         }
                                         TextField("", text: $country)
+                                            .ignoresSafeArea(.keyboard, edges: .bottom)
                                             .focused($focus, equals: .country)
                                             .padding(.leading)
                                             .disableAutocorrection(true)
@@ -216,17 +218,25 @@ struct EditProfileView: View {
                                 )
                             }
                             VStack(alignment: .leading, spacing: 20){
-                                Text("Phone")
+                                Text("pphone")
                                     .fontWeight(.semibold)
                                     .font(.system(size: 15))
                                 HStack(alignment: .center, spacing: 0.0){
-                                    TextField("Phone", text: $phone)
+                                    ZStack(alignment: .leading){
+                                        if phone.isEmpty {
+                                            Text("pphone")
+                                                .padding(.leading)
+                                                .foregroundColor(Color(K.Colors.lightGray))
+                                        }
+                                    TextField("pphone", text: $phone)
+                                        .ignoresSafeArea(.keyboard, edges: .bottom)
                                         .padding(.leading)
                                         .focused($focus, equals: .phone)
                                         .textInputAutocapitalization(.never)
                                         .disableAutocorrection(true)
                                         .textContentType(.telephoneNumber)
                                         .keyboardType(.numberPad)
+                                }
                                     Spacer()
                                     Image(systemName: "phone.fill")
                                         .foregroundStyle(Color(K.Colors.lightGray))
@@ -256,7 +266,7 @@ struct EditProfileView: View {
                                     }
                                 }
                         Button(action: {updateFunc()}){
-                            Text("Save")
+                            Text("save")
                                 .foregroundStyle(Color.white)
                                 .frame(maxWidth: .infinity)
                                 .padding()
@@ -305,7 +315,7 @@ struct EditProfileView: View {
         .toolbar(content: {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {updateFunc()}){
-                    Text("Save")
+                    Text("save")
                         .foregroundStyle(Color(K.Colors.mainColor))
                 }
             }
@@ -383,13 +393,13 @@ struct EditProfileView: View {
                 self.showingEditingProfile = false
             }
         }else if !viewModel.isAvailable{
-            showError(error: "Username is not available, choose another.")
+            showError(error: "username-is-not-available")
         }else if name != "" && username == ""{
-            showError(error: "Username is empty!")
+            showError(error: "username-is-empty")
         }else if name == "" && username != ""{
-            showError(error: "Name is empty!")
+            showError(error: "name-is-empty")
         }else{
-            showError(error: "Some fields are empty, fill them before submiting.")
+            showError(error: "some-fields-are-empty")
         }
     }
     

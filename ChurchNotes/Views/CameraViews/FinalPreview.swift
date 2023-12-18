@@ -41,7 +41,7 @@ struct FinalPreview: View {
                         player?.pause()
                     })
                 VStack(alignment: .leading, spacing: 15){
-                    Text("Recipient: **\(item.name)**")
+                    Text("recipient **\(item.name)**")
                         .font(.system(size: 18))
                         .padding(.top, 30)
                         .foregroundStyle(Color(K.Colors.text))
@@ -62,28 +62,28 @@ struct FinalPreview: View {
             .background(
                 Color(K.Colors.blackAndWhite)
             )
-            .alert("You can't send attachments!", isPresented: $presrntAlert) {
+            .alert("you-can-not-send-attachments", isPresented: $presrntAlert) {
                 Button("Cancel", role: .cancel) {}
                 Button(action: {
                     self.emailAlert = true
                 }) {
-                    Text("Send by email")
+                    Text("send-by-email")
                 }
                 
             } message: {
-                Text("You can send video by email, or save it.")
+                Text("you-can-send-email-or-save-it")
             }
-            .alert("Send By email.", isPresented: $emailAlert) {
-                TextField("Email", text: $item.email)
-                Button("Cancel", role: .cancel) {}
+            .alert("send-by-email", isPresented: $emailAlert) {
+                TextField("eemail", text: $item.email)
+                Button("cancel", role: .cancel) {}
                 Button(action: {
                     self.showMailComposeView = true
                 }) {
-                    Text("Send")
+                    Text("send")
                 }
                 
             } message: {
-                Text("Check or add email to send.")
+                Text("check-or-add-email-to-send")
             }
             .sheet(isPresented: $isShareSheetPresented) {
                 ShareSheet(activityItems: [url])
@@ -109,10 +109,10 @@ struct FinalPreview: View {
                     ScrollView(.horizontal){
                         HStack(spacing: 15){
                             Button(action: {self.saveMessage()}){
-                                SendButtons(text: "Save", imageName: "square.and.arrow.down.fill", backgroundColor: Color(K.Colors.justLightGray), itemColor: Color.white)
+                                SendButtons(text: "save", imageName: "square.and.arrow.down", backgroundColor: Color(K.Colors.mainColor), itemColor: Color.white)
                             }
                             Button(action: {self.showMailComposeView = true}){
-                                SendButtons(text: "Mail", imageName: "envelope.fill", backgroundColor: Color.lightBlue, itemColor: Color.white)
+                                SendButtons(text: "mail", imageName: "envelope.fill", backgroundColor: Color.lightBlue, itemColor: Color.white)
                             }
                             Button(action: {
                                 let canSendAtachtment = MFMessageComposeViewController.canSendAttachments()
@@ -122,10 +122,10 @@ struct FinalPreview: View {
                                     cantSend()
                                 }
                             }){
-                                SendButtons(text: "Message", imageName: "message.badge.filled.fill", backgroundColor: Color.lightGreen, itemColor: Color.white)
+                                SendButtons(text: "message", imageName: "message.badge.filled.fill", backgroundColor: Color.lightGreen, itemColor: Color.white)
                             }
                             Button(action: {self.isShareSheetPresented = true}){
-                                SendButtons(text: "Another", imageName: "square.and.arrow.up.fill", backgroundColor: Color(K.Colors.mainColor), itemColor: Color.white)
+                                SendButtons(text: "another", imageName: "square.and.arrow.up", backgroundColor: Color(K.Colors.mainColor), itemColor: Color.white)
                             }
                         }
                         .padding(.horizontal, 15)
@@ -142,7 +142,7 @@ struct FinalPreview: View {
                         frontCameraModel.deleteAllVideos()
                         self.dismissViewController()
                     }){
-                        Text("Done")
+                        Text("done")
                             .foregroundStyle(Color(K.Colors.mainColor))
                     }
                 }

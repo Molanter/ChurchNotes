@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct AllPeopleView: View {
     private var items : [Person]{
@@ -94,10 +93,10 @@ struct AllPeopleView: View {
                                     self.lastItem = item
                                     self.isShowingDeleteAlert.toggle()
                                 } ) {
-                                    Label("Delete", systemImage: "trash")
+                                    Label("delete", systemImage: "trash")
                                 }
                             }
-                            .alert("Delete Person", isPresented: Binding(
+                            .alert("delete-person", isPresented: Binding(
                                 get: { self.isShowingDeleteAlert && lastItem != nil },
                                 set: { newValue in
                                     if !newValue {
@@ -105,13 +104,13 @@ struct AllPeopleView: View {
                                     }
                                 }
                             )) {
-                                Button("Cancel", role: .cancel) {}
-                                Button("Delete", role: .destructive) {
+                                Button("cancel", role: .cancel) {}
+                                Button("delete", role: .destructive) {
                                     viewModel.deletePerson(documentId: lastItem?.documentId ?? item.documentId)
                                     isShowingDeleteAlert = false
                                 }
                             } message: {
-                                Text("Do you really want to delete this person? This action cannot be undone.")
+                                Text("do-you-really-want-to-delete-this-person")
                             }
                             .contextMenu {
                                 Button{
@@ -123,7 +122,7 @@ struct AllPeopleView: View {
                                         }
                                     }
                                 } label: {
-                                    Label("Favourite", systemImage: item.isLiked ? "\(K.favouriteSign).fill" : "\(K.favouriteSign)")
+                                    Label("favourite", systemImage: item.isLiked ? "\(K.favouriteSign).fill" : "\(K.favouriteSign)")
                                         .accentColor(Color(K.Colors.favouriteSignColor))
                                         .contentTransition(.symbolEffect(.replace))
 
@@ -134,13 +133,13 @@ struct AllPeopleView: View {
                                         self.isShowingDeleteAlert.toggle()
                                     }
                                 } label: {
-                                    Label("Delete", systemImage: "trash")
+                                    Label("delete", systemImage: "trash")
                                 }
                             }
                         }
                         .sheet(item: $currentItem, onDismiss: nil){ item in
                             NavigationStack{
-                                ItemPersonView(item: item, currentTab: item.titleNumber, currentItem: $currentItem)
+                                ItemPersonView(item: item, currentItem: $currentItem)
                                     .toolbar{
                                         ToolbarItem(placement: .topBarLeading){
                                             Button(action: {
@@ -174,12 +173,12 @@ struct AllPeopleView: View {
                     EditButton()
                 }
             })
-            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Name")
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "search-name")
             .scrollContentBackground(.hidden)
             .listStyle(.plain)
             .frame(maxHeight: .infinity)
         }
-        .navigationTitle("All People")
+        .navigationTitle("all-people")
     }
 }
 

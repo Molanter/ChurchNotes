@@ -15,11 +15,11 @@ struct ShakeReportView: View {
     var body: some View {
         VStack(alignment: .leading){
             VStack(alignment: .leading, spacing: 20){
-                Text("Write Issue Report")
+                Text("write-issue-report")
                     .font(.title2)
                     .fontWeight(.medium)
                 HStack{
-                    TextField("Write here...", text: $errorText)
+                    TextField("write-here", text: $errorText)
                         .frame(height: 100, alignment: .topLeading)
                         .onSubmit {
                             viewModel.shakeReport(anonymously, errorText: errorText)
@@ -36,13 +36,13 @@ struct ShakeReportView: View {
                         .onTapGesture {
                             self.anonymously.toggle()
                         }
-                    Text("Write anonymously")
+                    Text("write-anonymously")
                 }
                 Button(action: {
                     viewModel.shakeReport(anonymously, errorText: errorText)
                     self.errorText = ""
                 }){
-                    Text("Report")
+                    Text("report")
                         .foregroundColor(Color.white)
                 }
                 .padding(.vertical, 10)

@@ -6,14 +6,13 @@
 //
 
 import SwiftUI
-import SwiftData
-import iPhoneNumberField
 
 struct ItemPersonView: View {
     @EnvironmentObject var viewModel: AppViewModel
 
+    @FocusState var focus: FocusedField?
+
     @State var item: Person
-    @State var currentTab: Int
     @State var edit = false
     @State var name = ""
     @State var email = ""
@@ -72,7 +71,7 @@ struct ItemPersonView: View {
                         viewModel.editPerson(documentId: item.documentId, name: item.name, email: item.email, phone: item.phone, notes: item.notes, image: image)
                     }
                 }){
-                    Text(edit ? "Done" : "Edit")
+                    Text(edit ? "done" : "edit")
                 }
             }
         }
@@ -95,7 +94,7 @@ struct ItemPersonView: View {
                         .frame(width: 557.89917, height: 90)
                 }
                 VStack(alignment: .center){
-                    Text(item.name == "" ? "Name" : item.name)
+                    Text(item.name == "" ? "name" : item.name)
                         .foregroundColor(.white)
                         .multilineTextAlignment(.center)
                         .font(.title2)
@@ -105,7 +104,7 @@ struct ItemPersonView: View {
                         Button(action: {
                             self.shouldShowImagePicker.toggle()
                         }){
-                            Text("tap to change image")
+                            Text("tap-to-change-image")
                                 .foregroundColor(.white)
                                 .multilineTextAlignment(.center)
                                 .font(.callout)
@@ -156,6 +155,7 @@ struct ItemPersonView: View {
                                             Circle().stroke(.white, lineWidth: 2)
                                         )
                                         .background(Color(K.Colors.blackAndWhite))
+                                        .cornerRadius(.infinity)
                                 }else{
                                     AsyncImage(url: URL(string: item.imageData)){image in
                                         image.resizable()
@@ -172,6 +172,7 @@ struct ItemPersonView: View {
                                         Circle().stroke(.white, lineWidth: 2)
                                     )
                                     .background(Color(K.Colors.blackAndWhite))
+                                    .cornerRadius(.infinity)
                                 }
                             }else{
                                 ZStack(alignment: .center){
@@ -207,7 +208,9 @@ struct ItemPersonView: View {
                                 .fontWeight(.light)
                         }
                         HStack{
-                            TextField(item.name.isEmpty ? "Name" : item.name, text: $item.name)
+                            TextField(item.name.isEmpty ? "name" : item.name, text: $item.name)
+                                .focused($focus, equals: .name)
+                                .textInputAutocapitalization(.words)
                                 .autocorrectionDisabled(true)
                                 .font(.title3)
                                 .fontWeight(.light)
@@ -235,7 +238,8 @@ struct ItemPersonView: View {
                                 .fontWeight(.light)
                         }
                         HStack{
-                            TextField(item.email.isEmpty ? "Email" : item.email, text: $item.email)
+                            TextField(item.email.isEmpty ? "eemail" : item.email, text: $item.email)
+                                .focused($focus, equals: .email)
                                 .textCase(.lowercase)
                                 .font(.title3)
                                 .fontWeight(.light)
@@ -264,24 +268,15 @@ struct ItemPersonView: View {
                                 .fontWeight(.light)
                         }
                         HStack(alignment: .center, spacing: 0.0){
-                            ZStack(alignment: .leading){
-                                iPhoneNumberField("Phone Number", text: $item.phone)
-                                    .maximumDigits(15)
-                                    .prefixHidden(false)
-                                    .flagHidden(false)
-                                    .flagSelectable(true)
-                                    .placeholderColor(Color(K.Colors.lightGray))
-                                    .frame(height: 45)
-                                    .disableAutocorrection(true)
-                                    .textInputAutocapitalization(.never)
-                                    .padding(0)
-                                    .textContentType(.telephoneNumber)
-                                    .foregroundStyle(Color.black)
-                            }
-                            .padding(.leading)
-                            Spacer()
+                            TextField("pphone", text: $item.phone)
+                                .focused($focus, equals: .phone)
+                                .textInputAutocapitalization(.never)
+                                .disableAutocorrection(true)
+                                .padding(10)
+                                .textContentType(.telephoneNumber)
+                                .keyboardType(.numberPad)
                         }
-                        .frame(height: 50)
+                        .shadow(color: Color(red: 0.2, green: 0.2, blue: 0.28).opacity(0.06), radius: 4, x: 0, y: 4)
                         .overlay(
                             RoundedRectangle(cornerSize: .init(width: 7, height: 7))
                                 .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
@@ -301,7 +296,8 @@ struct ItemPersonView: View {
                                 .fontWeight(.light)
                         }
                         HStack{
-                            TextField(item.notes.isEmpty ? "Notes" : item.notes, text: $item.notes, axis: .vertical)
+                            TextField(item.notes.isEmpty ? "notes" : item.notes, text: $item.notes, axis: .vertical)
+                                .focused($focus, equals: .notes)
                                 .font(.title3)
                                 .fontWeight(.light)
                                 .font(.system(size: 20))
@@ -319,7 +315,7 @@ struct ItemPersonView: View {
                             Button(action: {
                                 self.isShowingDeleteAlert.toggle()
                             }){
-                                Text("Delete")
+                                Text("delete")
                                     .foregroundStyle(Color.white)
                                     .padding()
                             }
@@ -345,6 +341,22 @@ struct ItemPersonView: View {
                     .frame(maxWidth: .infinity)
                     Spacer()
                 }
+                .onSubmit {
+                            switch focus {
+                            case .name:
+                                focus = .email
+                            case .email:
+                                focus = .phone
+                            case .phone:
+                                focus = .notes
+                            case .notes:
+                                focus = .birthday
+                            case .birthday:
+                                focus = nil
+                            default:
+                                break
+                            }
+                        }
             }
             .onAppear {
                 UIScrollView.appearance().showsVerticalScrollIndicator = false
@@ -355,14 +367,14 @@ struct ItemPersonView: View {
             Spacer()
             
         }
-        .alert("Delete Person", isPresented: $isShowingDeleteAlert) {
-            Button("Cancel", role: .cancel) {}
-            Button("Delete", role: .destructive) {
+        .alert("delete-person", isPresented: $isShowingDeleteAlert) {
+            Button("cancel", role: .cancel) {}
+            Button("delete", role: .destructive) {
                 viewModel.deletePerson(documentId: item.documentId)
                 isShowingDeleteAlert = false
             }
         } message: {
-            Text("Do you really want to delete this person? This action cannot be undone.")
+            Text("do-you-really-want-to-delete-this-person")
         }
     }
     
@@ -474,7 +486,7 @@ struct ItemPersonView: View {
                                         .foregroundStyle(Color(K.Colors.mainColor))
                                         .fontWeight(.light)
                                 }
-                                Text(item.name.isEmpty ? "Name" : item.name)
+                                Text(item.name.isEmpty ? "name" : item.name)
                                     .font(.title3)
                                     .fontWeight(.light)
                                     .font(.system(size: 20))
@@ -642,7 +654,7 @@ struct ItemPersonView: View {
                                             .fontWeight(.light)
                                     }
                                     HStack(spacing: 0.0){
-                                        Text("Record video for  **\(item.name.capitalized)**")
+                                        Text("record-video-for  **\(item.name.capitalized)**")
                                             .foregroundStyle(Color("text-appearance"))
                                             .font(.title3)
                                             .fontWeight(.light)
@@ -669,7 +681,7 @@ struct ItemPersonView: View {
                                             .fontWeight(.light)
                                     }
                                     HStack(spacing: 0.0){
-                                        Text("Record video for  **\(item.name.capitalized)**")
+                                        Text("record-video-for  **\(item.name.capitalized)**")
                                             .foregroundStyle(K.Colors.appearance >= 1 ? (K.Colors.appearance == 2 ? Color.black : Color.white) : Color("text-appearance"))
                                             .font(.title3)
                                             .fontWeight(.light)
@@ -683,14 +695,14 @@ struct ItemPersonView: View {
                         Divider()
                     }
                     HStack(alignment: .center, spacing: 20){
-                        if item.title != "New Friend" && item.isDone == false && !K.AppStages.stagesArray.filter({$0.name.contains(item.title)}).isEmpty{
+                        if item.title != "new-friend" && item.isDone == false && !K.AppStages.stagesArray.filter({$0.name.contains(item.title)}).isEmpty{
                                 Button(action: {
                                     self.previousStage()
                                 }){
                                     HStack(alignment: .center){
                                         Image(systemName: "arrowshape.turn.up.left.fill")
                                             .foregroundStyle(Color(K.Colors.mainColor))
-                                        Text("Previous")
+                                        Text("previous")
                                             .font(.system(size: 20))
                                             .foregroundStyle(Color(K.Colors.mainColor))
                                             .padding()
@@ -705,7 +717,7 @@ struct ItemPersonView: View {
                             }
                         if item.isDone == false && !K.AppStages.stagesArray.filter({$0.name.contains(item.title)}).isEmpty{
                             Button(action: {
-                                if item.title != "Joined Group"{
+                                if item.title != "joined-group"{
                                     self.nextStage()
                                 }else{
                                     viewModel.isDonePerson(documentId: item.documentId, isDone: true)
@@ -714,11 +726,11 @@ struct ItemPersonView: View {
                                 }
                             }){
                                 HStack(alignment: .center){
-                                    Text(item.title == "Joined Group" ? "Finish" : "Next")
+                                    Text(item.title == "joined-group" ? "ffinish" : "nnext")
                                         .font(.system(size: 20))
                                         .foregroundStyle(Color(K.Colors.mainColor))
                                         .padding()
-                                    Image(systemName: item.title == "Joined Group" ? "person.fill.checkmark" : "arrowshape.turn.up.right.fill")
+                                    Image(systemName: item.title == "joined-group" ? "person.fill.checkmark" : "arrowshape.turn.up.right.fill")
                                         .foregroundStyle(Color(K.Colors.mainColor))
                                 }
                             }
@@ -744,8 +756,8 @@ struct ItemPersonView: View {
                 .frame(maxHeight: .infinity)
                 Spacer()
             }
-            .alert("Phone number is empty!", isPresented: $phoneError) {
-                Button("Cancel", role: .cancel) {}
+            .alert("phone-number-is-empty", isPresented: $phoneError) {
+                Button("cancel", role: .cancel) {}
                 Button(action: {
                     if edit == false{
                         self.edit = true
@@ -759,11 +771,11 @@ struct ItemPersonView: View {
                         viewModel.editPerson(documentId: item.documentId, name: item.name, email: item.email, phone: item.phone, notes: item.notes, image: image)
                     }
                 }) {
-                    Text("Add number")
+                    Text("add-number")
                 }
                 
             }message: {
-                Text("Add person phone number for recording video.")
+                Text("add-person-phone-number-for-recording-video")
             }
         }
     }
@@ -778,7 +790,7 @@ struct ItemPersonView: View {
         let num = viewModel.currentUser?.next ?? 0
         self.viewModel.addAchiv(name: "next", int: num + 1)
         print(num + 0)
-        viewModel.nextStage(documentId: item.documentId, titleNumber: currentTab)
+        viewModel.nextStage(documentId: item.documentId, titleNumber: item.titleNumber)
         self.currentItem = nil
     }
     
@@ -786,9 +798,14 @@ struct ItemPersonView: View {
         let num = viewModel.currentUser?.next ?? 0
         self.viewModel.addAchiv(name: "next", int: num != 0 ? num - 1 : 0)
         print(num + 0)
-        viewModel.previousStage(documentId: item.documentId, titleNumber: currentTab)
-        self.currentItem = nil    }
+        viewModel.previousStage(documentId: item.documentId, titleNumber: item.titleNumber)
+        self.currentItem = nil
+    }
 
+    
+    enum FocusedField:Hashable{
+            case name,email,phone,notes,birthday
+        }
 }
 
 

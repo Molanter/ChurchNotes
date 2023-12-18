@@ -9,5 +9,7 @@ import Foundation
 
 class PublishedVariebles: ObservableObject{
     @Published var searchText = ""
+    @Published var createPersonName = ""
     @Published var tabsAreHidden = false
+    @Published var currentItem: Person?
 }

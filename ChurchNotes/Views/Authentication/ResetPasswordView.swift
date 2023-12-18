@@ -22,13 +22,13 @@ struct ResetPasswordView: View{
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10){
-            Text("Send reset password email")
+            Text("send-reset-password-email")
                 .foregroundStyle(.primary)
                 .font(.largeTitle)
                 .fontWeight(.bold)
             ZStack(alignment: .leading){
                 if email.isEmpty {
-                    Text("Email")
+                    Text("eemail")
                         .padding(.leading)
                         .foregroundColor(Color(K.Colors.lightGray))
                 }
@@ -56,7 +56,7 @@ struct ResetPasswordView: View{
                     timerSend()
                 }
             }){
-                Text(sended ? "Send again after: \(minute)s" : "Send")
+                Text(sended ? "send-again-after: \(minute)s" : "send")
                     .foregroundStyle(sended ? Color(K.Colors.lightGray) : Color.white)
                     .padding()
                     .frame(maxWidth: .infinity)

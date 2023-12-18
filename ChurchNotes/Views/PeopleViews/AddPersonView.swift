@@ -6,41 +6,36 @@
 //
 
 import SwiftUI
-import iPhoneNumberField
-import SwiftData
 
 struct AddPersonView: View {
     @Binding var showAddPersonView: Bool
     
+    @ObservedObject private var keyboard = KeyboardResponder()
+
+    @EnvironmentObject var published: PublishedVariebles
+    @EnvironmentObject var viewModel: AppViewModel
+
     @FocusState var focus: FocusedField?
-    
     @State var shouldShowImagePicker = false
     @State var name: String = ""
     @State var email: String = ""
     @State var phoneNumber: String = ""
     @State var notes: String = ""
-    @State var birthDay: Date = Date.now
+    @State var birthDay: Date = Date()
     @State var timestamp: Date = Date.now
     @State var image: UIImage?
     @State private var nameIsEmpty = false
+    
+    var createName: String?
     let notify = NotificationHandler()
     var offset: Int
     var stageName: String
     var titleNumber: Int
     var count: Int
-    @EnvironmentObject var viewModel: AppViewModel
-
     
-//    private var filteredNames: [Items] {
-//            return title.items.sorted(by: { $0.orderIndex < $1.orderIndex })
-//        }
-//    
-//    private var filteredItems: [Items] {
-//            return filteredNames.sorted(by: { $0.isLiked && !$1.isLiked })
-//        }
     
     var body: some View {
-        NavigationStack{
+        NavigationView{
             ZStack(alignment: .bottom){
                 ScrollView{
                     VStack(alignment: .center){
@@ -67,7 +62,7 @@ struct AddPersonView: View {
                                     
                                     
                                 }
-                                Text("tap to change Image")
+                                Text("tap-to-change-image")
                                     .foregroundStyle(.secondary)
                                     .foregroundStyle(Color(K.Colors.mainColor))
                             }
@@ -76,7 +71,7 @@ struct AddPersonView: View {
                         VStack(alignment: .leading, spacing: 20){
                             VStack(alignment: .leading){
                                 HStack{
-                                    Text("Write Person Name")
+                                    Text("write-person-name")
                                         .font(.title2)
                                         .fontWeight(.medium)
                                     Text("*")
@@ -85,38 +80,41 @@ struct AddPersonView: View {
                                         .fontWeight(.medium)
                                 }
                                 HStack{
-                                    TextField("Name", text: $name)
+                                    TextField("name", text: $name)
+                                        .offset(y: -keyboard.keyboardHeight / 2)
                                         .focused($focus, equals: .name)
                                         .textContentType(.name)
-                                        }
+                                }
                                 .padding(10)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.gray), lineWidth: 1)
                                 )
                             }
                             VStack(alignment: .leading){
-                                    Text("Email")
-                                        .font(.title2)
-                                        .fontWeight(.medium)
+                                Text("eemail")
+                                    .font(.title2)
+                                    .fontWeight(.medium)
                                 HStack{
-                                    TextField("Email", text: $email)
+                                    TextField("eemail", text: $email)
+                                        .offset(y: -keyboard.keyboardHeight / 2)
                                         .focused($focus, equals: .email)
                                         .textInputAutocapitalization(.never)
                                         .disableAutocorrection(true)
                                         .textContentType(.emailAddress)
                                         .keyboardType(.emailAddress)
-                                        }
+                                }
                                 .padding(10)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.gray), lineWidth: 1)
                                 )
                             }
                             VStack(alignment: .leading){
-                                    Text("Phone")
-                                        .font(.title2)
-                                        .fontWeight(.medium)
+                                Text("pphone")
+                                    .font(.title2)
+                                    .fontWeight(.medium)
                                 HStack(alignment: .center, spacing: 0.0){
-                                    TextField("Phone", text: $phoneNumber)
+                                    TextField("pphone", text: $phoneNumber)
+                                        .offset(y: -keyboard.keyboardHeight / 2)
                                         .focused($focus, equals: .phone)
                                         .textInputAutocapitalization(.never)
                                         .disableAutocorrection(true)
@@ -130,77 +128,92 @@ struct AddPersonView: View {
                                 )
                             }
                             VStack(alignment: .leading){
-                                    Text("Notes")
-                                        .font(.title2)
-                                        .fontWeight(.medium)
+                                Text("notes")
+                                    .font(.title2)
+                                    .fontWeight(.medium)
                                 HStack{
-                                    TextField("Notes", text: $notes)
+                                    TextField("notes", text: $notes)
+                                        .offset(y: -keyboard.keyboardHeight / 2)
                                         .focused($focus, equals: .notes)
-                                        }
+                                }
                                 .padding(10)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.gray), lineWidth: 1)
                                 )
                             }
                             VStack(alignment: .leading){
-                                    Text("Birthday")
+                                HStack{
+                                    Text("bbirthday")
                                         .font(.title2)
                                         .fontWeight(.medium)
+                                    Spacer()
+                                    Text("long-press")
+                                        .foregroundStyle(.secondary)
+                                }
+                                HStack{
+                                    Text("bbirthday")
+                                        .font(.body)
+                                        .fontWeight(.regular)
+                                        .foregroundStyle(.secondary)
+                                    Spacer()
                                     DatePicker(
-                                            "Birthday",
-                                            selection: $birthDay,
-                                            displayedComponents: [.date]
-                                        )
-                                    .focused($focus, equals: .birthday)
-                                .padding(5)
+                                        String(localized: ""),
+                                        selection: $birthDay,
+                                        displayedComponents: [.date]
+                                    )
+                                    .datePickerStyle(.compact)
+                                    .foregroundStyle(Color(K.Colors.mainColor))
+                                }
+                                .padding(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.gray), lineWidth: 1)
                                 )
                             }
                             .padding(.bottom, 75)
+                            Button(action: {
+                                if !name.isEmpty{
+                                    addItem()
+                                }else{
+                                    nameError()
+                                }
+                            }){
+                                Text("add")
+                                    .foregroundColor(Color.white)
+                                    .padding(.vertical, 10)
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color(K.Colors.mainColor))
+                                    .cornerRadius(7)
+                            }
                         }
                         .onSubmit {
-                                    switch focus {
-                                    case .name:
-                                        focus = .email
-                                    case .email:
-                                        focus = .phone
-                                    case .phone:
-                                        focus = .notes
-                                    case .notes:
-                                        focus = .birthday
-                                    case .birthday:
-                                        if !name.isEmpty{
-                                            addItem()
-                                        }else{
-                                            nameError()
-                                        }
-                                    default:
-                                        break
-                                    }
+                            switch focus {
+                            case .name:
+                                focus = .email
+                            case .email:
+                                focus = .phone
+                            case .phone:
+                                focus = .notes
+                            case .notes:
+                                focus = .birthday
+                            case .birthday:
+                                if !name.isEmpty{
+                                    addItem()
+                                }else{
+                                    nameError()
                                 }
+                            default:
+                                break
+                            }
+                        }
                         .padding(15)
                     }
                     Spacer()
                 }
                 VStack(alignment: .center, spacing: 30){
-                    Button(action: {
-                        if !name.isEmpty{
-                            addItem()
-                        }else{
-                            nameError()
-                        }
-                    }){
-                        Text("Add")
-                            .foregroundColor(Color.white)
-                            .padding(.vertical, 10)
-                            .frame(maxWidth: .infinity)
-                            .background(Color(K.Colors.mainColor))
-                            .cornerRadius(7)
-                    }
+                    
                     if nameIsEmpty{
                         HStack(alignment: .center){
-                            Text("Name is empty")
+                            Text("name-is-empty")
                                 .foregroundStyle(Color(K.Colors.justDarkGray))
                         }
                         .frame(height: 40)
@@ -218,61 +231,66 @@ struct AddPersonView: View {
                 .padding(.bottom, nameIsEmpty ? 0 : 15)
                 .padding(.horizontal, 15)
             }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding(.vertical)
-                .toolbar{
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
-                            if !name.isEmpty{
-                                addItem()
-                            }else{
-                                nameError()
-                            }
-                        }){
-                            Text("Save")
-                                .foregroundColor(Color(K.Colors.mainColor))
-                        }
-                    }
-                }
-                .edgesIgnoringSafeArea(.bottom)
-        }
-//        .modifier(DismissingKeyboard())
-//        .background(Color(K.Colors.background))
-        .sheet(isPresented: $shouldShowImagePicker) {
-            ImagePicker(image: $image)
-        }
-//        .onAppear(perform: {
-//            if let countryCode = Locale.current.region?.identifier {
-//                phoneNumber = "+\(K.CountryCodes.countryPrefixes[countryCode] ?? "US")"
-//                let country = NSLocale.current.localizedString(forRegionCode: countryCode)
-//                let i = K.Countries.countryList.firstIndex(of: country!) ?? 0
-//            }
-//        })
-    }
-        
-        func nameError(){
-            withAnimation{
-                nameIsEmpty = true
+            .modifier(DismissingKeyboard())
+            .sheet(isPresented: $shouldShowImagePicker) {
+                ImagePicker(image: $image)
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                withAnimation{
-                    nameIsEmpty = false
+            //        .onAppear(perform: {
+            //            if let countryCode = Locale.current.region?.identifier {
+            //                phoneNumber = "+\(K.CountryCodes.countryPrefixes[countryCode] ?? "US")"
+            //                let country = NSLocale.current.localizedString(forRegionCode: countryCode)
+            //                let i = K.Countries.countryList.firstIndex(of: country!) ?? 0
+            //            }
+            //        })
+            .onAppear {
+                if let newName = createName{
+                    self.name = newName
                 }
+            }
+            .onDisappear {
+//                self.createName = nil
+                self.published.createPersonName = ""
+            }
+        }
+        .toolbar{
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    if !name.isEmpty{
+                        addItem()
+                    }else{
+                        nameError()
+                    }
+                }){
+                    Text("add")
+                        .foregroundColor(Color(K.Colors.mainColor))
                 }
+            }
         }
-        
-        func addItem() {
-            viewModel.handleSend(name: name, notes: notes, email: email, title: stageName, phone: phoneNumber, imageData: image, orderIndex: count, isCheked: false, isLiked: false, isDone: false, birthDay: birthDay, timestamp: timestamp, titleNumber: titleNumber)
-                    email = ""
-                    name = ""
-                    notes = ""
-                    phoneNumber = ""
-                showAddPersonView = false
+    }
+    
+    func nameError(){
+        withAnimation{
+            nameIsEmpty = true
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+            withAnimation{
+                nameIsEmpty = false
+            }
+        }
+    }
+    
+    func addItem() {
+        viewModel.handleSend(name: name, notes: notes, email: email, title: stageName, phone: phoneNumber, imageData: image, orderIndex: count, isCheked: false, isLiked: false, isDone: false, birthDay: birthDay, timestamp: timestamp, titleNumber: titleNumber)
+        email = ""
+        name = ""
+        notes = ""
+        phoneNumber = ""
+        showAddPersonView = false
+    }
     
     enum FocusedField:Hashable{
-            case name,email,phone,notes,birthday
-        }
+        case name,email,phone,notes,birthday
+    }
 }
 
 //#Preview {

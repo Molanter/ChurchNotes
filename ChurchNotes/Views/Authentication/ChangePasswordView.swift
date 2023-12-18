@@ -9,19 +9,20 @@ import SwiftUI
 import FirebaseAuth
 
 struct ChangePasswordView: View {
+    @FocusState var focus: FocusedField?
     @State var oldPassword = ""
     @State var newPassword = ""
     @State var repeatPassword = ""
     @State var showOldPassword = false
     @State var showNewPassword = false
-    @State var fieldsEmty = "Some fields are emty, please fill them before submiting!"
+    @State var fieldsEmty = "some-fields-are-emty"
     let auth = Auth.auth()
     
     @EnvironmentObject var viewModel: AppViewModel
 
     var body: some View {
         VStack{
-            Text("Change password for:")
+            Text("change-password-for")
                 .font(.title2)
                 .foregroundStyle(.primary)
             Text("'\(viewModel.currentUser?.email ?? auth.currentUser?.email ?? "")'")
@@ -29,13 +30,13 @@ struct ChangePasswordView: View {
                 .foregroundStyle(.secondary)
             VStack(alignment: .leading, spacing: 15){
                 VStack(alignment: .leading){
-                    Text("Current Password")
+                    Text("current-password")
                         .fontWeight(.semibold)
                         .font(.system(size: 18))
                     HStack(alignment: .center, spacing: 0.0){
                         ZStack(alignment: .leading){
                             if oldPassword.isEmpty{
-                                Text("Current Password")
+                                Text("current-password")
                                     .padding(.leading)
                                     .foregroundColor(Color(K.Colors.lightGray))
                             }
@@ -43,6 +44,7 @@ struct ChangePasswordView: View {
                                 Group{
                                     if !showOldPassword{
                                         SecureField("", text: $oldPassword)
+                                            .submitLabel(.next)
                                             .disableAutocorrection(true)
                                             .textInputAutocapitalization(.never)
                                             .padding(0)
@@ -50,6 +52,7 @@ struct ChangePasswordView: View {
                                             .padding(.leading)
                                     }else{
                                         TextField("", text: $oldPassword)
+                                            .submitLabel(.next)
                                             .foregroundColor(Color(K.Colors.lightGray))
                                             .disableAutocorrection(true)
                                             .textInputAutocapitalization(.never)
@@ -77,13 +80,13 @@ struct ChangePasswordView: View {
                     )
                 }
                 VStack(alignment: .leading){
-                    Text("New Password")
+                    Text("new-password")
                         .fontWeight(.medium)
                         .font(.system(size: 18))
                     HStack(alignment: .center, spacing: 0.0){
                         ZStack(alignment: .leading){
                             if newPassword.isEmpty{
-                                Text("Create Password")
+                                Text("create-password")
                                     .padding(.leading)
                                     .foregroundColor(Color(K.Colors.lightGray))
                             }
@@ -91,6 +94,7 @@ struct ChangePasswordView: View {
                                 Group{
                                     if !showNewPassword{
                                         SecureField("", text: $newPassword)
+                                            .submitLabel(.next)
                                             .disableAutocorrection(true)
                                             .textInputAutocapitalization(.never)
                                             .padding(0)
@@ -98,6 +102,7 @@ struct ChangePasswordView: View {
                                             .padding(.leading)
                                     }else{
                                         TextField("", text: $newPassword)
+                                            .submitLabel(.next)
                                             .foregroundColor(Color(K.Colors.lightGray))
                                             .disableAutocorrection(true)
                                             .textInputAutocapitalization(.never)
@@ -126,7 +131,7 @@ struct ChangePasswordView: View {
                     HStack(alignment: .center, spacing: 0.0){
                         ZStack(alignment: .leading){
                             if repeatPassword.isEmpty{
-                                Text("Repeat Password")
+                                Text("repeat-password")
                                     .padding(.leading)
                                     .foregroundColor(Color(K.Colors.lightGray))
                             }
@@ -134,6 +139,7 @@ struct ChangePasswordView: View {
                                 Group{
                                     if !showNewPassword{
                                         SecureField("", text: $repeatPassword)
+                                            .submitLabel(.next)
                                             .disableAutocorrection(true)
                                             .textInputAutocapitalization(.never)
                                             .padding(0)
@@ -141,6 +147,7 @@ struct ChangePasswordView: View {
                                             .padding(.leading)
                                     }else{
                                         TextField("", text: $repeatPassword)
+                                            .submitLabel(.next)
                                             .foregroundColor(Color(K.Colors.lightGray))
                                             .disableAutocorrection(true)
                                             .textInputAutocapitalization(.never)
@@ -174,7 +181,7 @@ struct ChangePasswordView: View {
                         viewModel.err = fieldsEmty
                     }
                 }){
-                    Text("Change")
+                    Text("change")
                         .foregroundStyle(Color.white)
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -187,6 +194,22 @@ struct ChangePasswordView: View {
                     .font(.title2)
                     .fontWeight(.bold)
             }
+            .onSubmit {
+                        switch focus {
+                        case .oldPass:
+                            focus = .createPass
+                        case .createPass:
+                            focus = .repeatPass
+                        case .repeatPass:
+                            if oldPassword != "" && newPassword != "" && repeatPassword != ""{
+                                viewModel.changePassword(currentPassword: oldPassword, newPassword: newPassword, confirmPassword: repeatPassword)
+                            }else{
+                                viewModel.err = fieldsEmty
+                            }
+                        default:
+                            break
+                        }
+                    }
             .padding(.top, 10)
             Spacer()
         }
@@ -194,6 +217,9 @@ struct ChangePasswordView: View {
         .padding(.horizontal, 15)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
+    enum FocusedField:Hashable{
+        case oldPass, createPass, repeatPass
+        }
 }
 
 #Preview {

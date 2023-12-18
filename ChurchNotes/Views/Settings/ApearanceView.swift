@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct AppearanceView: View {
+    @ObservedObject var languageManager = LanguageManager.shared
+
     @State var presentAlert = false
     @State var presentingPreview = false
     @State var oldColor = ""
@@ -19,6 +21,7 @@ struct AppearanceView: View {
     @State var isExpanded = true
     @State var testFeatures = false
     @State var swipeStage = false
+    @State var language = ""
 
     let profileImage: String
     let name: String
@@ -34,22 +37,22 @@ struct AppearanceView: View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 15) {
                 List {
-                    Section(header: Text("App appearance:")) {
+                    Section(header: Text("app-appearance")) {
                         Toggle(isOn: Binding(
                             get: { !self.showColor },
                             set: { self.showColor = !$0 }
                         )) {
-                            Text("System Apearance")
+                            Text("system-apearance")
                         }
                         Toggle(isOn: $dark) {
-                            Text("Dark Appearance")
+                            Text("dark-appearance")
                         }
                         .disabled(!showColor)
                         .pickerStyle(.segmented)
                     }
                     .listRowBackground(Color.clear)
                     
-                    Section(header: Text("Accent color:")) {
+                    Section(header: Text("accent-color")) {
                         ScrollViewReader { scrollProxy in
                             ScrollView(.horizontal) {
                                 HStack {
@@ -65,8 +68,8 @@ struct AppearanceView: View {
                                                         .shadow(color: Color(K.Colors.bluePurple), radius: 2)
                                                         .opacity(K.Colors.mainColor == value ? 1 : 0.3)
                                                     Text(order)
-                                                        .lineLimit(0)
-                                                        .font(.system(size: 20))
+                                                        .lineLimit(2)
+                                                        .font(.body)
                                                         .foregroundStyle(Color(K.Colors.lightGray))
                                                 }
                                                 .frame(height: 100, alignment: .top)
@@ -92,10 +95,10 @@ struct AppearanceView: View {
                     
                     Section {
                         HStack {
-                            Text("Favourite sign:")
+                            Text("favourite-sign")
                             Picker("", selection: $favouriteSignNow) {
-                                Label("Heart", systemImage: "heart").tag("heart")
-                                Label("Star", systemImage: "star").tag("star")
+                                Label("heart", systemImage: "heart").tag("heart")
+                                Label("star", systemImage: "star").tag("star")
                             }
                             .accentColor(Color(K.Colors.mainColor))
                         }
@@ -105,9 +108,37 @@ struct AppearanceView: View {
                         K.Colors.favouriteSignColor = favouriteSignNow == "heart" ? "redd" : "yelloww"
                         K.favouriteSign = favouriteSignNow
                     }
-                    Section(header: Text("Test Features")) {
+                    Section {
+//                        HStack {
+//                            Text("llanguage")
+//                            Picker("", selection: $languageManager.currentLanguage) {
+//                                ForEach(K.Languages.languagesArray){ lan in
+//                                    HStack(spacing: 3){
+////                                        Text(lan.image)
+//                                        Text(lan.name)
+//                                    }.tag(lan.short)
+//                                }
+//                            }
+//                            .accentColor(Color(K.Colors.mainColor))
+//                        }
+                        HStack{
+                            Text("llanguage")
+                            Spacer()
+                            Link(String(localized: "open-in-settings"), destination: URL(string: UIApplication.openSettingsURLString)!)
+                                .accentColor(Color(K.Colors.mainColor))
+                        }
+                    }
+                    .listRowBackground(Color.clear)
+//                    .onChange(of: languageManager.currentLanguage) { _ in
+//                        print("changed")
+//                                withAnimation {
+//                                    print("reload")
+//                                    reload()
+//                                }
+//                            }
+                    Section(header: Text("test-eatures")) {
                         Toggle(isOn: $testFeatures) {
-                            Text("Test Features")
+                            Text("test-eatures")
                         }
                         .onChange(of: testFeatures) { old, new in
                             K.testFeatures = new
@@ -129,6 +160,8 @@ struct AppearanceView: View {
             }
             .frame(maxWidth: .infinity)
             .onAppear {
+                self.language = K.language
+                print(language)
                 self.swipeStage = K.swipeStage
                 self.testFeatures = K.testFeatures
                 favouriteSignNow = K.favouriteSign
@@ -150,10 +183,10 @@ struct AppearanceView: View {
             .onChange(of: dark) {
                 updateAppearance()
             }
-            .alert("Color has changed", isPresented: $presentAlert) {
+            .alert("color-has-changed", isPresented: $presentAlert) {
                 Button(K.Hiden.ok.randomElement()!, role: .cancel) {}
             } message: {
-                Text("Restart the app, or go to the Notes List - to see the changes.")
+                Text("restart-the-app-to-see-the-changes")
             }
             .sheet(isPresented: $presentingPreview) {
                 NavigationStack {
@@ -205,8 +238,15 @@ struct AppearanceView: View {
             }
         }
     }
-    
+    private func reload() {
+           let newState = UUID().uuidString
+           self.state = newState
+        print("changed")
+       }
+    @State private var state = UUID().uuidString
 }
+
+
 
 //#Preview {
 //    AppearanceView()
@@ -214,3 +254,27 @@ struct AppearanceView: View {
 
 
 
+struct LocalizedStrings {
+    static func helloWorld() -> String {
+        return NSLocalizedString("Hello, World!", comment: "")
+    }
+}
+
+class LanguageManager: ObservableObject {
+    static let shared = LanguageManager()
+
+    @Published var currentLanguage: String {
+        didSet {
+            UserDefaults.standard.set([currentLanguage], forKey: "AppleLanguages")
+            UserDefaults.standard.synchronize()
+        }
+    }
+
+    private init() {
+        self.currentLanguage = UserDefaults.standard.stringArray(forKey: "AppleLanguages")?.first ?? "en"
+    }
+
+    func setLanguage(_ language: String) {
+        currentLanguage = language
+    }
+}

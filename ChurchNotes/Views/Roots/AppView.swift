@@ -6,13 +6,13 @@
 //
 
 import SwiftUI
-import SwiftData
 import FirebaseAuth
 import FirebaseStorage
 import FirebaseFirestore
-import iPhoneNumberField
 
 struct AppView: View {
+    @State var listStr = String(localized: "list")
+    @State var settingsStr = String(localized: "settings")
     @State var name = "name"
     @State var phone = "+1234567890"
     @State var email = "email@gmail.com"
@@ -39,6 +39,8 @@ struct AppView: View {
     var auth = Auth.auth()
     @State private var selection: Int = 0
     
+    @StateObject var manager = NotificationsManager()
+
     @EnvironmentObject var published: PublishedVariebles
     @EnvironmentObject var viewModel: AppViewModel
     @EnvironmentObject var networkMonitor: NetworkMonitor
@@ -50,20 +52,20 @@ struct AppView: View {
                 ItemView()
                     .searchable(text: $published.searchText,
                                 placement: .navigationBarDrawer(displayMode: .automatic),
-                                prompt: "Search Name")
+                                prompt: "search-name")
                     .tag(0)
                 settings
                     .tag(1)
             }
             .accentColor(accentColor ? Color.white : Color(K.Colors.mainColor))
             if !published.tabsAreHidden{
-                HStack(alignment: .lastTextBaseline) {
+                HStack(alignment: .top) {
                     CustomTabBarItem(iconName: "list.bullet.clipboard",
-                                     label: "People",
+                                     label: listStr,
                                      selection: $selection,
                                      tag: 0, settings: false)
                     CustomTabBarItem(iconName: "gearshape",
-                                     label: "Settings",
+                                     label: settingsStr,
                                      selection: $selection,
                                      tag: 1, settings: true)
                     //                    CustomTabBarItem(iconName: "person.crop.circle",
@@ -79,7 +81,7 @@ struct AppView: View {
                     //                                 selection: $selection,
                     //                                 tag: 4)
                 }
-                .frame(height: 45)
+                .frame(height: 50)
                 .frame(maxWidth: .infinity)
                 .background(Color(K.Colors.background).opacity(0))
                 .opacity(published.tabsAreHidden ? 0 : 1)
@@ -165,11 +167,11 @@ struct AppView: View {
                                         .font(.system(size: 29))
                                         .fontWeight(.light)
                                     VStack(alignment: .leading, spacing: 5){
-                                        Text("Profile Info")
+                                        Text("profile-info")
                                             .fontWeight(.semibold)
                                             .font(.system(size: 15))
                                             .foregroundStyle(.primary)
-                                        Text("Info, email, username...")
+                                        Text("info-email-username")
                                             .font(.system(size: 11))
                                             .foregroundStyle(.secondary)
                                     }
@@ -182,17 +184,17 @@ struct AppView: View {
                             Divider()
                         }
                         VStack{
-                            NavigationLink(destination: SettingsPeopleView()){
+                            NavigationLink(destination: SettingsPeopleView().toolbar(.hidden, for: .tabBar)){
                                 HStack(spacing: 15){
                                     Image(systemName: "person.3")
                                         .font(.system(size: 25))
                                         .fontWeight(.light)
                                     VStack(alignment: .leading, spacing: 5){
-                                        Text("People")
+                                        Text("people")
                                             .font(.system(size: 15))
                                             .fontWeight(.semibold)
                                             .foregroundStyle(.primary)
-                                        Text("All people, favourite, deleted...")
+                                        Text("all-people-favourite-deleted")
                                             .font(.system(size: 11))
                                             .foregroundStyle(.secondary)
                                     }
@@ -206,17 +208,17 @@ struct AppView: View {
                             Divider()
                         }
                         VStack{
-                            NavigationLink(destination: AchievementsMainView()){
+                            NavigationLink(destination: AchievementsMainView().toolbar(.hidden, for: .tabBar)){
                                 HStack(spacing: 29){
                                     Image(systemName: "medal")
                                         .font(.system(size: 29))
                                         .fontWeight(.light)
                                     VStack(alignment: .leading, spacing: 5){
-                                        Text("Achievements")
+                                        Text("achievements")
                                             .font(.system(size: 15))
                                             .fontWeight(.semibold)
                                             .foregroundStyle(.primary)
-                                        Text("Your achievements, score")
+                                        Text("your-achievements-score")
                                             .font(.system(size: 11))
                                             .foregroundStyle(.secondary)
                                     }
@@ -237,11 +239,11 @@ struct AppView: View {
                                         .font(.system(size: 29))
                                         .fontWeight(.light)
                                     VStack(alignment: .leading, spacing: 5){
-                                        Text("Notifications")
+                                        Text("notifications")
                                             .fontWeight(.semibold)
                                             .font(.system(size: 15))
                                             .foregroundStyle(.primary)
-                                        Text("Notifications, reminders...")
+                                        Text("notifications-reminders")
                                             .font(.system(size: 11))
                                             .foregroundStyle(.secondary)
                                     }
@@ -260,11 +262,11 @@ struct AppView: View {
                                         .font(.system(size: 29))
                                         .fontWeight(.light)
                                     VStack(alignment: .leading, spacing: 5){
-                                        Text("Appearance")
+                                        Text("appearance")
                                             .fontWeight(.semibold)
                                             .font(.system(size: 15))
                                             .foregroundStyle(.primary)
-                                        Text("Theme, color")
+                                        Text("theme-color")
                                             .font(.system(size: 11))
                                             .foregroundStyle(.secondary)
                                     }
@@ -277,17 +279,17 @@ struct AppView: View {
                             Divider()
                         }
                         VStack{
-                            NavigationLink(destination: SettingsView()){
+                            NavigationLink(destination: AccountView()){
                                 HStack(spacing: 29){
                                     Image(systemName: "gearshape")
                                         .font(.system(size: 29))
                                         .fontWeight(.light)
                                     VStack(alignment: .leading, spacing: 5){
-                                        Text("Settings")
+                                        Text("settings")
                                             .fontWeight(.semibold)
                                             .font(.system(size: 15))
                                             .foregroundStyle(.primary)
-                                        Text("Change password")
+                                        Text("change-password-email")
                                             .font(.system(size: 11))
                                             .foregroundStyle(.secondary)
                                     }
@@ -309,7 +311,7 @@ struct AppView: View {
                                         .foregroundStyle(Color(K.Colors.lightGray), Color(K.Colors.lightGray))
                                         .font(.system(size: 29))
                                         .fontWeight(.light)
-                                    Text("Log Out")
+                                    Text("log-out")
                                         .fontWeight(.semibold)
                                         .font(.system(size: 15))
                                         .foregroundStyle(.primary)
@@ -347,14 +349,14 @@ struct AppView: View {
                     //                    }
                     
                 }
-                .alert("Logout", isPresented: $logoutAlert) {
-                    Button("Cancel", role: .cancel) {}
-                    Button("Yes", role: .destructive) {
+                .alert("logout", isPresented: $logoutAlert) {
+                    Button("cancel", role: .cancel) {}
+                    Button("yes", role: .destructive) {
                         self.logoutAlert.toggle()
                         viewModel.logOut()
                     }
                 }message: {
-                    Text("Are you sure?")
+                    Text("are-you-sure")
                 }
                 if width{
                     VStack(alignment: .center){
@@ -413,7 +415,7 @@ struct AppView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(height: 35)
-                            Text("No Internet connection!")
+                            Text("no-internet-connection")
                         }
                         .foregroundStyle(Color(K.Colors.justDarkGray))
                     }
@@ -446,6 +448,11 @@ struct AppView: View {
             .frame(maxWidth: .infinity)
             .onAppear{
                 fetchDictionary()
+                if !manager.hasPermission{
+                    Task{
+                        await manager.request()
+                    }
+                }
             }
             .sheet(isPresented: $showingEditingProfile, onDismiss: {}, content: {
                 NavigationStack{
@@ -453,7 +460,7 @@ struct AppView: View {
                         .toolbar(content: {
                             ToolbarItem(placement: .topBarLeading) {
                                 Button(action: {self.showingEditingProfile = false}){
-                                    Text("Cancel")
+                                    Text("cancel")
                                         .foregroundStyle(Color(K.Colors.mainColor))
                                 }
                             }

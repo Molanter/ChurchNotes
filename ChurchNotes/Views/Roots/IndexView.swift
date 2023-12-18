@@ -9,6 +9,7 @@ import SwiftUI
 
 struct IndexView: View {
     @EnvironmentObject var viewModel: AppViewModel
+
     @StateObject var networkMonitor = NetworkMonitor()
     var utilities = Utilities()
 

@@ -10,14 +10,15 @@ import SwiftUI
 struct NotificationsInfo: View {
     var body: some View {
         VStack(alignment: .leading){
-            Text("Note this!")
+
+            Text("note-this")
                 .font(.title2)
                 .bold()
                 .foregroundStyle(.primary)
                 .padding(.horizontal, 15)
             List{
                 Section{
-                    Text("Please **note** that messages is only workable for device on which they were made.")
+                    Text("please-note-that-messages-is-only-for-device")
                         .font(.body)
                         .foregroundStyle(.secondary)
                 }

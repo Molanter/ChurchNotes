@@ -83,7 +83,7 @@ struct CameraView: View {
                     if frontCameraModel.previewURL != nil && !frontCameraModel.recordedURLs.isEmpty {
                         NavigationLink(destination: FinalPreview(recipients: recipients, message: message, url: frontCameraModel.previewURL!, item: item), label: {
                             HStack{
-                                Text("Preview")
+                                Text("preview")
                                 Image(systemName: "chevron.right")
                             }
                             .foregroundColor(Color(K.Colors.text))
@@ -121,7 +121,7 @@ struct CameraView: View {
                 .padding(.top)
             }
             VStack(alignment: .center){
-                Text("Recording for:")
+                Text("recording-for")
                     .foregroundStyle(.primary)
                 Text("'\(item.name)'")
                     .foregroundStyle(.secondary)
@@ -148,7 +148,7 @@ struct CameraView: View {
         }
         .animation(.easeInOut, value: frontCameraModel.showPreview)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .navigationTitle("Camera")
+        .navigationTitle("ccamera")
     }
     
 }

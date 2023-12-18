@@ -80,10 +80,11 @@ struct Stage: Identifiable {
 
 struct AppStage: Identifiable {
     var id: String { String(orderIndex) }
-    var name: String
+    var name, title: String
     var orderIndex: Int
     
-    init(name: String, orderIndex: Int) {
+    init(name: String, title: String, orderIndex: Int) {
+        self.title = title
         self.name = name
         self.orderIndex = orderIndex
     }
@@ -125,5 +126,19 @@ struct Notifics: Identifiable {
         self.friday = data["friday"] as? Bool ?? false
         self.saturday = data["saturday"] as? Bool ?? false
         self.orderIndex = data["orderIndex"] as? Int ?? 0
+    }
+}
+
+
+struct AppLanguage: Identifiable {
+    var id: String { String(orderIndex) }
+    var name, short, image: String
+    var orderIndex: Int
+    
+    init(name: String, short: String, image: String, orderIndex: Int) {
+        self.name = name
+        self.short = short
+        self.image = image
+        self.orderIndex = orderIndex
     }
 }

@@ -16,13 +16,13 @@ struct CreateStageView: View {
     var body: some View {
         ZStack(alignment: .bottom){
             VStack(alignment: .leading, spacing: 20){
-                Text("Write New Stage Name")
+                Text("write-new-stage-name")
                     .font(.title2)
                     .fontWeight(.medium)
                 HStack{
                     ZStack(alignment: .leading){
                         if title.isEmpty {
-                            Text("Have Coffee")
+                            Text("have-coffee")
                                 .foregroundStyle(.secondary)
                         }
                         TextField("", text: $title)
@@ -41,7 +41,7 @@ struct CreateStageView: View {
                     RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.darkGray), lineWidth: 1)
                 )
                 Button(action: {addItemTitle()}){
-                    Text("Add")
+                    Text("add")
                         .foregroundColor(Color.white)
                         .padding(.vertical, 10)
                         .frame(maxWidth: .infinity)
@@ -58,13 +58,13 @@ struct CreateStageView: View {
                     Button(action: {
                         presentSheet.toggle()
                     }){
-                        Text("Cancel")
+                        Text("cancel")
                             .foregroundColor(Color(K.Colors.mainColor))
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {addItemTitle()}){
-                        Text("Save")
+                        Text("save")
                             .foregroundColor(Color(K.Colors.mainColor))
                     }
                 }
@@ -73,7 +73,7 @@ struct CreateStageView: View {
             Spacer()
             if nameIsEmpty{
                 HStack(alignment: .center){
-                    Text("Stage name is empty")
+                    Text("stage-name-is-empty")
                         .foregroundStyle(Color(K.Colors.justDarkGray))
                 }
                 .frame(height: 40)

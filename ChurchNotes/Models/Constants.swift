@@ -11,6 +11,7 @@ import FirebaseFirestore
 import SwiftUI
 
 struct K{
+    @AppStorage("language") static var language: String = "en"
     @AppStorage("choosedStages") static var choosedStages: Int = 0
     @AppStorage("favouriteSign") static var favouriteSign: String = "heart"
     @AppStorage("testFeatures") static var testFeatures: Bool = false
@@ -18,14 +19,14 @@ struct K{
 
     struct Colors{
         static let colorsDictionary: [String: String] = [
-            "Purple": "blue-purple",
-            "Light Blue": "light-blue",
-            "Blue": "bluee",
-            "Dark Blue": "dark-blue",
-            "Orange": "orangee",
-            "Green": "greenn",
-            "Yellow": "yelloww",
-            "Red": "redd"
+            String(localized: "ppurple"): "blue-purple",
+            String(localized: "llight-bblue"): "light-blue",
+            String(localized: "bblue"): "bluee",
+            String(localized: "ddark-bblue"): "dark-blue",
+            String(localized: "oorange"): "orangee",
+            String(localized: "ggreen"): "greenn",
+            String(localized: "yyellow"): "yelloww",
+            String(localized: "rred"): "redd"
         ]
         @AppStorage("mainColor") static var mainColor: String = "blue-purple"
         @AppStorage("appearance") static var appearance: Int = 0
@@ -56,55 +57,7 @@ struct K{
     struct CountryCodes{
         static let countryPrefixes: [String: String] = ["AF": "93",
                 "AL": "355", "DZ": "213","AS": "1", "AD": "376","AO": "244","AI": "1", "AQ": "672","AG": "1","AR": "54",
-                "AM": "374","AW": "297","AU": "61","AT": "43","AZ": "994","BS": "1","BH": "973",
-                "BD": "880",
-                "BB": "1",
-                "BY": "375",
-                "BE": "32",
-                "BZ": "501",
-                "BJ": "229",
-                "BM": "1",
-                "BT": "975",
-                "BA": "387",
-                "BW": "267",
-                "BR": "55",
-                "IO": "246",
-                "BG": "359",
-                "BF": "226",
-                "BI": "257",
-                "KH": "855",
-                "CM": "237",
-                "CA": "1",
-                "CV": "238",
-                "KY": "345",
-                "CF": "236",
-                "TD": "235",
-                "CL": "56",
-                "CN": "86",
-                "CX": "61",
-                "CO": "57",
-                "KM": "269",
-                "CG": "242",
-                "CK": "682",
-                "CR": "506",
-                "HR": "385",
-                "CU": "53",
-                "CY": "537",
-                "CZ": "420",
-                "DK": "45",
-                "DJ": "253",
-                "DM": "1",
-                "DO": "1",
-                "EC": "593",
-                "EG": "20",
-                "SV": "503",
-                "GQ": "240",
-                "ER": "291",
-                "EE": "372",
-                "ET": "251",
-                "FO": "298",
-                "FJ": "679",
-                "FI": "358",
+                "AM": "374","AW": "297","AU": "61","AT": "43","AZ": "994","BS": "1","BH": "973", "BD": "880", "BB": "1", "BY": "375", "BE": "32", "BZ": "501", "BJ": "229", "BM": "1", "BT": "975", "BA": "387", "BW": "267", "BR": "55", "IO": "246", "BG": "359", "BF": "226", "BI": "257", "KH": "855", "CM": "237", "CA": "1", "CV": "238", "KY": "345", "CF": "236", "TD": "235", "CL": "56", "CN": "86", "CX": "61", "CO": "57", "KM": "269", "CG": "242", "CK": "682", "CR": "506", "HR": "385", "CU": "53", "CY": "537", "CZ": "420", "DK": "45", "DJ": "253", "DM": "1", "DO": "1", "EC": "593", "EG": "20", "SV": "503", "GQ": "240", "ER": "291", "EE": "372", "ET": "251", "FO": "298", "FJ": "679", "FI": "358",
                 "FR": "33",
                 "GF": "594",
                 "PF": "689",
@@ -283,14 +236,20 @@ struct K{
     }
     struct AppStages{
         static let stagesArray: [AppStage] = [
-            AppStage(name: "New Friend", orderIndex: 0),
-            AppStage(name: "Invited", orderIndex: 1),
-            AppStage(name: "Attanded", orderIndex: 2),
-            AppStage(name: "Acepted Christ", orderIndex: 3),
-            AppStage(name: "Baptized", orderIndex: 4),
-            AppStage(name: "Serving", orderIndex: 5),
-            AppStage(name: "Joined Group", orderIndex: 6)
+            AppStage(name: String(localized: "nnew-friend"), title: "New Friend", orderIndex: 0),
+            AppStage(name: String(localized: "iinvited"), title: "Invited", orderIndex: 1),
+            AppStage(name: String(localized: "aattanded"), title: "Attended", orderIndex: 2),
+            AppStage(name: String(localized: "aacepted-cchrist"), title: "Acepted Christ", orderIndex: 3),
+            AppStage(name: String(localized: "bbaptized"), title: "Baptized", orderIndex: 4),
+            AppStage(name: String(localized: "sserving"), title: "Serving", orderIndex: 5),
+            AppStage(name: String(localized: "jjoined-ggroup"), title: "Joined Group", orderIndex: 6)
         ]
+    }
+    struct Languages{
+    static var languagesArray: [AppLanguage] = [
+        AppLanguage(name: "English", short: "en", image: "🇺🇸", orderIndex: 0),
+        AppLanguage(name: "Українська", short: "uk", image: "🇺🇦", orderIndex: 1)
+    ]
     }
     struct Hiden{
         static let ok:[String] = ["Ok", "ok", "Ok", "Ok"]
