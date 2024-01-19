@@ -41,7 +41,7 @@ struct FinalPreview: View {
                         player?.pause()
                     })
                 VStack(alignment: .leading, spacing: 15){
-                    Text("recipient **\(item.name)**")
+                    Text("recipient: \(item.name)")
                         .font(.system(size: 18))
                         .padding(.top, 30)
                         .foregroundStyle(Color(K.Colors.text))

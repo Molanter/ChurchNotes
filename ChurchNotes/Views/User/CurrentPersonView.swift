@@ -8,16 +8,7 @@
 import SwiftUI
 
 struct CurrentPersonView: View {
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    var cristian: Bool
-    var name: String
-    var phone: String
-    var email: String
-    var country: String
-    var notes: String
-    var profileImage: String
-    var username: String
-    var timeStamp: Date
+    @EnvironmentObject var viewModel: AppViewModel
     
     var body: some View {
         VStack{
@@ -35,35 +26,36 @@ struct CurrentPersonView: View {
                             .frame(width: 557.89917, height: 90)
                     }
                     VStack(alignment: .center){
-                        Text(name)
+                        Text(viewModel.currentUser?.name ?? "name")
                             .foregroundColor(.white)
                             .multilineTextAlignment(.center)
                             .font(.title2)
                             .fontWeight(.medium)
                             .font(.system(size: 24))
-                        if email != ""{
+                        if let email = viewModel.currentUser?.email{
                             Text(email)
                                 .foregroundColor(.white)
                                 .multilineTextAlignment(.center)
                                 .font(.callout)
                                 .fontWeight(.light)
                                 .padding(.bottom)
-                        }else{
-                            HStack(spacing: 1){
-                                Text(timeStamp, format: .dateTime.month(.wide))
-                                Text(timeStamp, format: .dateTime.day())
-                                Text(", \(timeStamp, format: .dateTime.year()), ")
-                                Text(timeStamp, style: .time)
-                            }
-                            .multilineTextAlignment(.center)
-                            .font(.callout)
-                            .fontWeight(.light)
-                            .foregroundColor(.white)
-                            .foregroundStyle(.secondary)
-                            .font(.system(size: 15))
-                            .padding(.bottom)
                         }
-                        if profileImage != ""{
+//                        else{
+//                            HStack(spacing: 1){
+//                                Text(viewModel.currentUser?. ?? "name", format: .dateTime.month(.wide))
+//                                Text(timeStamp, format: .dateTime.day())
+//                                Text(", \(timeStamp, format: .dateTime.year()), ")
+//                                Text(timeStamp, style: .time)
+//                            }
+//                            .multilineTextAlignment(.center)
+//                            .font(.callout)
+//                            .fontWeight(.light)
+//                            .foregroundColor(.white)
+//                            .foregroundStyle(.secondary)
+//                            .font(.system(size: 15))
+//                            .padding(.bottom)
+//                        }
+                        if let profileImage = viewModel.currentUser?.profileImageUrl{
                             AsyncImage(url: URL(string: profileImage)){image in
                                 image.resizable()
                             }placeholder: {
@@ -110,13 +102,13 @@ struct CurrentPersonView: View {
                                 .foregroundStyle(Color(K.Colors.mainColor))
                                 .fontWeight(.light)
                         }
-                        Text(name.isEmpty ? "name" : name)
+                        Text(viewModel.currentUser?.name ?? "name")
                             .font(.title3)
                             .fontWeight(.light)
                             .font(.system(size: 20))
                     }
                     Divider()
-                    if email != ""{
+                    if let email = viewModel.currentUser?.email{
                         VStack(alignment: .leading, spacing: 15){
                             HStack(spacing: 20){
                                 ZStack{
@@ -152,7 +144,7 @@ struct CurrentPersonView: View {
                                     .foregroundStyle(Color(K.Colors.mainColor))
                                     .fontWeight(.light)
                             }
-                            Text(username)
+                            Text(viewModel.currentUser?.username ?? "username")
                                 .font(.title3)
                                 .fontWeight(.light)
                                 .font(.system(size: 20))
@@ -173,16 +165,16 @@ struct CurrentPersonView: View {
                                 .fontWeight(.light)
                         }
                         HStack(spacing: 1){
-                            Text(timeStamp, format: .dateTime.month(.twoDigits))
-                            Text("/\(timeStamp, format: .dateTime.day())/")
-                            Text(timeStamp, format: .dateTime.year())
+                            Text(Date.now, format: .dateTime.month(.twoDigits))
+                            Text("/\(Date.now, format: .dateTime.day())/")
+                            Text(Date.now, format: .dateTime.year())
                         }
                         .font(.title3)
                         .fontWeight(.light)
                         .font(.system(size: 18))
                     }
                     Divider()
-                    if phone != ""{
+                    if let phone = viewModel.currentUser?.phoneNumber{
                         HStack(spacing: 18){
                             ZStack{
                                 Circle()
@@ -204,29 +196,29 @@ struct CurrentPersonView: View {
                         }
                         Divider()
                     }
-                    if notes != ""{
-                        VStack(alignment: .leading, spacing: 15){
-                            HStack(spacing: 20){
-                                ZStack{
-                                    Circle()
-                                        .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
-                                        .frame(width: 40, height: 40)
-                                    Image(systemName: "at")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 20)
-                                        .foregroundStyle(Color(K.Colors.mainColor))
-                                        .fontWeight(.light)
-                                }
-                                Text(notes)
-                                    .font(.title3)
-                                    .fontWeight(.light)
-                                    .font(.system(size: 20))
-                            }
-                            Divider()
-                            
-                        }
-                    }
+//                    if let notes = viewModel.currentUser?.notes{
+//                        VStack(alignment: .leading, spacing: 15){
+//                            HStack(spacing: 20){
+//                                ZStack{
+//                                    Circle()
+//                                        .foregroundStyle(Color(K.Colors.gray).opacity(0.5))
+//                                        .frame(width: 40, height: 40)
+//                                    Image(systemName: "at")
+//                                        .resizable()
+//                                        .aspectRatio(contentMode: .fit)
+//                                        .frame(width: 20)
+//                                        .foregroundStyle(Color(K.Colors.mainColor))
+//                                        .fontWeight(.light)
+//                                }
+//                                Text(notes)
+//                                    .font(.title3)
+//                                    .fontWeight(.light)
+//                                    .font(.system(size: 20))
+//                            }
+//                            Divider()
+//                            
+//                        }
+//                    }
                     Spacer()
                 }
                 .padding(.top, 50)
@@ -239,6 +231,6 @@ struct CurrentPersonView: View {
     }
 }
 
-//#Preview {
-//    CurrentPersonView()
-//}
+#Preview {
+    CurrentPersonView()
+}

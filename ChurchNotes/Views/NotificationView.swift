@@ -161,11 +161,13 @@ struct NotificationView: View {
                 }
             })
             .toolbar(content: {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        self.showRemoveAll.toggle()
-                    }){
-                        Image(systemName: "clock.badge.xmark.fill")
+                if !viewModel.notificationsArray.isEmpty{
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action: {
+                            self.showRemoveAll.toggle()
+                        }){
+                            Image(systemName: "clock.badge.xmark.fill")
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {

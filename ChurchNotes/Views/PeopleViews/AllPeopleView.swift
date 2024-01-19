@@ -167,6 +167,9 @@ struct AllPeopleView: View {
 //                    
 //                }
             }
+            .refreshable{
+                viewModel.fetchPeople()
+            }
             .toolbar(content: {
                 
                 ToolbarItem(placement: .topBarTrailing) {

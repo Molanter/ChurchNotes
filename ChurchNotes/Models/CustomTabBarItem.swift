@@ -18,7 +18,7 @@ struct CustomTabBarItem: View {
     @State private var angle: Double = 0
     
     var body: some View {
-        VStack(alignment: .center, spacing: 5) {
+        VStack(alignment: .center, spacing: 0) {
             ZStack{
                 if settings{
                     if selection.wrappedValue == tag{

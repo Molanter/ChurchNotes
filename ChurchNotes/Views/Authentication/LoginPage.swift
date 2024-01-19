@@ -346,7 +346,6 @@ struct LoginPage: View {
                                             .padding(.leading)
                                             .disableAutocorrection(true)
                                             .textInputAutocapitalization(.words)
-                                            .textInputAutocapitalization(.never)
                                             .opacity(0.75)
                                             .padding(0)
                                             .textContentType(.name)
@@ -393,8 +392,9 @@ struct LoginPage: View {
                                 }
                                 .frame(height: 50)
                                 .overlay(
-                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                        .stroke((username == "" ? Color(K.Colors.justLightGray) : Color(viewModel.isAvailable ? K.Colors.justLightGray : K.Colors.red)).opacity(0.5), lineWidth: 1)
+                                    RoundedRectangle(cornerRadius: 7)
+                                        .inset(by: 0.5)
+                                        .stroke(username == "" ? Color(K.Colors.justLightGray) : (viewModel.isAvailable ? Color( K.Colors.justLightGray).opacity(0.5) : Color(red: 1, green: 0.39, blue: 0.49)), lineWidth: 1)
                                 )
                                 .ignoresSafeArea(.keyboard, edges: .bottom)
                                 .onReceive(Just(username)) { newText in
@@ -713,11 +713,29 @@ struct LoginPage: View {
             errReg = viewModel.err
             self.showProgressView = true
         }else if name == ""{
-            viewModel.err = "name-field-is-empty"
+//            viewModel.err = "name-field-is-empty"
+            Toast.shared.present(
+                title: String(localized: "name-field-is-empty"),
+                symbol: "questionmark.square",
+                isUserInteractionEnabled: true,
+                timing: .long
+            )
         }else if viewModel.isAvailable == false{
-            viewModel.err = "username-is-not-available"
+//            viewModel.err = "username-is-not-available"
+            Toast.shared.present(
+                title: String(localized: "username-is-not-available"),
+                symbol: "exclamationmark.circle.fill",
+                isUserInteractionEnabled: true,
+                timing: .long
+            )
         }else if createPassword != repeatPassword{
-            viewModel.err = "passwords-do-not-match"
+//            viewModel.err = "passwords-do-not-match"
+            Toast.shared.present(
+                title: String(localized: "passwords-do-not-match"),
+                symbol: "lock.rectangle.on.rectangle",
+                isUserInteractionEnabled: true,
+                timing: .long
+            )
         }
     }
     var login: some View {
@@ -825,7 +843,7 @@ struct LoginPage: View {
                         .padding(.top, 10)
                         HStack{
                             Spacer()
-                            NavigationLink(destination: ResetPasswordView(email: email), label: {
+                            NavigationLink(destination: ResetPasswordView(loginEmail: email), label: {
                                 Text("forgot-password")
                                     .padding(.vertical, 5)
                                     .font(.system(size: 14))

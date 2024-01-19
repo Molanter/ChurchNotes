@@ -11,11 +11,12 @@ import FirebaseFirestore
 import SwiftUI
 
 struct K{
-    @AppStorage("language") static var language: String = "en"
     @AppStorage("choosedStages") static var choosedStages: Int = 0
     @AppStorage("favouriteSign") static var favouriteSign: String = "heart"
     @AppStorage("testFeatures") static var testFeatures: Bool = false
     @AppStorage("swipeStage") static var swipeStage: Bool = false
+    @AppStorage("showStatus") static var showStatus: Bool = true
+
 
     struct Colors{
         static let colorsDictionary: [String: String] = [
@@ -245,14 +246,35 @@ struct K{
             AppStage(name: String(localized: "jjoined-ggroup"), title: "Joined Group", orderIndex: 6)
         ]
     }
-    struct Languages{
-    static var languagesArray: [AppLanguage] = [
-        AppLanguage(name: "English", short: "en", image: "🇺🇸", orderIndex: 0),
-        AppLanguage(name: "Українська", short: "uk", image: "🇺🇦", orderIndex: 1)
-    ]
-    }
+//    struct Languages{
+//    static var languagesArray: [AppLanguage] = [
+//        AppLanguage(name: "English", short: "en", image: "🇺🇸", orderIndex: 0),
+//        AppLanguage(name: "Українська", short: "uk", image: "🇺🇦", orderIndex: 1)
+//    ]
+//    }
     struct Hiden{
         static let ok:[String] = ["Ok", "ok", "Ok", "Ok"]
+    }
+    struct Badges{
+        let nNext = Badge(name: "Next", image: "arrowshape.turn.up.right", string: "", color: "", strId: "nNext")
+        let nGoing = Badge(name: "Going", image: "signpost.right", string: "", color: "", strId: "nGoing")
+        let nnext = Badge(name: "next", image: "hand.point.right.fill", string: "", color: "", strId: "nnext")
+        
+        let dDone = Badge(name: "Done", image: "checkmark", string: "", color: "", strId: "dDone")
+        let dCongrats = Badge(name: "Congrats", image: "checklist.checked", string: "", color: "", strId: "dCongrats")
+        let ddone = Badge(name: "done", image: "trophy", string: "", color: "", strId: "ddone")
+        
+        func getBadgeArray() -> [String: Any] {
+            return [
+                "nNext": nNext,
+                "Going": nGoing,
+                "nnext": nnext,
+                "dDone": dDone,
+                "dCongrats": dCongrats,
+                "ddone": ddone
+            ]
+        }
+        
     }
 }
 

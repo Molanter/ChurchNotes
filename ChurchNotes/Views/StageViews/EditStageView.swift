@@ -39,7 +39,8 @@ struct EditStageView: View {
                 }
                 .padding(10)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.darkGray), lineWidth: 1)
+                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
+                        .stroke(Color(K.Colors.gray), lineWidth: 1)
                 )
                 
                 HStack(spacing: 10){

@@ -36,7 +36,7 @@ struct ChangeEmailView: View {
                             if pass.isEmpty{
                                 Text("current-password")
                                     .padding(.leading)
-                                    .foregroundColor(Color(K.Colors.lightGray))
+                                    .foregroundStyle(.secondary)
                             }
                             HStack{
                                 Group{

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AllStagesView: View {
     @EnvironmentObject var viewModel: AppViewModel
+    @Environment(\.dismissSearch) private var dismissSearch
 
     @State private var searchText = ""
     @State private var currentItem: Person?
@@ -22,10 +23,10 @@ struct AllStagesView: View {
 
     let notify = NotificationHandler()
     private var sortedStages: [Stage]{
-        return viewModel.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })
+        return searchText.isEmpty ? viewModel.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex }) : viewModel.stagesArray.filter { $0.name.contains(searchText)}
     }
     private var appStages: [AppStage]{
-        return K.AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })
+        return searchText.isEmpty ? K.AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex }) : K.AppStages.stagesArray.filter { $0.name.contains(searchText)}
     }
     
     var body: some View {
@@ -127,6 +128,23 @@ struct AllStagesView: View {
                         }
                     }
                     .accentColor(Color(K.Colors.lightGray))
+                    if !searchText.isEmpty && appStages.isEmpty && sortedStages.isEmpty{
+                        Section(header: Text("you-do-not-have-stage-with-name '\(searchText)'")){
+                            Button(action: {
+                                self.searchText = ""
+                                self.presentSheet = true
+                                dismissSearch()
+                            }){
+                                Label("create", systemImage: "person.badge.plus")
+                                    .foregroundColor(Color.black)
+                                    .padding(.vertical, 10)
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color(K.Colors.mainColor))
+                                    .cornerRadius(7)
+                            }
+                        }
+                        .padding(.horizontal, 15)
+                    }
                 }
             }
             .searchable(text: $searchText,
@@ -166,6 +184,6 @@ struct AllStagesView: View {
     }
 }
 
-#Preview {
-    AllStagesView()
-}
+//#Preview {
+//    AllStagesView()
+//}

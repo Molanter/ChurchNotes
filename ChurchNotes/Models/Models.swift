@@ -1,5 +1,5 @@
 //
-//  Users.swift
+//  Models.swift
 //  ChurchNotes
 //
 //  Created by Edgars Yarmolatiy on 10/9/23.
@@ -12,13 +12,14 @@ import FirebaseFirestore
 struct Users: Identifiable{
     var id: String{uid}
     var next, done, bloger: Int
-    var uid,email, name, username, notes, country, profileImageUrl, phoneNumber, status: String
+    var uid,email, name, username, notes, country, profileImageUrl, phoneNumber, status, role, badge: String
     var profileImage: UIImage?
     init(data: [String: Any]){
         self.uid = data["uid"] as? String ?? ""
         self.email = data["email"] as? String ?? ""
         self.name = data["name"] as? String ?? ""
         self.username = data["username"] as? String ?? ""
+        self.role = data["role"] as? String ?? ""
         self.notes = data["notes"] as? String ?? ""
         self.country = data["country"] as? String ?? ""
         self.profileImageUrl = data["profileImageUrl"] as? String ?? ""
@@ -27,32 +28,35 @@ struct Users: Identifiable{
         self.next = data["next"] as? Int ?? 0
         self.done = data["done"] as? Int ?? 0
         self.bloger = data["bloger"] as? Int ?? 0
+        self.badge = data["badge"] as? String ?? ""
     }
 }
 
 
 
 
-struct Person: Identifiable{
-    var id: String { documentId}
+struct Person: Identifiable {
+    var id: String { documentId }
     let documentId: String
-    var userId, name, notes, email, title, phone, imageData: String
+    var userId: [String]
+    var name, notes, email, title, phone, imageData: String
     var orderIndex, titleNumber: Int
     let isCheked, isLiked, isDone: Bool
     let birthDay, timestamp: Date
-    init(documentId: String, data: [String: Any]){
+    
+    init(documentId: String, data: [String: Any], isLiked: Bool, orderIndex: Int) {
         self.documentId = documentId
-        self.userId = data["userId"] as? String ?? ""
+        self.isLiked = isLiked
+        self.orderIndex = orderIndex
+        self.userId = data["userId"] as? [String] ?? []
         self.name = data["name"] as? String ?? ""
         self.notes = data["notes"] as? String ?? ""
         self.email = data["email"] as? String ?? ""
         self.title = data["title"] as? String ?? ""
         self.phone = data["phone"] as? String ?? ""
         self.imageData = data["imageData"] as? String ?? ""
-        self.orderIndex = data["orderIndex"] as? Int ?? 0
         self.titleNumber = data["titleNumber"] as? Int ?? 0
         self.isCheked = data["isCheked"] as? Bool ?? false
-        self.isLiked = data["isLiked"] as? Bool ?? false
         self.isDone = data["isDone"] as? Bool ?? false
         let bir = data["birthDay"] as? Timestamp ?? Timestamp()
         self.birthDay = bir.dateValue()
@@ -142,3 +146,32 @@ struct AppLanguage: Identifiable {
         self.orderIndex = orderIndex
     }
 }
+
+
+struct SearchStages: Identifiable{
+    var id: String { String(orderIndex) }
+    var name: String
+    var orderIndex: Int
+    var people: [Person]
+    
+    init(name: String, orderIndex: Int, people: [Person]) {
+        self.name = name
+        self.orderIndex = orderIndex
+        self.people = people
+    }
+}
+
+
+struct Badge: Identifiable {
+    var id: String { name }
+    let name, image, string, color, strId: String
+    
+    init(name: String, image: String, string: String, color: String, strId: String) {
+        self.name = name
+        self.image = image
+        self.string = string
+        self.color = color
+        self.strId = strId
+    }
+}
+

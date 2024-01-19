@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AppearanceView: View {
-    @ObservedObject var languageManager = LanguageManager.shared
+    @EnvironmentObject var viewModel: AppViewModel
 
     @State var presentAlert = false
     @State var presentingPreview = false
@@ -21,7 +21,9 @@ struct AppearanceView: View {
     @State var isExpanded = true
     @State var testFeatures = false
     @State var swipeStage = false
-    @State var language = ""
+    @State var emailPush = ""
+
+    let restrictedEmaileSet = "" //"!#$%^&*()?/>,<~`±§}{[]|\"÷≥≤µ˜∫√ç≈Ω`åß∂ƒ©˙∆˚¬…æ«‘“πøˆ¨¥†®´∑œ§¡™£¢∞§¶•ªº≠"
 
     let profileImage: String
     let name: String
@@ -129,13 +131,6 @@ struct AppearanceView: View {
                         }
                     }
                     .listRowBackground(Color.clear)
-//                    .onChange(of: languageManager.currentLanguage) { _ in
-//                        print("changed")
-//                                withAnimation {
-//                                    print("reload")
-//                                    reload()
-//                                }
-//                            }
                     Section(header: Text("test-eatures")) {
                         Toggle(isOn: $testFeatures) {
                             Text("test-eatures")
@@ -144,14 +139,7 @@ struct AppearanceView: View {
                             K.testFeatures = new
                         }
                         if testFeatures == true{
-//                            Toggle(isOn: $swipeStage) {
-//                                Text("Swipe to change Stages")
-//                            }
-//                            .onChange(of: swipeStage) { old, new in
-//                                K.swipeStage = new
-//                            }
-//                            Text("Item 2")
-//                            Text("Item 3")
+                            
                         }
                     }
                     .listRowBackground(Color.clear)
@@ -160,8 +148,6 @@ struct AppearanceView: View {
             }
             .frame(maxWidth: .infinity)
             .onAppear {
-                self.language = K.language
-                print(language)
                 self.swipeStage = K.swipeStage
                 self.testFeatures = K.testFeatures
                 favouriteSignNow = K.favouriteSign
@@ -177,6 +163,19 @@ struct AppearanceView: View {
                     showColor = true
                 }
             }
+            .toolbar(content: {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        self.showColor = true
+                        self.dark.toggle()
+                    }){
+                        Image(systemName: dark ? "sun.max" : "moon")
+                            .foregroundStyle(Color(K.Colors.mainColor))
+                            .symbolEffect(.bounce, value: dark)
+
+                    }
+                }
+            })
             .onChange(of: showColor) {
                 updateAppearance()
             }
@@ -188,9 +187,10 @@ struct AppearanceView: View {
             } message: {
                 Text("restart-the-app-to-see-the-changes")
             }
+            .navigationTitle("appearance")
             .sheet(isPresented: $presentingPreview) {
                 NavigationStack {
-                    CurrentPersonView(cristian: true, name: name, phone: phone, email: email, country: country, notes: notes, profileImage: profileImage, username: username, timeStamp: timeStamp)
+                    CurrentPersonView()
                         .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
                                 Button(role: .destructive) {
@@ -211,6 +211,7 @@ struct AppearanceView: View {
                 }
                 .accentColor(Color(K.Colors.mainColor))
             }
+            
         }
     }
     
@@ -260,21 +261,21 @@ struct LocalizedStrings {
     }
 }
 
-class LanguageManager: ObservableObject {
-    static let shared = LanguageManager()
-
-    @Published var currentLanguage: String {
-        didSet {
-            UserDefaults.standard.set([currentLanguage], forKey: "AppleLanguages")
-            UserDefaults.standard.synchronize()
-        }
-    }
-
-    private init() {
-        self.currentLanguage = UserDefaults.standard.stringArray(forKey: "AppleLanguages")?.first ?? "en"
-    }
-
-    func setLanguage(_ language: String) {
-        currentLanguage = language
-    }
-}
+//class LanguageManager: ObservableObject {
+//    static let shared = LanguageManager()
+//
+//    @Published var currentLanguage: String {
+//        didSet {
+//            UserDefaults.standard.set([currentLanguage], forKey: "AppleLanguages")
+//            UserDefaults.standard.synchronize()
+//        }
+//    }
+//
+//    private init() {
+//        self.currentLanguage = UserDefaults.standard.stringArray(forKey: "AppleLanguages")?.first ?? "en"
+//    }
+//
+//    func setLanguage(_ language: String) {
+//        currentLanguage = language
+//    }
+//}

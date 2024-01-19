@@ -38,7 +38,7 @@ struct ChangePasswordView: View {
                             if oldPassword.isEmpty{
                                 Text("current-password")
                                     .padding(.leading)
-                                    .foregroundColor(Color(K.Colors.lightGray))
+                                    .foregroundStyle(.secondary)
                             }
                             HStack{
                                 Group{
@@ -88,7 +88,7 @@ struct ChangePasswordView: View {
                             if newPassword.isEmpty{
                                 Text("create-password")
                                     .padding(.leading)
-                                    .foregroundColor(Color(K.Colors.lightGray))
+                                    .foregroundStyle(.secondary)
                             }
                             HStack{
                                 Group{
@@ -133,7 +133,7 @@ struct ChangePasswordView: View {
                             if repeatPassword.isEmpty{
                                 Text("repeat-password")
                                     .padding(.leading)
-                                    .foregroundColor(Color(K.Colors.lightGray))
+                                    .foregroundStyle(.secondary)
                             }
                             HStack{
                                 Group{

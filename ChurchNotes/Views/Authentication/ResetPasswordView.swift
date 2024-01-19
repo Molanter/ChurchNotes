@@ -8,15 +8,14 @@
 import SwiftUI
 
 struct ResetPasswordView: View{
-    @State var email: String
-    @State var minute = 60
-    @State var sended = false
+    @State var email: String = ""
     
-    var loginEmail: String?
+    var loginEmail: String
     
     let restrictedEmaileSet = "!#$%^&*()?/>,<~`±§}{[]|\"÷≥≤µ˜∫√ç≈Ω`åß∂ƒ©˙∆˚¬…æ«‘“πøˆ¨¥†®´∑œ§¡™£¢∞§¶•ªº≠"
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
+    @EnvironmentObject var published: PublishedVariebles
     @EnvironmentObject var viewModel: AppViewModel
     @Environment(\.dismiss) private var dismiss
     
@@ -30,7 +29,7 @@ struct ResetPasswordView: View{
                 if email.isEmpty {
                     Text("eemail")
                         .padding(.leading)
-                        .foregroundColor(Color(K.Colors.lightGray))
+                        .foregroundStyle(.secondary)
                 }
                 TextField("", text: $email)
                     .padding(.leading)
@@ -38,7 +37,7 @@ struct ResetPasswordView: View{
                     .textInputAutocapitalization(.never)
                     .opacity(0.75)
                     .padding(0)
-                    .keyboardType(.namePhonePad)
+                    .keyboardType(.emailAddress)
                     .textContentType(.emailAddress)
                     .onChange(of: email, perform: { newValue in
                         if email != ""{
@@ -52,27 +51,28 @@ struct ResetPasswordView: View{
                     .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
             )
             Button(action: {
-                if email != "" && sended == false{
+                if email != "" && published.sended == false{
                     timerSend()
                 }
             }){
-                Text(sended ? "send-again-after: \(minute)s" : "send")
-                    .foregroundStyle(sended ? Color(K.Colors.lightGray) : Color.white)
+                Text(published.sended ? "send-again-after: \(published.minute)s" : "send")
+                    .foregroundStyle(published.sended ? Color(K.Colors.lightGray) : Color.white)
                     .padding()
                     .frame(maxWidth: .infinity)
                     .onReceive(timer) { firedDate in
-                        if sended && minute != 0{
+                        if published.sended && published.minute != 0{
                             print("timer fired")
-                            minute -= 1
-                        }else if minute == 0 {
-                            self.sended = false
+                            published.minute -= 1
+                        }else if published.minute == 0 {
+                            published.sended = false
+                            published.minute = 60
                         }
                     }
             }
             .background(Color(K.Colors.mainColor))
             .cornerRadius(7)
-            .opacity(sended ? 0.5 : 1)
-            .disabled(sended)
+            .opacity(published.sended ? 0.5 : 1)
+            .disabled(published.sended)
             Text(viewModel.passwordReseted ?? "")
                 .foregroundStyle(.secondary)
                 .font(.title2)
@@ -80,7 +80,10 @@ struct ResetPasswordView: View{
             Spacer()
         }
         .onAppear {
-            self.email = self.loginEmail ?? ""
+            if published.minute != 60{
+                published.sended = true
+            }
+            self.email = self.loginEmail
         }
         .padding(.horizontal, 15)
         .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -101,7 +104,7 @@ struct ResetPasswordView: View{
         }
     }
     func timerSend(){
-        self.sended = true
+        published.sended = true
         viewModel.resetPassword(email: email)
         
     }

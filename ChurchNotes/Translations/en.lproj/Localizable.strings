@@ -21,7 +21,7 @@
 
 "hey-login" = "Hey 😃";
 "welcome-to-login" = "Welcome to";
-"app-name-login" = "Prayer Navigator 🙏🏻";
+"app-name-login" = "Prayer Navigator 🙏";
 "chose-authentification" = "Chose method of authentification";
 "sign-up-with-email" = "Sign Up with email";
 "tap-to-change-image" = "tap to change Image";
@@ -31,7 +31,7 @@
 "create-username" = "Create Username";
 "already-acount" = "Already have an acount? - Log In";
 "name-field-is-empty" = "Name field is empty, enter your name.";
-"username-is-not-available" = "Username is not available, create another one.";
+"username-is-not-available" = "Username is not available";
 "passwords-do-not-match" = "Passwords do not match.";
 "sign-in-with-email" = "Sign In with email";
 "forgot-password" = "Forgot password?";
@@ -178,7 +178,7 @@
 
 
 //FinalPreview
-"recipient %@" = "Recipient: %@";
+"recipient: %@" = "Recipient: %@";
 "you-can-not-send-attachments" = "You can't send attachments!";
 "send-by-email" = "Send by email";
 "you-can-send-email-or-save-it" = "You can send video by email, or save it.";
@@ -208,7 +208,7 @@
 "search-stage" = "Search Stage";
 "add-stage" = "Add Stage";
 "sstages" = "Stages";
-
+"you-do-not-have-stage-with-name '%@'" = "You don't have Stage with name '%@'";
 
 //EditStageView
 "write-new-stage-name" = "Write New Stage Name";
@@ -220,7 +220,7 @@
 "you-do-not-have-your-own-stages-yet" = "You don't have your own stages yet.";
 "create-your-first-stage-to-see-it-here" = "Create your first stage, to see it here.";
 "app-stages" = "App Stage";
-"your-stages" = "Your Stages";
+"my-stages" = "My Stages";
 "previous-stage" = "Previous Stage";
 "next-stage" = "Next Stage";
 
@@ -231,14 +231,14 @@
 
 //ItemPersonView
 "notes" = "Notes";
-"record-video-for %@" = "Record video for '%@'";
+"record-video-for %@" = "Record video for %@";
 "new-friend" = "New Friend";
 "previous" = "Previous";
 "joined-group" = "Joined Group";
 "phone-number-is-empty" = "Phone number is empty!";
 "add-number" = "Add number";
 "add-person-phone-number-for-recording-video" = "Add person phone number for recording video.";
-
+"control-stages" = "Control stages";
 
 //AddPersonView
 "write-person-name" = "Write Person Name";
@@ -246,7 +246,7 @@
 "bbirthday" = "Birthday";
 "long-press" = "(long press)";
 "name-is-empty" = "Name is empty";
-
+"people-limit-reached" = "Limit of people 20 reached";
 
 //SettingsPeopleView
 "list-of-all-people" = "List of all people";
@@ -261,7 +261,6 @@
 //EditProfileView
 "editing-profile" = "Editing profile";
 "username" = "Username";
-"username-is-not-available" = "Username is not available, choose another.";
 "username-is-empty" = "Username is empty!";
 "name-is-empty" = "Name is empty!";
 "some-fields-are-empty" = "Some fields are empty, fill them before submitting.";
@@ -291,3 +290,57 @@
 "ggreen" = "Green";
 "yyellow" = "Yellow";
 "rred" = "Red";
+
+
+//ControlVolunteer
+"rroles" = "Roles";
+"vview" = "View";
+"manage-users" = "Manage users";
+
+
+//BlockUserView
+"block-user" = "Block User";
+"rreason" = "Reason";
+"aabuse" = "Abuse";
+"iimages" = "Images";
+"to-many-signings" = "To many signings";
+"sspam" = "Spam";
+"to-many-accounts" = "To many accounts";
+"oother" = "Other";
+"non-usual-situation" = "non usual situation";
+"images-that-you-can-not-use-in-app" = "Images that you can not use in app";
+"your-account-was-blocked-for '%@'" = "Your account was blocked for '%@'";
+"account-block" = "Account Block";
+"bblock" = "Block";
+"your-account-is-blocked" = "Your account is blocked!";
+"gget-uid" = "Get uid";
+
+
+//Volunteer
+"control-volunteer" = "Control Volunteer";
+"rrole" = "Role";
+"uuser" = "User";
+"vvolunteer" = "Volunteer";
+"ttester" = "Tester";
+"ddeveloper" = "Developer";
+"jjedai" = "Jedai";
+"sset %@" = "Set %@";
+
+
+//ProfileMainView
+"ffriends" = "Friends";
+"pposts" = "Posts";
+"bbadges" = "Badges";
+
+
+"list-of-your-badges" = "List of all you Badges";
+"congratulations-new-badge" = "Congratulations, you received new Badge!";
+"ccopiedd" = "Copied!";
+"ccoppy-username" = "Copy Username";
+"ccoppy-email" = "Copy Email";
+"person-added" = "Person added successfully!";
+"your-ack-is-blocked" = "Your account is Blocked!";
+"ggot-iit" = "Got it";
+"sset-bbadge" = "Set Badge";
+"bbadge-sseted" = "Badge setted successfully!";
+"rremove-iimage" = "Remove Image";

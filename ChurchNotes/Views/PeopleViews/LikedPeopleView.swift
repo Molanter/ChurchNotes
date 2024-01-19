@@ -156,6 +156,9 @@ struct LikedPeopleView: View {
 //
 //                }
             }
+            .refreshable{
+                viewModel.fetchPeople()
+            }
             .toolbar(content: {
                 
                 ToolbarItem(placement: .topBarTrailing) {

@@ -52,7 +52,7 @@ struct ItemView: View {
         return isSearching ? viewModel.peopleArray.sorted(by: { $0.orderIndex < $1.orderIndex }).sorted(by: { $0.isLiked && !$1.isLiked }).filter { $0.name.contains(published.searchText)} : people.sorted(by: { $0.orderIndex < $1.orderIndex })
     }
     private var filteredItems: [Person] {
-        return isSearching ? (published.searchText.isEmpty ? viewModel.peopleArray.sorted(by: { $0.orderIndex < $1.orderIndex }).sorted(by: { $0.isLiked && !$1.isLiked }) : filteredNames.filter { $0.name.contains(published.searchText)}) : filteredNames
+        return isSearching ? (published.searchText.isEmpty ? viewModel.peopleArray.sorted(by: { $0.orderIndex < $1.orderIndex }).sorted(by: { $0.isLiked && !$1.isLiked }) : filteredNames.filter { $0.name.contains(published.searchText)}) : filteredNames.sorted(by: { $0.isLiked && !$1.isLiked })
     }
     
     //        init() {
@@ -66,10 +66,10 @@ struct ItemView: View {
     var body: some View{
         NavigationView{
             ZStack(alignment: .center){
-                if viewModel.peopleArray.isEmpty{
-                    ProgressView()
-                        .padding()
-                }else{
+//                if viewModel.peopleArray.isEmpty{
+//                    ProgressView()
+//                        .padding()
+//                }else{
                     if isSearching{
                         SearchView(filteredItems: filteredItems)
                             .onDisappear {
@@ -117,17 +117,21 @@ struct ItemView: View {
                                     }
                                 }
                             }
+                            .refreshable{
+                                viewModel.fetchPeople()
+                            }
                             .headerProminence(.standard)
                             .scrollContentBackground(.hidden)
                             .listStyle(.plain)
                             .frame(maxHeight: .infinity)
                     }
-                }
+//                }
             }
             
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onAppear(perform: {
                 self.nowStage = K.choosedStages
+                
             })
             .onChange(of: nowStage) { old, new in
                 K.choosedStages = new
@@ -151,17 +155,23 @@ struct ItemView: View {
                 }
                 
             ToolbarItem(placement: .principal) {
-                Text(nowStage == 0 ? "app-stages" : "your-stages")
+                Text(nowStage == 0 ? "app-stages" : "my-stages")
 //                    .foregroundStyle(Color(K.Colors.mainColor))
                     
                 }
             })
             .toolbarTitleMenu { // ADD THIS!
                             Button("app-stages") {
-                                    nowStage = 0
+                                if nowStage == 1{
+                                    self.currentTab = 0
+                                }
+                                nowStage = 0
                             }.buttonStyle(.borderedProminent)
                             
-                            Button("your-stages") {
+                            Button("my-stages") {
+                                if nowStage == 0{
+                                    self.currentTab = 0
+                                }
                                 nowStage = 1
                             }.buttonStyle(.borderedProminent)
                         }
@@ -403,37 +413,6 @@ struct ItemView: View {
                         })
                         .padding(.horizontal, 0)
                     }
-//                }
-//                .scrollContentBackground(.hidden)
-//                .listStyle(.plain)
-//                .frame(maxHeight: .infinity)
-//            }
-//            if sortedStages.isEmpty{
-//                VStack(alignment: .leading, spacing: 10, content: {
-//                    Image(systemName: "questionmark.folder")
-//                        .font(.largeTitle)
-//                    Text("You don't have your own stages yet.")
-//                        .font(.title)
-//                        .bold()
-//                    Text("Create your first stage, to see it here.")
-//                        .font(.title2)
-//                    Button(action: {
-//                        self.presentStageSheet.toggle()
-//                    }){
-//                        Spacer()
-//                        Text("Create")
-//                            .foregroundColor(Color.white)
-//                            .padding(.vertical, 10)
-//                            .padding(.leading)
-//                        Image(systemName: "folder.badge.plus")
-//                            .foregroundColor(Color.white)
-//                            .padding(.leading)
-//                        Spacer()
-//                    }
-//                    .background(Color(K.Colors.mainColor))
-//                    .cornerRadius(7)
-//                })
-//                .padding(.horizontal, 15)
 //            }
 //        }
         
@@ -451,6 +430,27 @@ struct ItemView: View {
                     currentTab += 1
                     viewModel.moved = 0
                 }
+            }
+        }
+        if let user = viewModel.currentUser{
+            if user.next == 4{
+                viewModel.addBadge(name: "Next")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.published.currentBadge = K.Badges().nNext
+                }
+                viewModel.getFcmByEmail(email: user.email, messageText: "You received a new badge 'Next'", subtitle: "Congratulations", title: "New Badge", imageURL: "", link: "", badgeCount: 1)
+            }else if user.next == 19{
+                viewModel.addBadge(name: "nGoing")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.published.currentBadge = K.Badges().nGoing
+                }
+                viewModel.getFcmByEmail(email: user.email, messageText: "You received a new badge 'Going'", subtitle: "Congratulations", title: "New Badge", imageURL: "", link: "", badgeCount: 3)
+            }else if user.next == 49{
+                viewModel.addBadge(name: "nnext")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        self.published.currentBadge = K.Badges().nnext
+                    }
+                viewModel.getFcmByEmail(email: user.email, messageText: "You received a new badge 'next'", subtitle: "Congratulations", title: "New Badge", imageURL: "", link: "", badgeCount: 5)
             }
         }
         self.lastItem = nil

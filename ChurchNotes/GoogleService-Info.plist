@@ -13,21 +13,21 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.molanter.ChurchNotes</string>
+	<string>com.molanter.PrayerNavigator</string>
 	<key>PROJECT_ID</key>
 	<string>curchnote</string>
 	<key>STORAGE_BUCKET</key>
 	<string>curchnote.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:574179617459:ios:d6a11fb0d1ad35b2ab1ec6</string>
 </dict>

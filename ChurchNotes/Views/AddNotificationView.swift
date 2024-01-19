@@ -230,8 +230,7 @@ struct AddNotificationView: View {
                                 .textInputAutocapitalization(.never)
                                 .opacity(0.75)
                                 .padding(0)
-                                .keyboardType(.namePhonePad)
-                                .textContentType(.username)
+                                .keyboardType(.default)
                         }
                         .frame(minHeight: 50, maxHeight: .infinity)
                         .overlay(

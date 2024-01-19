@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SearchSlider: View {
+    @State var stages = String(localized: "sstages")
     @State var people = String(localized: "people")
     @State var favourite = String(localized: "favourite")
     @State var notification = String(localized: "notifications")
@@ -17,10 +18,10 @@ struct SearchSlider: View {
 
     var body: some View {
         ScrollView(.horizontal){
-            HStack(spacing: 10){
+            HStack(spacing: 0){
                 SearchSliderItem(currentTab: $currentTab,
                            namespace: namespace.self,
-                           tabBarItemName: people,
+                           tabBarItemName: stages,
                            tab: 0)
                 .onTapGesture {
                         withAnimation{
@@ -29,7 +30,7 @@ struct SearchSlider: View {
                     }
                 SearchSliderItem(currentTab: $currentTab,
                            namespace: namespace.self,
-                           tabBarItemName: favourite,
+                           tabBarItemName: people,
                            tab: 1)
                 .onTapGesture {
                         withAnimation{
@@ -38,11 +39,20 @@ struct SearchSlider: View {
                     }
                 SearchSliderItem(currentTab: $currentTab,
                            namespace: namespace.self,
-                           tabBarItemName: notification,
+                           tabBarItemName: favourite,
                            tab: 2)
                 .onTapGesture {
                         withAnimation{
                             currentTab = 2
+                        }
+                    }
+                SearchSliderItem(currentTab: $currentTab,
+                           namespace: namespace.self,
+                           tabBarItemName: notification,
+                           tab: 3)
+                .onTapGesture {
+                        withAnimation{
+                            currentTab = 4
                         }
                     }
 //                SearchSliderItem(currentTab: $currentTab,

@@ -11,10 +11,10 @@ struct AddPersonView: View {
     @Binding var showAddPersonView: Bool
     
     @ObservedObject private var keyboard = KeyboardResponder()
-
+    
     @EnvironmentObject var published: PublishedVariebles
     @EnvironmentObject var viewModel: AppViewModel
-
+    
     @FocusState var focus: FocusedField?
     @State var shouldShowImagePicker = false
     @State var name: String = ""
@@ -25,6 +25,7 @@ struct AddPersonView: View {
     @State var timestamp: Date = Date.now
     @State var image: UIImage?
     @State private var nameIsEmpty = false
+    @State var errorText = ""
     
     var createName: String?
     let notify = NotificationHandler()
@@ -146,35 +147,32 @@ struct AddPersonView: View {
                                     Text("bbirthday")
                                         .font(.title2)
                                         .fontWeight(.medium)
-                                    Spacer()
-                                    Text("long-press")
-                                        .foregroundStyle(.secondary)
+                                    //                                    Spacer()
+                                    //                                    Text("long-press")
+                                    //                                        .foregroundStyle(.secondary)
                                 }
                                 HStack{
-                                    Text("bbirthday")
-                                        .font(.body)
-                                        .fontWeight(.regular)
-                                        .foregroundStyle(.secondary)
-                                    Spacer()
                                     DatePicker(
-                                        String(localized: ""),
+                                        String(localized: "long-press"),
                                         selection: $birthDay,
                                         displayedComponents: [.date]
                                     )
                                     .datePickerStyle(.compact)
-                                    .foregroundStyle(Color(K.Colors.mainColor))
+                                    .foregroundStyle(Color.secondary)
                                 }
                                 .padding(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.gray), lineWidth: 1)
                                 )
                             }
-                            .padding(.bottom, 75)
+                            .padding(.bottom, 50)
                             Button(action: {
-                                if !name.isEmpty{
+                                if viewModel.peopleArray.count < 20 && !name.isEmpty{
                                     addItem()
-                                }else{
-                                    nameError()
+                                }else if viewModel.peopleArray.count > 20{
+                                    showError(false)
+                                }else if name.isEmpty && viewModel.peopleArray.count < 20{
+                                    showError()
                                 }
                             }){
                                 Text("add")
@@ -196,10 +194,12 @@ struct AddPersonView: View {
                             case .notes:
                                 focus = .birthday
                             case .birthday:
-                                if !name.isEmpty{
+                                if viewModel.peopleArray.count < 20 && !name.isEmpty{
                                     addItem()
-                                }else{
-                                    nameError()
+                                }else if viewModel.peopleArray.count > 20{
+                                    showError(false)
+                                }else if name.isEmpty && viewModel.peopleArray.count < 20{
+                                    showError()
                                 }
                             default:
                                 break
@@ -213,7 +213,7 @@ struct AddPersonView: View {
                     
                     if nameIsEmpty{
                         HStack(alignment: .center){
-                            Text("name-is-empty")
+                            Text(errorText)
                                 .foregroundStyle(Color(K.Colors.justDarkGray))
                         }
                         .frame(height: 40)
@@ -245,20 +245,23 @@ struct AddPersonView: View {
             .onAppear {
                 if let newName = createName{
                     self.name = newName
+                    self.focus = .name
                 }
             }
             .onDisappear {
-//                self.createName = nil
+                //                self.createName = nil
                 self.published.createPersonName = ""
             }
         }
         .toolbar{
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    if !name.isEmpty{
+                    if viewModel.peopleArray.count < 20 && !name.isEmpty{
                         addItem()
-                    }else{
-                        nameError()
+                    }else if viewModel.peopleArray.count >= 20{
+                        showError(false)
+                    }else if name.isEmpty && viewModel.peopleArray.count < 20{
+                        showError()
                     }
                 }){
                     Text("add")
@@ -268,15 +271,32 @@ struct AddPersonView: View {
         }
     }
     
-    func nameError(){
-        withAnimation{
-            nameIsEmpty = true
+    func showError(_ name: Bool = true){
+        if name{
+//            self.errorText = String(localized: "name-is-empty")
+            Toast.shared.present(
+                title: String(localized: "name-is-empty"),
+                symbol: "questionmark.square",
+                isUserInteractionEnabled: true,
+                timing: .long
+            )
+        }else{
+//            self.errorText = String(localized: "people-limit-reached")
+            Toast.shared.present(
+                title: String(localized: "people-limit-reached"),
+                symbol: "person.3.sequence",
+                isUserInteractionEnabled: true,
+                timing: .long
+            )
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-            withAnimation{
-                nameIsEmpty = false
-            }
-        }
+//        withAnimation{
+//            nameIsEmpty = true
+//        }
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+//            withAnimation{
+//                nameIsEmpty = false
+//            }
+//        }
     }
     
     func addItem() {
@@ -285,6 +305,12 @@ struct AddPersonView: View {
         name = ""
         notes = ""
         phoneNumber = ""
+        Toast.shared.present(
+            title: String(localized: "person-added"),
+            symbol: "checkmark",
+            isUserInteractionEnabled: true,
+            timing: .long
+            )
         showAddPersonView = false
     }
     

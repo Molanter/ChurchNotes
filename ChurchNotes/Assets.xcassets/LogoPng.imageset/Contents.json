@@ -1,0 +1,23 @@
+{
+  "images" : [
+    {
+      "filename" : "photography-dust-color-explosion-others-daf6ae3abd0e50f75004f406e67df90f@3x 1.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "photography-dust-color-explosion-others-daf6ae3abd0e50f75004f406e67df90f@3x 2.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "photography-dust-color-explosion-others-daf6ae3abd0e50f75004f406e67df90f@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
