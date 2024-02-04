@@ -137,6 +137,7 @@
 "write-here" = "Write Here...";
 "write-anonymously" = "Write anonymously";
 "report" = "Report";
+"no-answer-report" = "No answer report";
 
 
 //AddNotificationView
@@ -324,7 +325,7 @@
 "ttester" = "Tester";
 "ddeveloper" = "Developer";
 "jjedai" = "Jedai";
-"sset %@" = "Set %@";
+"sset" = "Set";
 
 
 //ProfileMainView
@@ -344,3 +345,32 @@
 "sset-bbadge" = "Set Badge";
 "bbadge-sseted" = "Badge setted successfully!";
 "rremove-iimage" = "Remove Image";
+"ssupport" = "Support";
+"select-more-photos" = "Select More Photos";
+"allow-access-for-photos" = "Allow Access For Photos";
+"select-more" = "Select More";
+"allow-access" = "Allow Access";
+"ssend-mmessage" = "Send Message";
+"ssend-mmail" = "Send Mail";
+"iissue" = "Issue";
+"rreport" = "Report";
+"wait-for-answer-from-support" = "Wait for answer from support!";
+"support-reports-questions" = "Support, reports, questions";
+"cchatt" = "Chat";
+"chat-with-support-volunteer" = "Chat with support volunteer";
+"tap-to-load-screenshoot" = "tap to load screenshot";
+"fill-form-and-send-email" = "Fill the forms and send Email";
+"ssend-eemail" = "Send Email";
+"eemail-low" = "email";
+"cchat-low" = "chat";
+"open-support-chat" = "open support chat";
+"ccontacts" = "Contacts";
+"iinfo" = "Info";
+"-vertification-checkmark-meaning" = "- means real account";
+"-photo-rules-info" = "- screeenshot have to be for hole screen, so we can see time and hole view of page";
+"-send-report-in-one-message" = "- send report/question in one message and wait for answer";
+"hhelped" = "Helped";
+"aask-mmore" = "Ask more";
+"done-support-delete-all-messages" = "Press resume to close this conversation. Note that all messages in this conversation will be deleted!";
+"close-this-conversation" = "Close rhis conversation?";
+"rresume" = "Resume";

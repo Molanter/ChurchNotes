@@ -68,8 +68,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate, UNUserNot
         // Handle notification, if needed
 
         // Increment the current badge count by 1
-        let currentBadgeCount = UIApplication.shared.applicationIconBadgeNumber
-        UIApplication.shared.applicationIconBadgeNumber = currentBadgeCount + 1
+        UIApplication.shared.applicationIconBadgeNumber = 0
 
         // Customize the presentation options (e.g., show alert and play sound)
         let presentationOptions: UNNotificationPresentationOptions = [.alert, .sound]
@@ -80,8 +79,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate, UNUserNot
         // Handle notification, if needed
         completionHandler()
 
-        let currentBadgeCount = UIApplication.shared.applicationIconBadgeNumber
-        UIApplication.shared.applicationIconBadgeNumber = currentBadgeCount + 1
+        UIApplication.shared.applicationIconBadgeNumber = 0
         
         // Increment badge count by 1
 //        if let aps = response.notification.request.content.userInfo["aps"] as? [String: Any],
@@ -184,7 +182,7 @@ struct ChurchNotesApp: App {
                                 
                                 // Check if requestedTab is not an empty string
                                 if !requestedTab.isEmpty {
-                                    if requestedTab == "profile-info" || requestedTab == "people" || requestedTab == "achievements" || requestedTab == "notifications" || requestedTab == "appearance" || requestedTab == "settings" {
+                                    if requestedTab == "profile-info" || requestedTab == "people" || requestedTab == "achievements" || requestedTab == "notifications" || requestedTab == "appearance" || requestedTab == "settings" || requestedTab == "support"{
                                         published.currentSettingsNavigationLink = requestedTab
                                     }else if requestedTab == "allpeople-view" || requestedTab == "allstages-view" || requestedTab == "donepeople-view" || requestedTab == "likedpeople-view"{
                                         published.currentSettingsNavigationLink = "people"

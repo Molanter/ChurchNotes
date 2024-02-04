@@ -52,7 +52,7 @@ struct AppearanceView: View {
                         .disabled(!showColor)
                         .pickerStyle(.segmented)
                     }
-                    .listRowBackground(Color.clear)
+//                    .listRowBackground(Color.clear)
                     
                     Section(header: Text("accent-color")) {
                         ScrollViewReader { scrollProxy in
@@ -93,7 +93,7 @@ struct AppearanceView: View {
                             }
                         }
                     }
-                    .listRowBackground(Color.clear)
+//                    .listRowBackground(Color.clear)
                     
                     Section {
                         HStack {
@@ -105,7 +105,7 @@ struct AppearanceView: View {
                             .accentColor(Color(K.Colors.mainColor))
                         }
                     }
-                    .listRowBackground(Color.clear)
+//                    .listRowBackground(Color.clear)
                     .onChange(of: favouriteSignNow) {
                         K.Colors.favouriteSignColor = favouriteSignNow == "heart" ? "redd" : "yelloww"
                         K.favouriteSign = favouriteSignNow
@@ -130,7 +130,7 @@ struct AppearanceView: View {
                                 .accentColor(Color(K.Colors.mainColor))
                         }
                     }
-                    .listRowBackground(Color.clear)
+//                    .listRowBackground(Color.clear)
                     Section(header: Text("test-eatures")) {
                         Toggle(isOn: $testFeatures) {
                             Text("test-eatures")
@@ -139,12 +139,13 @@ struct AppearanceView: View {
                             K.testFeatures = new
                         }
                         if testFeatures == true{
-                            
+                            Label("Double tap on List / Settings icons on tab bar", systemImage: "hand.tap")
+                            Label("App Support", systemImage: "wrench.and.screwdriver")
                         }
                     }
-                    .listRowBackground(Color.clear)
+//                    .listRowBackground(Color.clear)
                 }
-                .listStyle(.grouped)
+//                .listStyle(.grouped)
             }
             .frame(maxWidth: .infinity)
             .onAppear {

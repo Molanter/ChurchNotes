@@ -23,5 +23,5 @@ class PublishedVariebles: ObservableObject{
     @Published var fcm = ""
     @Published var showEditProfileSheet = false
     @Published var currentBadge: Badge?
-
+    @Published var nowStage = 0
 }

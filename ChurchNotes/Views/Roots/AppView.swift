@@ -11,36 +11,15 @@ import FirebaseAuth
 struct AppView: View {
     @State var listStr = String(localized: "list")
     @State var settingsStr = String(localized: "settings")
-    @State var name = "name"
-    @State var phone = "+1234567890"
-    @State var email = "email@gmail.com"
-    @State var cristian = true
-    @State var showingEditingProfile = false
-    @State var width = false
-    @State var username = ""
-    @State var country = ""
-    @State var notes = ""
-    @State var notificationTime = Date.now
-    @State var notifications = false
-    @State var image: UIImage?
-    @State var profileImage = ""
-    @State var timeStamp = Date.now
-    @State var showImagePicker = false
-    @State var errReg = ""
-    @State var documentId = ""
-    @State var logoutAlert = false
+    @State var supportStr = String(localized: "ssupport")
     @State var accentColor = false
-    @State var firebaseError = false
-    @State var firebaseErr = ""
-    @State var bigPhoto = false
-    var auth = Auth.auth()
     @State private var selection: Int = 0
-    
+    @State private var isShaked = false
+
     @StateObject var manager = NotificationsManager()
     
     @EnvironmentObject var published: PublishedVariebles
     @EnvironmentObject var viewModel: AppViewModel
-    @EnvironmentObject var networkMonitor: NetworkMonitor
     
     var body: some View {
         ZStack(alignment: .bottom){
@@ -53,19 +32,24 @@ struct AppView: View {
                                     prompt: "search-name")
                         .tag(0)
                 }
-                //                    .tabItem {
-                //                        Label(listStr, systemImage: "list.bullet.clipboard")
-                //                    }
+                
+                if viewModel.currentUser?.role == "volunteer" || viewModel.currentUser?.role == "developer" || viewModel.currentUser?.role == "jedai"{
+                    RootView{
+                        SupportVolunteerList()
+                            .tag(1)
+                    }
+                }
                 RootView {
                     ProfileMainView()
                         .onAppear(perform: {
                             published.tabsAreHidden = false
                         })
-                        .tag(1)
+                        .tag(2)
                 }
-                //                    .tabItem {
-                //                        Label(settingsStr, systemImage: "gearshape")
-                //                    }
+                RootView{
+                    SettingsView()
+                        .tag(3)
+                }
             }
             .accentColor(accentColor ? Color.white : Color(K.Colors.mainColor))
             if !published.tabsAreHidden{
@@ -73,11 +57,17 @@ struct AppView: View {
                     CustomTabBarItem(iconName: "list.bullet.clipboard",
                                      label: listStr,
                                      selection: $published.currentTabView,
-                                     tag: 0, settings: false)
+                                     tag: 0, doubleTag: 0, settings: false)
+                    if viewModel.currentUser?.role == "volunteer" || viewModel.currentUser?.role == "developer" || viewModel.currentUser?.role == "jedai"{
+                        CustomTabBarItem(iconName: "questionmark.diamond",
+                                         label: supportStr,
+                                         selection: $published.currentTabView,
+                                         tag: 1, doubleTag: 1, settings: false)
+                    }
                     CustomTabBarItem(iconName: "gearshape",
                                      label: settingsStr,
                                      selection: $published.currentTabView,
-                                     tag: 1, settings: true)
+                                     tag: 2, doubleTag: 3, settings: true)
                     //                    CustomTabBarItem(iconName: "person.crop.circle",
                     //                                     label: "Contacts",
                     //                                     selection: $published.currentTabView,
@@ -93,19 +83,37 @@ struct AppView: View {
                 }
                 .frame(height: 50)
                 .frame(maxWidth: .infinity)
-                .background(Color(K.Colors.background).opacity(0))
+                .background{
+//                    Color(K.Colors.background).opacity(0)
+                }
                 .opacity(published.tabsAreHidden ? 0 : 1)
             }
         }
-        
+        .onShake{
+            self.isShaked.toggle()
+        }
+        .sheet(isPresented: $isShaked, content: {
+            NavigationStack{
+                ShakeReportView()
+                    .toolbar{
+                        ToolbarItem(placement: .topBarLeading){
+                            Button(action: {
+                                self.isShaked = false
+                            }){
+                                Image(systemName: "xmark.circle")
+                            }
+                        }
+                    }
+            }
+            .presentationDetents([.medium])
+            .accentColor(Color(K.Colors.mainColor))
+        })
     }
     
     
 }
 
 
-#Preview {
-    AppView()
-}
-
-
+//#Preview {
+//    AppView()
+//}

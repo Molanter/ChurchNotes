@@ -175,3 +175,44 @@ struct Badge: Identifiable {
     }
 }
 
+
+struct MessageModel: Identifiable {
+    var id: String { documentId }
+    let documentId: String
+    let from, to, type, image, message: String
+    var time: Date
+    var reviewed: Bool
+    
+    init(documentId: String, data: [String: Any]) {
+        self.documentId = documentId
+        self.from = data["from"] as? String ?? ""
+        self.message = data["message"] as? String ?? ""
+        self.to = data["to"] as? String ?? ""
+        self.type = data["type"] as? String ?? ""
+        self.image = data["image"] as? String ?? ""
+        self.reviewed = data["reviewed"] as? Bool ?? false
+        let tim = data["date"] as? Timestamp ?? Timestamp()
+        self.time = tim.dateValue()
+        
+    }
+}
+
+struct LastMessageModel: Identifiable {
+    var id: String { documentId }
+    let documentId: String
+    let message, profileImage, name, type: String
+    var time: Date
+    var image: Bool
+    
+    init(documentId: String, data: [String: Any]) {
+        self.documentId = documentId
+        self.message = data["message"] as? String ?? ""
+        self.profileImage = data["profileImage"] as? String ?? ""
+        self.name = data["name"] as? String ?? ""
+        self.type = data["type"] as? String ?? ""
+        self.image = data["image"] as? Bool ?? false
+        let tim = data["date"] as? Timestamp ?? Timestamp()
+        self.time = tim.dateValue()
+        
+    }
+}

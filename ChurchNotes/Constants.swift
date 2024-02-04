@@ -267,7 +267,7 @@ struct K{
         func getBadgeArray() -> [String: Any] {
             return [
                 "nNext": nNext,
-                "Going": nGoing,
+                "nGoing": nGoing,
                 "nnext": nnext,
                 "dDone": dDone,
                 "dCongrats": dCongrats,

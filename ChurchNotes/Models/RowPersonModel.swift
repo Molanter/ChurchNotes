@@ -73,7 +73,8 @@ struct RowPersonModel: View {
                         }
                     }
             }
-
+            .frame(maxWidth: .infinity)
+            .background(Color(K.Colors.blackAndWhite))
     }
 }
 

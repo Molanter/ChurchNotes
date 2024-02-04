@@ -133,7 +133,10 @@ struct SettingsView: View {
                     .padding(.horizontal, bigPhoto ? 0 : 25)
                     VStack(alignment: .leading, spacing: 20){
                         VStack{
-                            NavigationLink(destination: CurrentPersonView()
+                            NavigationLink(destination: CurrentPersonView().onAppear(perform: {
+                                published.tabsAreHidden = true
+                            })
+                                .toolbar(.hidden, for: .tabBar)
                                 .navigationBarTitleDisplayMode(.inline)
                             ){
                                             HStack(spacing: 29){
@@ -174,6 +177,10 @@ struct SettingsView: View {
                         }
                         VStack{
                             NavigationLink(destination: SettingsPeopleView()
+                                .onAppear(perform: {
+                                    published.tabsAreHidden = true
+                                })
+                                    .toolbar(.hidden, for: .tabBar)
                                 .navigationBarTitleDisplayMode(.inline)
                             ){
                                             HStack(spacing: 15){
@@ -215,6 +222,10 @@ struct SettingsView: View {
                         }
                         VStack{
                             NavigationLink(destination: AchievementsMainView()
+                                .onAppear(perform: {
+                                    published.tabsAreHidden = true
+                                })
+                                    .toolbar(.hidden, for: .tabBar)
                                 .navigationBarTitleDisplayMode(.inline)
                             ){
                                             HStack(spacing: 29){
@@ -255,6 +266,10 @@ struct SettingsView: View {
                         }
                         VStack{
                             NavigationLink(destination: NotificationView()
+                                .onAppear(perform: {
+                                    published.tabsAreHidden = true
+                                })
+                                    .toolbar(.hidden, for: .tabBar)
                                 .navigationBarTitleDisplayMode(.inline)
                             ){
                                             HStack(spacing: 29){
@@ -297,6 +312,10 @@ struct SettingsView: View {
                         }
                         VStack{
                             NavigationLink(destination: AppearanceView(profileImage: profileImage, name: name, email: email, username: username, phone: phone, country: country, notes: notes, timeStamp: timeStamp)
+                                .onAppear(perform: {
+                                    published.tabsAreHidden = true
+                                })
+                                    .toolbar(.hidden, for: .tabBar)
                                 .navigationBarTitleDisplayMode(.inline)
                             ){
                                             HStack(spacing: 29){
@@ -337,6 +356,10 @@ struct SettingsView: View {
                         }
                         VStack{
                             NavigationLink(destination: AccountSettingsView()
+                                .onAppear(perform: {
+                                    published.tabsAreHidden = true
+                                })
+                                    .toolbar(.hidden, for: .tabBar)
                                 .navigationBarTitleDisplayMode(.inline)
                             ){
                                             HStack(spacing: 29){
@@ -374,6 +397,53 @@ struct SettingsView: View {
                                     .navigationBarTitleDisplayMode(.inline)
                             }
                             Divider()
+                        }
+                        if K.testFeatures{
+                            VStack{
+                                NavigationLink(destination: SupportMainView()
+                                    .onAppear(perform: {
+                                        published.tabsAreHidden = true
+                                    })
+                                        .toolbar(.hidden, for: .tabBar)
+                                    .navigationBarTitleDisplayMode(.inline)
+                                ){
+                                                HStack(spacing: 29){
+                                                    Image(systemName: "wrench.and.screwdriver")
+                                                        .font(.system(size: 25))
+                                                        .fontWeight(.light)
+                                                    VStack(alignment: .leading, spacing: 5){
+                                                        Text("ssupport")
+                                                            .font(.system(size: 15))
+                                                            .fontWeight(.semibold)
+                                                            .foregroundStyle(.primary)
+                                                        Text("support-reports-questions")
+                                                            .font(.system(size: 11))
+                                                            .foregroundStyle(.secondary)
+                                                    }
+                                                    Spacer()
+                                                    Image(systemName: "chevron.forward")
+                                                        .frame(width: 28)
+                                                }
+                                                .padding(.leading, 20)
+                                                .padding(.trailing, 25)
+                                            }
+                                .navigationDestination(
+                                    isPresented: Binding(
+                                        get: { published.currentSettingsNavigationLink == "support" },
+                                        set: { newValue in
+                                            published.currentSettingsNavigationLink = newValue ? "support" : nil
+                                        }
+                                    )
+                                ) {
+                                    SupportMainView()
+                                        .onAppear(perform: {
+                                            published.tabsAreHidden = true
+                                        })
+                                            .toolbar(.hidden, for: .tabBar)
+                                        .navigationBarTitleDisplayMode(.inline)
+                                }
+                                Divider()
+                            }
                         }
                         VStack{
                             Button(action: {
@@ -523,8 +593,15 @@ struct SettingsView: View {
                         await manager.request()
                     }
                 }
+                if published.currentTabView == 3{
+                    published.tabsAreHidden = false
+                }
             }
-            
+            .onDisappear(perform: {
+                if published.currentTabView == 3{
+                    published.tabsAreHidden = true
+                }
+            })
         }
         
     }

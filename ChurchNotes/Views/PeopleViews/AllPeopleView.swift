@@ -8,20 +8,19 @@
 import SwiftUI
 
 struct AllPeopleView: View {
-    private var items : [Person]{
-        return viewModel.peopleArray.sorted(by: { $0.name < $1.name })
-    }
+    @EnvironmentObject var viewModel: AppViewModel
+    
+    let notify = NotificationHandler()
+    
     @State private var searchText = ""
     @State private var currentItem: Person?
-    let notify = NotificationHandler()
     @State private var lastItem: Person?
-    @EnvironmentObject var viewModel: AppViewModel
     @State private var isShowingDeleteAlert = false
     @State var sheetPesonInfo = false
 
-    
-    
-    
+    private var items : [Person]{
+        return viewModel.peopleArray.sorted(by: { $0.name < $1.name })
+    }
     
     var body: some View {
         NavigationStack{

@@ -84,7 +84,7 @@ struct NotificationView: View {
                             }
                         }
                         }
-                        .listStyle(.plain)
+//                        .listStyle(.plain)
                     }else{
                         VStack(alignment: .leading){
                             Image(systemName: "bell.slash")

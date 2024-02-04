@@ -386,7 +386,7 @@ struct EditProfileView: View {
     private func updateFunc(){
         
         if name != "" && username != "" && viewModel.isAvailable{
-            viewModel.updateProfile(image: image, name: name, username: username, country: country, phone: phone, documentId: documentId, oldImageLink: profileImage, userID: Auth.auth().currentUser?.uid ?? "")
+            viewModel.updateProfile(image: image, name: name, username: username, country: country, phone: phone, documentId: documentId, oldImageLink: profileImage, userId: Auth.auth().currentUser?.uid ?? "")
             self.fetchDictionary()
             errReg = viewModel.err
             viewModel.isProfileFinished = true

@@ -226,7 +226,7 @@ struct ProfileMainView: View {
                         //                        }
                         //                        .frame(height: 900, alignment: .top)
                         LazyVGrid(columns: gridItemLayout, alignment: .center, spacing: 15) {
-                            ForEach(viewModel.peopleArray) { item in
+                            ForEach(viewModel.peopleArray.sorted(by: { $0.orderIndex < $1.orderIndex }).sorted(by: { $0.isLiked && !$1.isLiked })) { item in
                                 Button(action: {
                                     currentItem = item
                                 }){
@@ -246,7 +246,7 @@ struct ProfileMainView: View {
                                                 .bold()
                                                 .font(.system(size: 48))
                                                 .foregroundColor(Color(K.Colors.text))
-                                                .padding(.bottom, 10)
+                                                .padding(.bottom, 20)
                                         }
                                         ZStack{
                                             Rectangle()
@@ -272,7 +272,16 @@ struct ProfileMainView: View {
                                             .padding([.horizontal, .bottom], 10)
                                         }
                                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
-                                        
+                                        Image(systemName: item.isLiked ? "\(K.favouriteSign).fill" : "")
+                                            .foregroundStyle(Color.white)
+                                            .contentTransition(.symbolEffect(.replace))
+                                            .padding(10)
+                                            .onTapGesture {
+                                                withAnimation{
+                                                    viewModel.likePerson(documentId: item.documentId, isLiked: false)
+                                                }
+                                            }
+                                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                                     }
                                     .frame(height: 150)
                                     .frame(maxWidth: .infinity, alignment: .bottom)
@@ -309,6 +318,11 @@ struct ProfileMainView: View {
             }
             .onAppear(perform: {
                 published.tabsAreHidden = false
+            })
+            .onDisappear(perform: {
+                if published.currentTabView == 2{
+                    published.tabsAreHidden = true
+                }
             })
             .toolbar(content: {
                 ToolbarItem(placement: .topBarTrailing, content: {

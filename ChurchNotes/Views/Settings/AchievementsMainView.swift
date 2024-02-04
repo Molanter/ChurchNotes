@@ -34,7 +34,7 @@ struct AchievementsMainView: View {
                                 Menu{
                                     Button {
                                         viewModel.setBadge(name: badge.strId)
-
+                                        viewModel.currentUser?.badge = badge.strId
                                     } label: {
                                         Label(String(localized: "sset-bbadge"), systemImage: badge.image)
                                     }
@@ -72,16 +72,18 @@ struct AchievementsMainView: View {
                                 Divider()
                             }
                         }
-                        .padding(.all, 10)
+                        .padding(.vertical, 10)
                     }
                 }
-                .listRowBackground(Color.clear)
+//                .listRowBackground(Color.clear)
                 Section(header: Text("next-stage"), footer: Text("achievement-for-next")) {
                     ScrollView(.horizontal){
                         HStack{
                             AchievementsItem(text: "", backgroundImage: "shield", image: "medal", imageSize: 40, score: "\(viewModel.currentUser?.next ?? 0)/5", imageColor: Color.brown)
+                            Divider()
                             AchievementsItem(text: "", backgroundImage: "shield", image: "medal", imageSize: 40, score: "\(viewModel.currentUser?.next ?? 0)/20", imageColor: Color.gray)
                                 .opacity((viewModel.currentUser?.next ?? 0) >= 5 ? 1 : 0.3)
+                            Divider()
                             AchievementsItem(text: "", backgroundImage: "shield", image: "medal", imageSize: 40, score: "\(viewModel.currentUser?.next ?? 0)/50", imageColor: Color.yellow)
                                 .opacity((viewModel.currentUser?.next ?? 0) >= 20 ? 1 : 0.3)
                         }
@@ -90,19 +92,21 @@ struct AchievementsMainView: View {
                 .onAppear(perform: {
                     print(viewModel.currentUser?.next ?? 0)
                 })
-                .listRowBackground(Color.clear)
+//                .listRowBackground(Color.clear)
                 Section(header: Text("done"), footer: Text("achievement-for-last-stage")) {
                     ScrollView(.horizontal){
                         HStack{
                             AchievementsItem(text: "", backgroundImage: "shield.fill", image: "trophy", imageSize: 40, score: "\(viewModel.currentUser?.done ?? 0)/1", image2: "3")
+                            Divider()
                             AchievementsItem(text: "", backgroundImage: "shield.fill", image: "trophy", imageSize: 40, score: "\(viewModel.currentUser?.done ?? 0)/5", image2: "2")
                                 .opacity((viewModel.currentUser?.done ?? 0) >= 1 ? 1 : 0.3)
+                            Divider()
                             AchievementsItem(text: "", backgroundImage: "shield.fill", image: "trophy", imageSize: 40, score: "\(viewModel.currentUser?.done ?? 0)/15", image2: "1")
                                 .opacity((viewModel.currentUser?.done ?? 0) >= 5 ? 1 : 0.3)
                         }
                     }
                 }
-                .listRowBackground(Color.clear)
+//                .listRowBackground(Color.clear)
 //                Section(header: Text("Bloger"), footer: Text("Achievement for recording and sending videos for people.")) {
 //                    ScrollView(.horizontal){
 //                        HStack{
@@ -116,7 +120,7 @@ struct AchievementsMainView: View {
 //                }
 //                .listRowBackground(Color.clear)
             }
-            .listStyle(.grouped)
+//            .listStyle(.grouped)
             .navigationTitle("achievements")
         }
     }

@@ -53,6 +53,38 @@ struct FinalPreviewButtons: View {
     }
 }
 
-//#Preview {
-//    SendButtons()
-//}
+struct SupportButton: View{
+    var text: String
+    var systemImage: String
+    
+    var body: some View {
+        VStack(alignment: .center, spacing: 5){
+            if text.isEmpty{
+                Image(systemName: systemImage)
+    //                .font(.system(size: 24))
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: 24)
+                    .foregroundStyle(Color(K.Colors.text))
+            }else{
+                Text(text)
+                    .font(.system(size: 12))
+                    .foregroundStyle(Color(K.Colors.text))
+            }
+            
+        }
+        //        .padding(10)
+        .padding(.vertical, 7)
+        .frame(minHeight: 50)
+        .frame(maxWidth: .infinity)
+        .background{
+//            Color(K.Colors.mainColor).opacity(0.5)
+            TransparentBlurView(removeAllFilters: true)
+                .blur(radius: 9, opaque: true)
+                .background(Color(K.Colors.text).opacity(0.1))
+                .cornerRadius(7)
+        }
+        .cornerRadius(15)
+    }
+}
+

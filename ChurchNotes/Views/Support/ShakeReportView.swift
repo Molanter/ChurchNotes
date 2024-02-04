@@ -19,8 +19,9 @@ struct ShakeReportView: View {
                     .font(.title2)
                     .fontWeight(.medium)
                 HStack{
-                    TextField("write-here", text: $errorText)
-                        .frame(height: 100, alignment: .topLeading)
+                    TextField("write-here", text: $errorText, axis: .vertical)
+                        .lineLimit(5)
+                        .frame(alignment: .topLeading)
                         .onSubmit {
                             viewModel.shakeReport(anonymously, errorText: errorText)
                             self.errorText = ""

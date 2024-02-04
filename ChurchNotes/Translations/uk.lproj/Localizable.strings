@@ -133,10 +133,11 @@
 
 
 //ShakeReportView
-"write-issue-report" = "Напишіть репорт помилки";
+"write-issue-report" = "Повідомте про проблему";
 "write-here" = "Пишіть тут...";
 "write-anonymously" = "Написати анонімно";
 "report" = "Повідомити";
+"no-answer-report" = "Повідомити без відповіді";
 
 
 //AddNotificationView
@@ -183,7 +184,6 @@
 "you-can-send-email-or-save-it" = "Ви можете надіслати відео на пошту, або зберегти його.";
 "send-by-email" = "Відправити на пошту.";
 "check-or-add-email-to-send" = "Перевірити або додати пошту щоб відправити.";
-"mail" = "Пошта";
 "message" = "Повідомлення";
 "another" = "Інше";
 
@@ -322,7 +322,7 @@
 "ttester" = "Тестувальник";
 "ddeveloper" = "Розробник";
 "jjedai" = "Джедай";
-"sset %@" = "Встановити %@";
+"sset" = "Встановити";
 
 
 //ProfileMainView
@@ -342,3 +342,32 @@
 "sset-bbadge" = "Поставити бейдж";
 "bbadge-sseted" = "Бейдж встановленно!";
 "rremove-iimage" = "Видалити фото";
+"ssupport" = "Підтримка";
+"select-more-photos" = "Віберіть більше фото";
+"allow-access-for-photos" = "Дозволити доступ до фотографій";
+"select-more" = "Вибрати більше";
+"allow-access" = "Дозволити доступ";
+"ssend-mmessage" = "Відправити повідомленням";
+"ssend-mmail" = "Відправити лист";
+"iissue" = "Проблема";
+"rreport" = "Доповісти";
+"wait-for-answer-from-support" = "Почекайте на відповідь від підтримки!";
+"support-reports-questions" = "Підтримка, помилки, питання";
+"cchatt" = "Чат";
+"chat-with-support-volunteer" = "Чат з волонтером з підтримки";
+"tap-to-load-screenshoot" = "натисніть щоб завантажити знімок екрану";
+"fill-form-and-send-email" = "Заповнить форму та відправте лист";
+"ssend-eemail" = "Надіслати лист";
+"eemail-low" = "пошта";
+"cchat-low" = "чат";
+"open-support-chat" = "відкрити чат з підтримкою";
+"ccontacts" = "Контакти";
+"iinfo" = "Інформація";
+"-vertification-checkmark-meaning" = "- означає справжній акаунт";
+"-photo-rules-info" = "- скріншот повинен бути в повний екран, щоб ми могли бачити час і цілу сторінку";
+"-send-report-in-one-message" = "- відправте помилку/запитання в одному повідомлені та зачекайте на відповідь";
+"hhelped" = "Допомогло";
+"aask-mmore" = "Запитати ще раз";
+"done-support-delete-all-messages" = "Натисніть Продовжити щоб закрити цю ромову. Зверніть увагу, що всі сповіщення в цьому чаті будуть видалені!";
+"close-this-conversation" = "Закрити цю розмову?";
+"rresume" = "Продовжити";

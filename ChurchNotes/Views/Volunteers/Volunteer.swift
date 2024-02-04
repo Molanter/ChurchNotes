@@ -57,7 +57,7 @@ struct Volunteer: View {
                     
                 self.uid = published.findUserId ?? ""
             }, label: {
-                Text("sset \(picked == 0 ? String(localized: "uuser") : (picked == 1 ? String(localized: "vvolunteer") : (picked == 2 ? String(localized: "ttester") : (picked == 3 ? String(localized: "ddeveloper") : String(localized: "jjedai")))))")
+                Text("sset")
                     .padding()
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)

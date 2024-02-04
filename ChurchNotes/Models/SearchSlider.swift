@@ -19,15 +19,15 @@ struct SearchSlider: View {
     var body: some View {
         ScrollView(.horizontal){
             HStack(spacing: 0){
-                SearchSliderItem(currentTab: $currentTab,
-                           namespace: namespace.self,
-                           tabBarItemName: stages,
-                           tab: 0)
-                .onTapGesture {
-                        withAnimation{
-                            currentTab = 0
-                        }
-                    }
+//                SearchSliderItem(currentTab: $currentTab,
+//                           namespace: namespace.self,
+//                           tabBarItemName: stages,
+//                           tab: 0)
+//                .onTapGesture {
+//                        withAnimation{
+//                            currentTab = 0
+//                        }
+//                    }
                 SearchSliderItem(currentTab: $currentTab,
                            namespace: namespace.self,
                            tabBarItemName: people,

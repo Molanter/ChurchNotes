@@ -205,10 +205,6 @@ struct PeopleView: View {
                     .padding(.horizontal, 0)
 //                }
             }
-            .onShake{
-                print("Device shaken!")
-//                self.lastItem?.isCheked.toggle()
-                    }
             .toolbar(content: {
                 ToolbarItem(placement: .topBarTrailing, content: {
                     Button(action: {self.showAddPersonView.toggle()}){

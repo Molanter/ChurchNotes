@@ -112,7 +112,7 @@ struct FinalPreview: View {
                                 SendButtons(text: "save", imageName: "square.and.arrow.down", backgroundColor: Color(K.Colors.mainColor), itemColor: Color.white)
                             }
                             Button(action: {self.showMailComposeView = true}){
-                                SendButtons(text: "mail", imageName: "envelope.fill", backgroundColor: Color.lightBlue, itemColor: Color.white)
+                                SendButtons(text: "eemail", imageName: "envelope.fill", backgroundColor: Color.lightBlue, itemColor: Color.white)
                             }
                             Button(action: {
                                 let canSendAtachtment = MFMessageComposeViewController.canSendAttachments()

@@ -27,9 +27,7 @@ struct ItemView: View {
     @State private var currentItem: Person?
     @State private var lastItem: Person?
     @State private var isShowingDeleteAlert = false
-    @State private var isShaked = false
     @State var presentStageSheet = false
-    @State var nowStage: Int = 2
     @State var showActionSheet = false
     @State var deleteItem: Notifics?
 
@@ -42,7 +40,7 @@ struct ItemView: View {
         return viewModel.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })
     }
     private var itemTitles: String{
-        return nowStage == 0 ? sortedAppStages[currentTab].title : (sortedStages.isEmpty ? "" : sortedStages[currentTab].name)
+        return published.nowStage == 0 ? sortedAppStages[currentTab].title : (sortedStages.isEmpty ? "" : sortedStages[currentTab].name)
         
     }
     private var people: [Person] {
@@ -83,9 +81,9 @@ struct ItemView: View {
                             }
                     }else{
                             List{
-                                if nowStage == 0{
+                                if published.nowStage == 0{
                                     appStages
-                                }else if nowStage == 1{
+                                }else if published.nowStage == 1{
                                     if !sortedStages.isEmpty{
                                         youStages
                                     }else{
@@ -100,16 +98,19 @@ struct ItemView: View {
                                             Button(action: {
                                                 self.presentStageSheet.toggle()
                                             }){
-                                                Spacer()
-                                                Text("create")
-                                                    .foregroundColor(Color.white)
-                                                    .padding(.vertical, 10)
-                                                    .padding(.leading)
-                                                Image(systemName: "folder.badge.plus")
-                                                    .foregroundColor(Color.white)
-                                                    .padding(.leading)
-                                                Spacer()
+                                                HStack{
+                                                    Spacer()
+                                                    Text("create")
+                                                        .foregroundColor(Color.white)
+                                                        .padding(.vertical, 10)
+                                                        .padding(.leading)
+                                                    Image(systemName: "folder.badge.plus")
+                                                        .foregroundColor(Color.white)
+                                                        .padding(.leading)
+                                                    Spacer()
+                                                }
                                             }
+                                            .frame(maxWidth: .infinity)
                                             .background(Color(K.Colors.mainColor))
                                             .cornerRadius(7)
                                         })
@@ -130,10 +131,10 @@ struct ItemView: View {
             
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onAppear(perform: {
-                self.nowStage = K.choosedStages
+                self.published.nowStage = K.choosedStages
                 
             })
-            .onChange(of: nowStage) { old, new in
+            .onChange(of: published.nowStage) { old, new in
                 K.choosedStages = new
             }
             .onChange(of: isSearching, { old, new in
@@ -155,28 +156,28 @@ struct ItemView: View {
                 }
                 
             ToolbarItem(placement: .principal) {
-                Text(nowStage == 0 ? "app-stages" : "my-stages")
+                Text(published.nowStage == 0 ? "app-stages" : "my-stages")
 //                    .foregroundStyle(Color(K.Colors.mainColor))
                     
                 }
             })
             .toolbarTitleMenu { // ADD THIS!
                             Button("app-stages") {
-                                if nowStage == 1{
+                                if published.nowStage == 1{
                                     self.currentTab = 0
                                 }
-                                nowStage = 0
+                                published.nowStage = 0
                             }.buttonStyle(.borderedProminent)
                             
                             Button("my-stages") {
-                                if nowStage == 0{
+                                if published.nowStage == 0{
                                     self.currentTab = 0
                                 }
-                                nowStage = 1
+                                published.nowStage = 1
                             }.buttonStyle(.borderedProminent)
                         }
             .onAppear(perform: {
-                nowStage = K.choosedStages
+                published.nowStage = K.choosedStages
             })
             .sheet(isPresented: $presentStageSheet){
                 NavigationStack{
@@ -203,22 +204,7 @@ struct ItemView: View {
                 .edgesIgnoringSafeArea(.bottom)
                 .presentationDetents([.large])
             }
-            .sheet(isPresented: $isShaked, content: {
-                NavigationStack{
-                    ShakeReportView()
-                        .toolbar{
-                            ToolbarItem(placement: .topBarLeading){
-                                Button(action: {
-                                    currentItem = nil
-                                }){
-                                    Image(systemName: "xmark.circle")
-                                }
-                            }
-                        }
-                }
-                .presentationDetents([.medium])
-                .accentColor(Color(K.Colors.mainColor))
-            })
+            
             .sheet(item: $currentItem, onDismiss: nil){ item in
                 NavigationStack{
                     ItemPersonView(item: item, currentItem: $currentItem)
@@ -248,9 +234,6 @@ struct ItemView: View {
                 .accentColor(Color.white)
                 
             }
-            .onShake{
-                self.isShaked.toggle()
-            }
             .navigationBarTitleDisplayMode(.inline)
         }
     }
@@ -260,12 +243,18 @@ struct ItemView: View {
         Section(header: TopBarView(currentTab: self.$currentTab, showAddStage: false, array: sortedStages, appArray: sortedAppStages, app: true)){
             ForEach(filteredItems){ item in
                 if item.isCheked == false && item.isDone == false{
-                    Button(action: {
-                        currentItem = item
-                        self.sheetPesonInfo.toggle()
-                        print(currentTab)
-                    }){
+//                    Button(action: {
+//
+//                    }){
                         RowPersonModel(item: item)
+                            .onTapGesture(count: 2, perform: {
+                                viewModel.likePerson(documentId: item.documentId, isLiked: true)
+                            })
+                            .onTapGesture(count: 1, perform: {
+                                currentItem = item
+                                self.sheetPesonInfo.toggle()
+                                print(currentTab)
+                            })
                         .swipeActions(edge: .leading) {
                             Button(action: {
                                 self.lastItem = item
@@ -331,8 +320,17 @@ struct ItemView: View {
                             } label: {
                                 Label("delete", systemImage: "trash")
                             }
+                        } preview: {
+                            RowPersonModel(item: item)
+                                .environmentObject(AppViewModel())
+                                .padding(10)
+                                .onTapGesture {
+                                    currentItem = item
+                                    self.sheetPesonInfo.toggle()
+                                }
+                                .background(Color(K.Colors.blackAndWhite))
                         }
-                    }
+//                    }
                 }
             }
             .onDelete(perform: { indexSet in
@@ -360,12 +358,17 @@ struct ItemView: View {
                     Section(header: TopBarView(currentTab: self.$currentTab, showAddStage: false, array: sortedStages, appArray: sortedAppStages, app: false)){
                         ForEach(filteredItems){ item in
                             if item.isCheked == false && item.isDone == false{
-                                Button(action: {
-                                    currentItem = item
-                                    self.sheetPesonInfo.toggle()
-                                    print(currentTab)
-                                }){
+//                                Button(action: {
+//
+//                                }){
                                     RowPersonModel(item: item)
+                                        .onTapGesture(count: 2, perform: {
+                                            viewModel.likePerson(documentId: item.documentId, isLiked: true)
+                                        })
+                                        .onTapGesture(count: 1, perform: {
+                                            currentItem = item
+                                            self.sheetPesonInfo.toggle()
+                                        })
                                     .alert("delete-person", isPresented: $isShowingDeleteAlert) {
                                         Button("cancel", role: .cancel) {}
                                         Button("delete", role: .destructive) {
@@ -398,8 +401,17 @@ struct ItemView: View {
                                         } label: {
                                             Label("delete", systemImage: "trash")
                                         }
+                                    } preview: {
+                                        RowPersonModel(item: item)
+                                            .environmentObject(AppViewModel())
+                                            .padding(10)
+                                            .onTapGesture {
+                                                currentItem = item
+                                                self.sheetPesonInfo.toggle()
+                                            }
+                                            .background(Color(K.Colors.blackAndWhite))
                                     }
-                                }
+//                                }
                             }
                         }
                         .onDelete(perform: { indexSet in
@@ -470,31 +482,6 @@ struct ItemView: View {
             }
         }
         self.lastItem = nil
-    }
-    
-    private func removeNotification(item: Notifics){
-        if item.sunday{
-            notify.stopNotifying(day: 1, count: item.orderIndex)
-        }
-        if item.monday{
-            notify.stopNotifying(day: 2, count: item.orderIndex)
-        }
-        if item.tuesday{
-            notify.stopNotifying(day: 3, count: item.orderIndex)
-        }
-        if item.wednsday{
-            notify.stopNotifying(day: 4, count: item.orderIndex)
-        }
-        if item.thursday{
-            notify.stopNotifying(day: 5, count: item.orderIndex)
-        }
-        if item.friday{
-            notify.stopNotifying(day: 6, count: item.orderIndex)
-        }
-        if item.saturday{
-            notify.stopNotifying(day: 7, count: item.orderIndex)
-        }
-        viewModel.stopNotifing(item: item)
     }
 }
 
