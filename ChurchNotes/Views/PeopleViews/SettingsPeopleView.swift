@@ -19,8 +19,7 @@ struct SettingsPeopleView: View {
 
     var body: some View{
         NavigationStack{
-            ScrollView(.vertical){
-                VStack(alignment: .leading, spacing: 20){
+                List{
                     VStack(alignment: .leading){
                         NavigationLink(destination: AllPeopleView()){
                             HStack(spacing: 29){
@@ -30,17 +29,13 @@ struct SettingsPeopleView: View {
                                 VStack(alignment: .leading, spacing: 5){
                                     Text("all-people")
                                         .fontWeight(.semibold)
-                                        .font(.system(size: 15))
+                                        .font(.subheadline)
                                         .foregroundStyle(.primary)
                                     Text("list-of-all-people")
-                                        .font(.system(size: 11))
+                                        .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }
-                                Spacer()
-                                Image(systemName: "chevron.forward")
-                                    .frame(width: 28)
                             }
-                            .padding(.horizontal, 25)
                         }
                         .navigationDestination(
                             isPresented: Binding(
@@ -54,9 +49,8 @@ struct SettingsPeopleView: View {
                                 .onAppear(perform: {
                                     published.tabsAreHidden = true
                                 })
-                                    .toolbar(.hidden, for: .tabBar)
+//                                    .toolbar(.hidden, for: .tabBar)
                         }
-                        Divider()
                     }
                     VStack(alignment: .leading){
                         NavigationLink(destination: AllStagesView()){
@@ -67,17 +61,13 @@ struct SettingsPeopleView: View {
                                 VStack(alignment: .leading, spacing: 5){
                                     Text("all-your-stages")
                                         .fontWeight(.semibold)
-                                        .font(.system(size: 15))
+                                        .font(.subheadline)
                                         .foregroundStyle(.primary)
                                     Text("list-of-all-stages")
-                                        .font(.system(size: 11))
+                                        .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }
-                                Spacer()
-                                Image(systemName: "chevron.forward")
-                                    .frame(width: 28)
                             }
-                            .padding(.horizontal, 25)
                         }
                         .navigationDestination(
                             isPresented: Binding(
@@ -91,9 +81,8 @@ struct SettingsPeopleView: View {
                                 .onAppear(perform: {
                                     published.tabsAreHidden = true
                                 })
-                                    .toolbar(.hidden, for: .tabBar)
+//                                    .toolbar(.hidden, for: .tabBar)
                         }
-                        Divider()
                     }
                     if viewModel.peopleArray.filter({ $0.isDone}).count > 0{
                         VStack(alignment: .leading){
@@ -102,7 +91,7 @@ struct SettingsPeopleView: View {
                                     ZStack(alignment: .center){
                                         Image(systemName: "checkmark")
                                             .offset(x: 20, y: -10)
-                                            .foregroundStyle(Color(K.Colors.mainColor))
+                                            .foregroundStyle(K.Colors.mainColor)
                                             .font(.system(size: 15))
                                             .fontWeight(.bold)
                                         Image(systemName: "person")
@@ -113,18 +102,14 @@ struct SettingsPeopleView: View {
                                     VStack(alignment: .leading, spacing: 5){
                                         Text("done-people")
                                             .fontWeight(.semibold)
-                                            .font(.system(size: 15))
+                                            .font(.subheadline)
                                             .foregroundStyle(.primary)
                                         Text("list-of-people-that-joined-group")
                                             .frame(alignment: .leading)
-                                            .font(.system(size: 11))
+                                            .font(.caption)
                                             .foregroundStyle(.secondary)
                                     }
-                                    Spacer()
-                                    Image(systemName: "chevron.forward")
-                                        .frame(width: 28)
                                 }
-                                .padding(.horizontal, 25)
                             }
                             .navigationDestination(
                                 isPresented: Binding(
@@ -138,9 +123,8 @@ struct SettingsPeopleView: View {
                                     .onAppear(perform: {
                                         published.tabsAreHidden = true
                                     })
-                                        .toolbar(.hidden, for: .tabBar)
+//                                        .toolbar(.hidden, for: .tabBar)
                             }
-                            Divider()
                         }
                     }
                     VStack{
@@ -153,17 +137,13 @@ struct SettingsPeopleView: View {
                                 VStack(alignment: .leading, spacing: 5){
                                     Text("favourite-people")
                                         .fontWeight(.semibold)
-                                        .font(.system(size: 15))
+                                        .font(.subheadline)
                                         .foregroundStyle(.primary)
                                     Text("list-of-favourite-people")
-                                        .font(.system(size: 11))
+                                        .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }
-                                Spacer()
-                                Image(systemName: "chevron.forward")
-                                    .frame(width: 28)
                             }
-                            .padding(.horizontal, 25)
                         }
                         
                         .navigationDestination(
@@ -178,16 +158,16 @@ struct SettingsPeopleView: View {
                                 .onAppear(perform: {
                                     published.tabsAreHidden = true
                                 })
-                                    .toolbar(.hidden, for: .tabBar)
+//                                    .toolbar(.hidden, for: .tabBar)
                         }
-                        Divider()
                     }
                 }
                 .accentColor(Color(K.Colors.lightGray))
-                
-            }
-            .navigationTitle("people")
+                .navigationTitle("people")
         }
+        .background(
+            Color(K.Colors.listBg)
+        )
     }
 }
 

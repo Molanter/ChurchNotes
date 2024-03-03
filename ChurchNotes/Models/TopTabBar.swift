@@ -55,14 +55,14 @@ struct TopBarView: View {
                             Image(systemName: "plus.rectangle.on.folder")
                                 .padding(.horizontal)
                         }
-                        .foregroundColor(Color(K.Colors.mainColor))
+                        .foregroundColor(K.Colors.mainColor)
                     }
                     if self.showAddStage{
                         Button(action: {presentSheet.toggle()}){
                             Image(systemName: "plus.rectangle.on.folder")
                                 .padding(.horizontal)
                         }
-                        .foregroundColor(Color(K.Colors.mainColor))
+                        .foregroundColor(K.Colors.mainColor)
                     }
                 }else{
                     ForEach(Array(zip(
@@ -90,7 +90,7 @@ struct TopBarView: View {
                 CreateStageView(presentSheet: self.$presentSheet)
             }
             .edgesIgnoringSafeArea(.bottom)
-            .background(Color(K.Colors.mainColor))
+            .background(K.Colors.mainColor)
             .presentationDetents([.medium])
         }
         .frame(height: 30)
@@ -120,18 +120,18 @@ struct TopBarItem: View {
             VStack {
                 Spacer()
                 Text(tabBarItemName)
-                    .font(.system(size: 13))
+                    .font(.footnote)
                     .fontWeight(.regular)
-                    .foregroundColor(currentTab == tab ? Color(K.Colors.mainColor) : Color(K.Colors.mainColor).opacity(0.5))
-                    .padding(.horizontal, 30)
+                    .foregroundColor(currentTab == tab ? Color.accentColor : Color.accentColor.opacity(0.5))
+                    .padding(.horizontal, 20)
                 if currentTab == tab {
-                    Color(K.Colors.mainColor)
+                    Color.accentColor
                         .frame(height: 5)
                         .matchedGeometryEffect(id: "underline",
                                                in: namespace,
                                                properties: .frame)
                 } else {
-                    Color(K.Colors.mainColor)
+                    Color.accentColor
                         .opacity(0.5)
                         .frame(height: 5)
                 }

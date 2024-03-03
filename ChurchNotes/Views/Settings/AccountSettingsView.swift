@@ -9,12 +9,10 @@ import SwiftUI
 
 struct AccountSettingsView: View {
     //    @EnvironmentObject var published: PublishedVariebles
+    @State var showEdit = false
     
     var body: some View {
-        //        ScrollView(.vertical){
         List{
-            //            VStack(alignment: .leading, spacing: 20){
-            VStack(alignment: .leading){
                 NavigationLink(destination: ChangePasswordView()){
                     HStack(spacing: 29){
                         Image(systemName: "lock.shield")
@@ -23,20 +21,15 @@ struct AccountSettingsView: View {
                         VStack(alignment: .leading, spacing: 5){
                             Text("change-password")
                                 .fontWeight(.semibold)
-                                .font(.system(size: 15))
+                                .font(.subheadline)
                                 .foregroundStyle(.primary)
                             Text("old-password-new-password")
-                                .font(.system(size: 11))
+                                .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
-//                        Spacer()
-//                        Image(systemName: "chevron.forward")
-//                            .frame(width: 28)
                     }
-//                    .padding(.horizontal, 25)
+                    .padding(.leading, 5)
                 }
-            }
-            VStack(alignment: .leading){
                 NavigationLink(destination: ChangeEmailView()){
                     HStack(spacing: 29){
                         Image(systemName: "envelope.badge.shield.half.filled")
@@ -45,30 +38,37 @@ struct AccountSettingsView: View {
                         VStack(alignment: .leading, spacing: 5){
                             Text("change-email")
                                 .fontWeight(.semibold)
-                                .font(.system(size: 15))
+                                .font(.subheadline)
                                 .foregroundStyle(.primary)
                             Text("current-password-new-email")
-                                .font(.system(size: 11))
+                                .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
-//                        Spacer()
-//                        Image(systemName: "chevron.forward")
-//                            .frame(width: 28)
                     }
-//                    .padding(.horizontal, 25)
                 }
+            NavigationLink(destination: EditProfileView(showingEditingProfile: $showEdit)){
+                HStack(spacing: 29){
+                    Image(systemName: "square.and.pencil")
+                        .font(.system(size: 29))
+                        .fontWeight(.light)
+                    VStack(alignment: .leading, spacing: 5){
+                        Text("edit-profile")
+                            .fontWeight(.semibold)
+                            .font(.subheadline)
+                            .foregroundStyle(.primary)
+                        Text("change-name-username-phone")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .padding(.leading, 5)
             }
-            //            }
         }
         .accentColor(Color(K.Colors.lightGray))
-        
-        //        }
-        
-        
-        .navigationTitle("settings")
+    .navigationTitle("settings")
     }
 }
 
-#Preview {
-    AccountSettingsView()
-}
+//#Preview {
+//    AccountSettingsView()
+//}

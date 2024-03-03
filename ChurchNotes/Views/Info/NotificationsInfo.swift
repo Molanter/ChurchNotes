@@ -9,23 +9,13 @@ import SwiftUI
 
 struct NotificationsInfo: View {
     var body: some View {
-        VStack(alignment: .leading){
-
-            Text("note-this")
-                .font(.title2)
-                .bold()
-                .foregroundStyle(.primary)
-                .padding(.horizontal, 15)
+//        NavigationStack{
             List{
                 Section{
                     Text("please-note-that-messages-is-only-for-device")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
                 }
             }
-            .listStyle(.grouped)
-        }
-        .padding(.top, 10)
+//        }
     }
 }
 

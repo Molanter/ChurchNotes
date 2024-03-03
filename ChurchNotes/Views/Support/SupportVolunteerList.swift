@@ -17,11 +17,10 @@ struct SupportVolunteerList: View {
             List{
                 ForEach(searchText.isEmpty ? viewModel.supportMessageArray : viewModel.supportMessageArray.filter { $0.name.contains(searchText)}){ msg in
                     NavigationLink{
-                        SupportChatView(support: true)
+                        SupportChatView(support: true, uid: msg.uid)
                             .onAppear(perform: {
                                 published.tabsAreHidden = true
                             })
-                            .toolbar(.hidden, for: .tabBar)
                     }label: {
                         HStack(spacing: 15){
                             if !msg.profileImage.isEmpty{

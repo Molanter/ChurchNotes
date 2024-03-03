@@ -27,31 +27,41 @@ struct AppView: View {
                 
                 RootView {
                     ItemView()
+                        .accentColor(K.Colors.mainColor)
                         .searchable(text: $published.searchText,
                                     placement: .navigationBarDrawer(displayMode: .automatic),
                                     prompt: "search-name")
+                        .toolbar(published.tabsAreHidden ? .hidden : .visible, for: .tabBar)
                         .tag(0)
                 }
                 
                 if viewModel.currentUser?.role == "volunteer" || viewModel.currentUser?.role == "developer" || viewModel.currentUser?.role == "jedai"{
                     RootView{
                         SupportVolunteerList()
+                            .accentColor(K.Colors.mainColor)
+                            .toolbar(published.tabsAreHidden ? .hidden : .visible, for: .tabBar)
                             .tag(1)
                     }
                 }
                 RootView {
                     ProfileMainView()
+                        .accentColor(K.Colors.mainColor)
                         .onAppear(perform: {
                             published.tabsAreHidden = false
                         })
+                        .toolbar(published.tabsAreHidden ? .hidden : .visible, for: .tabBar)
                         .tag(2)
                 }
-                RootView{
-                    SettingsView()
-                        .tag(3)
+                if published.currentTabView == 3{
+                    RootView{
+                        SettingsView()
+                            .accentColor(K.Colors.mainColor)
+                            .toolbar(published.tabsAreHidden ? .hidden : .visible, for: .tabBar)
+                            .tag(3)
+                    }
                 }
             }
-            .accentColor(accentColor ? Color.white : Color(K.Colors.mainColor))
+            .accentColor(accentColor ? Color.white : K.Colors.mainColor)
             if !published.tabsAreHidden{
                 HStack(alignment: .top) {
                     CustomTabBarItem(iconName: "list.bullet.clipboard",
@@ -106,7 +116,7 @@ struct AppView: View {
                     }
             }
             .presentationDetents([.medium])
-            .accentColor(Color(K.Colors.mainColor))
+            .accentColor(K.Colors.mainColor)
         })
     }
     

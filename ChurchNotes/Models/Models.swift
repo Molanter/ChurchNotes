@@ -35,14 +35,14 @@ struct Users: Identifiable{
 
 
 
-struct Person: Identifiable {
+struct Person: Identifiable, Hashable {
     var id: String { documentId }
     let documentId: String
     var userId: [String]
     var name, notes, email, title, phone, imageData: String
     var orderIndex, titleNumber: Int
-    let isCheked, isLiked, isDone: Bool
-    let birthDay, timestamp: Date
+    var isCheked, isLiked, isDone: Bool
+    var birthDay, timestamp: Date
     
     init(documentId: String, data: [String: Any], isLiked: Bool, orderIndex: Int) {
         self.documentId = documentId
@@ -110,8 +110,8 @@ struct Achievements: Identifiable {
 
 struct Notifics: Identifiable {
     var id: String { documentId }
-    let documentId: String
-    let userId, message: String
+    let documentId, userId: String
+    var message, device: String
     var date: Date
     var sunday, monday, tuesday, wednsday, thursday, friday, saturday: Bool
     var orderIndex: Int
@@ -120,6 +120,7 @@ struct Notifics: Identifiable {
         self.documentId = documentId
         self.userId = data["userId"] as? String ?? ""
         self.message = data["message"] as? String ?? ""
+        self.device = data["device"] as? String ?? ""
         let tim = data["date"] as? Timestamp ?? Timestamp()
         self.date = tim.dateValue()
         self.sunday = data["sunday"] as? Bool ?? false
@@ -200,7 +201,7 @@ struct MessageModel: Identifiable {
 struct LastMessageModel: Identifiable {
     var id: String { documentId }
     let documentId: String
-    let message, profileImage, name, type: String
+    var message, profileImage, name, type, uid: String
     var time: Date
     var image: Bool
     
@@ -210,6 +211,7 @@ struct LastMessageModel: Identifiable {
         self.profileImage = data["profileImage"] as? String ?? ""
         self.name = data["name"] as? String ?? ""
         self.type = data["type"] as? String ?? ""
+        self.uid = data["uid"] as? String ?? ""
         self.image = data["image"] as? Bool ?? false
         let tim = data["date"] as? Timestamp ?? Timestamp()
         self.time = tim.dateValue()

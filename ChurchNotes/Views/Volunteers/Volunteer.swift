@@ -61,7 +61,7 @@ struct Volunteer: View {
                     .padding()
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
-                    .background(Color(K.Colors.mainColor))
+                    .background(K.Colors.mainColor)
                     .cornerRadius(7)
             })
         }

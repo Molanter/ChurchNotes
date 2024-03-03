@@ -36,8 +36,8 @@ class NotificationHandler {
 
     func scheduleNotifications(days: [Int], message: String, date: Date, count: Int) {
         let content = UNMutableNotificationContent()
-        content.title = "pray-reminder"
-        content.body = message.isEmpty ? "time-to-pray-take-your-time" : message
+        content.title = String(localized: "pray-reminder")
+        content.body = message.isEmpty ? String(localized: "time-to-pray-take-your-time") : message
 
         var dateComponents = Calendar.current.dateComponents([.hour, .minute], from: date)
 

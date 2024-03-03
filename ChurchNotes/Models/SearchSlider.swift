@@ -19,15 +19,6 @@ struct SearchSlider: View {
     var body: some View {
         ScrollView(.horizontal){
             HStack(spacing: 0){
-//                SearchSliderItem(currentTab: $currentTab,
-//                           namespace: namespace.self,
-//                           tabBarItemName: stages,
-//                           tab: 0)
-//                .onTapGesture {
-//                        withAnimation{
-//                            currentTab = 0
-//                        }
-//                    }
                 SearchSliderItem(currentTab: $currentTab,
                            namespace: namespace.self,
                            tabBarItemName: people,
@@ -46,6 +37,15 @@ struct SearchSlider: View {
                             currentTab = 2
                         }
                     }
+//                SearchSliderItem(currentTab: $currentTab,
+//                           namespace: namespace.self,
+//                           tabBarItemName: stages,
+//                           tab: 0)
+//                .onTapGesture {
+//                        withAnimation{
+//                            currentTab = 0
+//                        }
+//                    }
                 SearchSliderItem(currentTab: $currentTab,
                            namespace: namespace.self,
                            tabBarItemName: notification,
@@ -90,10 +90,10 @@ struct SearchSliderItem: View {
                 Text(tabBarItemName)
                     .font(.system(size: 13))
                     .fontWeight(.regular)
-                    .foregroundStyle(currentTab == tab ? Color(K.Colors.mainColor) : .secondary)
+                    .foregroundStyle(currentTab == tab ? K.Colors.mainColor : .secondary)
                     .padding(.horizontal, 10)
                 if currentTab == tab {
-                    Color(K.Colors.mainColor)
+                    K.Colors.mainColor
                         .frame(height: 5)
                         .matchedGeometryEffect(id: "underline",
                                                in: namespace,

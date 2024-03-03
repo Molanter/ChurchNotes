@@ -22,7 +22,7 @@ struct LoginPage: View {
     @EnvironmentObject var published: PublishedVariebles
     
     @FocusState var focus: FocusedField?
-
+    
     @State var phone = ""
     @State var email = ""
     @State var createPassword = ""
@@ -45,10 +45,12 @@ struct LoginPage: View {
     @State private var presentingProfileScreen = false
     @State var showWhyAuthInfo = false
     @State var showProgressView = false
+    @State var showForgot = false
+    
     let restrictedUsernameSet = "!@#$%^&*()+?/.>,<~`±§}{[]|\"÷≥≤µ˜∫√ç≈Ω`åß∂ƒ©˙∆˚¬…æ«‘“πøˆ¨¥†®´∑œ§¡™£¢∞§¶•ªº–≠"
     let restrictedEmaileSet = "!#$%^&*()?/>,<~`±§}{[]|\"÷≥≤µ˜∫√ç≈Ω`åß∂ƒ©˙∆˚¬…æ«‘“πøˆ¨¥†®´∑œ§¡™£¢∞§¶•ªº≠"
     let maxLength = 20
-
+    
     private func signInWithEmailPassword() {
         Task {
             if await googleModel.signInWithEmailPassword() == true {
@@ -92,7 +94,7 @@ struct LoginPage: View {
                             self.showWhyAuthInfo.toggle()
                         }){
                             Image(systemName: "info.circle")
-                                .foregroundStyle(Color(K.Colors.mainColor))
+                                .foregroundStyle(K.Colors.mainColor)
                         }
                     }
                 }
@@ -106,16 +108,16 @@ struct LoginPage: View {
                             .padding()
                             .frame(maxWidth: .infinity)
                     }
-                    .background(Color(K.Colors.mainColor))
-                    .cornerRadius(7)
+                    .background(K.Colors.mainColor)
+                    .cornerRadius(10)
                     Button(action: {self.showRegister.toggle()}){
                         Text("sign-up")
                             .foregroundStyle(Color.white)
                             .padding()
                             .frame(maxWidth: .infinity)
                     }
-                    .background(Color(K.Colors.mainColor))
-                    .cornerRadius(7)
+                    .background(K.Colors.mainColor)
+                    .cornerRadius(10)
                     //                Text("or")
                     //                    .padding(.vertical, 30)
                     //
@@ -254,7 +256,7 @@ struct LoginPage: View {
                                         self.showWhyAuthInfo = false
                                     }){
                                         Text("done")
-                                            .foregroundStyle(Color(K.Colors.mainColor))
+                                            .foregroundStyle(K.Colors.mainColor)
                                     }
                                 }
                             })
@@ -273,438 +275,294 @@ struct LoginPage: View {
                 ProgressView()
             }
         }
-        .accentColor(Color(K.Colors.mainColor))
+        .accentColor(K.Colors.mainColor)
         .modifier(DismissingKeyboard())
         .frame(maxWidth: .infinity)
     }
     var register: some View {
         
         NavigationStack{
-            ScrollView{
-                VStack{
-                    Spacer()
-                    VStack(alignment: .center){
-                        VStack(alignment: .center){
-                            Text("sign-up")
-                                .font(.title)
-                                .fontWeight(.bold)
-                                .padding(.bottom, 5)
-                            Text("sign-up-with-email")
-                                .foregroundStyle(.secondary)
-                                .font(.system(size: 14))
-                                .padding(.bottom, 10)
-                        }
-                        Button (action: {
-                            showImagePicker.toggle()
-                        }){
-                            VStack(alignment: . center){
-                                if let image = self.image{
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: 100, height: 100)
-                                        .cornerRadius(50)
-                                        .overlay(
-                                            Circle().stroke(Color(K.Colors.mainColor), lineWidth: 2)
-                                        )
-                                        .padding(15)
-                                    
-                                }else{
-                                    Image(systemName: "person.fill.viewfinder")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 100)
-                                        .foregroundColor(Color(K.Colors.mainColor))
-                                        .padding(15)
-                                        .fontWeight(.regular)
-                                }
-                                Text("tap-to-change-image")
-                                    .foregroundColor(Color(K.Colors.mainColor))
-                                    .font(.system(size: 14))
-                                    .fontWeight(.regular)
-                            }
-                        }
-                        .sheet(isPresented: $showImagePicker) {
-                            ImagePicker(image: $image)
-                        }
-                        .padding(.bottom, 30)
-                        VStack(alignment: .leading, spacing: 20){
-                            VStack(alignment: .leading, spacing: 20){
-                                Text("full-name")
-                                    .fontWeight(.semibold)
-                                    .font(.system(size: 15))
-                                HStack(alignment: .center, spacing: 0.0){
-                                    ZStack(alignment: .leading){
-                                        if name.isEmpty {
-                                            Text("Max Vinice")
-                                                .padding(.leading)
-                                                .foregroundStyle(.secondary)
-                                        }
-                                        TextField("", text: $name)
-                                            .submitLabel(.next)
-                                            .focused($focus, equals: .name)
-                                            .padding(.leading)
-                                            .disableAutocorrection(true)
-                                            .textInputAutocapitalization(.words)
-                                            .opacity(0.75)
-                                            .padding(0)
-                                            .textContentType(.name)
-                                    }
-                                    Spacer()
-                                    Image(systemName: "person.fill")
-                                        .foregroundStyle(Color(K.Colors.lightGray))
-                                        .padding(.trailing)
-                                }
-                                .frame(height: 50)
+            List{
+                Section(header:
+                            VStack(alignment: .center){
+                    Text("sign-up")
+                        .font(.title)
+                        .fontWeight(.bold)
+                    Text("sign-up-with-email")
+                        .foregroundStyle(.secondary)
+                        .font(.callout)
+                }
+                    .textCase(nil)
+                    .listRowInsets(EdgeInsets())
+                    .frame(maxWidth: .infinity)
+                ){}
+                Section(header:
+                            Button (action: {
+                    showImagePicker.toggle()
+                }){
+                    VStack(alignment: . center){
+                        if let image = self.image{
+                            Image(uiImage: image)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 100, height: 100)
+                                .cornerRadius(50)
                                 .overlay(
-                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                        .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
+                                    Circle().stroke(K.Colors.mainColor, lineWidth: 2)
                                 )
-                                .ignoresSafeArea(.keyboard, edges: .bottom)
-                            }
-                            VStack(alignment: .leading, spacing: 20){
-                                Text("create-username")
-                                    .fontWeight(.semibold)
-                                    .font(.system(size: 15))
-                                HStack(alignment: .center, spacing: 0.0){
-                                    ZStack(alignment: .leading){
-                                        if username.isEmpty {
-                                            Text("mathew_kirow")
-                                                .padding(.leading)
-                                                .foregroundStyle(.secondary)
-                                        }
-                                        TextField("", text: $username)
-                                            .submitLabel(.next)
-                                            .focused($focus, equals: .username)
-                                            .padding(.leading)
-                                            .disableAutocorrection(true)
-                                            .textInputAutocapitalization(.never)
-                                            .opacity(0.75)
-                                            .padding(0)
-                                            .keyboardType(.namePhonePad)
-                                            .textCase(.lowercase)
-                                            .textContentType(.username)
-                                    }
-                                    Spacer()
-                                    Image(systemName: "at")
-                                        .foregroundStyle(Color(K.Colors.lightGray))
-                                        .padding(.trailing)
-                                }
-                                .frame(height: 50)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 7)
-                                        .inset(by: 0.5)
-                                        .stroke(username == "" ? Color(K.Colors.justLightGray) : (viewModel.isAvailable ? Color( K.Colors.justLightGray).opacity(0.5) : Color(red: 1, green: 0.39, blue: 0.49)), lineWidth: 1)
-                                )
-                                .ignoresSafeArea(.keyboard, edges: .bottom)
-                                .onReceive(Just(username)) { newText in
-                                    username = newText.filter { $0.isEnglishCharacter || $0.isNumber || $0.isAllowedSymbol }
-                                            }
-                                .onChange(of: username, perform: { newValue in
-                                    if username != ""{
-                                        username = String(newValue.filter { !restrictedUsernameSet.contains($0) })
-                                        if username.count > maxLength {
-                                            username = String(newValue.prefix(maxLength))
-                                        }
-                                        viewModel.checkUsernameAvailability(username: newValue)
-                                    }
-                                })
-                            }
-                            VStack(alignment: .leading, spacing: 20){
-                                Text("eemail")
-                                    .fontWeight(.semibold)
-                                    .font(.system(size: 15))
-                                HStack(alignment: .center, spacing: 0.0){
-                                    ZStack(alignment: .leading){
-                                        if email.isEmpty {
-                                            Text(verbatim: "j.marin@example.com")
-                                                .padding(.leading)
-                                                .foregroundStyle(.secondary)
-                                        }
-                                        TextField("", text: $email)
-                                            .submitLabel(.next)
-                                            .focused($focus, equals: .registerEmail)
-                                            .textCase(.lowercase)
-                                            .padding(.leading)
-                                            .foregroundColor(Color(K.Colors.lightGray))
-                                            .disableAutocorrection(true)
-                                            .textInputAutocapitalization(.never)
-                                            .opacity(0.75)
-                                            .padding(0)
-                                            .keyboardType(.emailAddress)
-                                            .textContentType(.emailAddress)
-                                            .onChange(of: email, perform: { newValue in
-                                                if email != ""{
-                                                    email = String(newValue.filter { !restrictedEmaileSet.contains($0) })
-                                                }
-                                            })
-                                    }
-                                    Spacer()
-                                    Button(action: {
-                                        if !email.contains("@"){
-                                            email += "@gmail.com"
-                                        }
-                                    }){
-                                        Image(systemName: "envelope.fill")
-                                            .foregroundStyle(Color(K.Colors.lightGray))
-                                            .padding(.trailing)
-                                    }
-                                }
-                                .frame(height: 50)
-                                .overlay(
-                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                        .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-                                )
-                                .ignoresSafeArea(.keyboard, edges: .bottom)
-                            }
-                            VStack(alignment: .leading, spacing: 20){
-                                Text("country")
-                                    .fontWeight(.semibold)
-                                    .font(.system(size: 15))
-                                HStack(alignment: .center, spacing: 0.0){
-                                    ZStack(alignment: .leading){
-                                        if country.isEmpty {
-                                            Text("country")
-                                                .padding(.leading)
-                                                .foregroundColor(Color(K.Colors.lightGray))
-                                        }
-                                        TextField("", text: $country)
-                                            .submitLabel(.next)
-                                            .focused($focus, equals: .country)
-                                            .padding(.leading)
-                                            .disableAutocorrection(true)
-                                            .textInputAutocapitalization(.never)
-                                            .opacity(0.75)
-                                            .padding(0)
-                                            .textContentType(.countryName)
-                                    }
-                                    Spacer()
-                                    Button(action: {
-                                        if let countryCode = Locale.current.region?.identifier {
-                                            let country = NSLocale.current.localizedString(forRegionCode: countryCode)
-                                            let i = K.Countries.countryList.firstIndex(of: country!) ?? 0
-                                            self.country = K.Countries.countryList[i]
-                                        }
-                                    }){
-                                        Image(systemName: "flag.fill")
-                                            .foregroundStyle(Color(K.Colors.lightGray))
-                                            .padding(.trailing)
-                                    }
-                                }
-                                .frame(height: 50)
-                                .overlay(
-                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                        .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-                                )
-                                .ignoresSafeArea(.keyboard, edges: .bottom)
-                            }
-                            VStack(alignment: .leading, spacing: 20){
-                                Text("pphone")
-                                    .fontWeight(.semibold)
-                                    .font(.system(size: 15))
-                                HStack(alignment: .center, spacing: 0.0){
-                                    ZStack(alignment: .leading){
-                                        if phone.isEmpty {
-                                            Text("pphone")
-                                                .padding(.leading)
-                                                .foregroundColor(Color(K.Colors.lightGray))
-                                        }
-                                        TextField("pphone", text: $phone)
-                                            .submitLabel(.next)
-                                            .focused($focus, equals: .phone)
-                                            .textInputAutocapitalization(.never)
-                                            .disableAutocorrection(true)
-                                            .textContentType(.telephoneNumber)
-                                            .keyboardType(.numberPad)
-                                            .padding(.leading)
-                                    }
-                                        Spacer()
-                                        Image(systemName: "phone.fill")
-                                            .foregroundStyle(Color(K.Colors.lightGray))
-                                            .padding(.trailing)
-                                }
-                                .frame(height: 50)
-                                .overlay(
-                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                        .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-                                )
-                                .ignoresSafeArea(.keyboard, edges: .bottom)
-                            }
+                                .padding(15)
                             
-                            VStack(alignment: .leading, spacing: 20){
-                                Text("password")
-                                    .fontWeight(.semibold)
-                                    .font(.system(size: 15))
-                                HStack(alignment: .center, spacing: 0.0){
-                                    ZStack(alignment: .leading){
-                                        if createPassword.isEmpty{
-                                            Text(showPassword ? "password" : "∙∙∙∙∙∙∙∙")
-                                                .fontWeight(showPassword ? .regular : .semibold)
-                                                .padding(.leading)
-                                                .foregroundStyle(.secondary)
-                                        }
-                                        HStack{
-                                            Group{
-                                                if !showPassword{
-                                                    SecureField("", text: $createPassword)
-                                                        .submitLabel(.next)
-                                                        .focused($focus, equals: .createPass)
-                                                        .disableAutocorrection(true)
-                                                        .textInputAutocapitalization(.never)
-                                                        .padding(0)
-                                                        .textContentType(.newPassword)
-                                                        .padding(.leading)
-                                                }else{
-                                                    TextField("", text: $createPassword)
-                                                        .submitLabel(.next)
-                                                        .foregroundColor(Color(K.Colors.lightGray))
-                                                        .disableAutocorrection(true)
-                                                        .textInputAutocapitalization(.never)
-                                                        .padding(0)
-                                                        .textContentType(.newPassword)
-                                                        .padding(.leading)
-                                                }
-                                            }
-                                            Spacer()
-                                            Button(action: {
-                                                self.showPassword.toggle()
-                                            }){
-                                                Image(systemName: showPassword ? "eye.slash.fill" : "eye.fill")
-                                                    .foregroundStyle(Color(K.Colors.lightGray))
-                                                    .symbolEffect(.bounce, value: showPassword)
-                                                    .padding(.trailing)
-                                            }
-                                        }
-                                    }
-                                }
-                                .frame(height: 50)
-                                .overlay(
-                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                        .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-                                )
-                                .ignoresSafeArea(.keyboard, edges: .bottom)
-                            }
-                            VStack(alignment: .leading, spacing: 20){
-                                HStack(alignment: .center, spacing: 0.0){
-                                    ZStack(alignment: .leading){
-                                        if repeatPassword.isEmpty{
-                                            Text(showPassword ? "password" : "∙∙∙∙∙∙∙∙")
-                                                .fontWeight(showPassword ? .regular : .semibold)
-                                                .padding(.leading)
-                                                .foregroundStyle(.secondary)
-                                        }
-                                        HStack{
-                                            Group{
-                                                if !showPassword{
-                                                    SecureField("", text: $repeatPassword)
-                                                        .submitLabel(.done)
-                                                        .focused($focus, equals: .repeatPass)
-                                                        .disableAutocorrection(true)
-                                                        .textInputAutocapitalization(.never)
-                                                        .padding(0)
-                                                        .textContentType(.newPassword)
-                                                        .padding(.leading)
-                                                }else{
-                                                    TextField("", text: $repeatPassword)
-                                                        .submitLabel(.done)
-                                                        .foregroundColor(Color(K.Colors.lightGray))
-                                                        .disableAutocorrection(true)
-                                                        .textInputAutocapitalization(.never)
-                                                        .padding(0)
-                                                        .textContentType(.newPassword)
-                                                        .padding(.leading)
-                                                }
-                                            }
-                                            Spacer()
-                                            Button(action: {
-                                                self.showPassword.toggle()
-                                            }){
-                                                Image(systemName: showPassword ? "eye.slash.fill" : "eye.fill")
-                                                    .foregroundStyle(Color(K.Colors.lightGray))
-                                                    .symbolEffect(.bounce, value: showPassword)
-                                                    .padding(.trailing)
-                                            }
-                                        }
-                                    }
-                                }
-                                .frame(height: 50)
-                                .overlay(
-                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                        .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-                                )
-                                .ignoresSafeArea(.keyboard, edges: .bottom)
-                            }
-                            
+                        }else{
+                            Image(systemName: "person.fill.viewfinder")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 100)
+                                .foregroundColor(K.Colors.mainColor)
+                                .padding(15)
+                                .fontWeight(.regular)
                         }
-                        .onSubmit {
-                                    switch focus {
-                                    case .name:
-                                        focus = .username
-                                    case .username:
-                                        focus = .registerEmail
-                                    case .registerEmail:
-                                        focus = .country
-                                    case .country:
-                                        focus = .phone
-                                    case .phone:
-                                        focus = .createPass
-                                    case .createPass:
-                                        focus = .repeatPass
-                                    case .repeatPass:
-                                        registerFunc()
-                                    default:
-                                        break
-                                    }
-                                }
-                        Button(action: {
-                            registerFunc()
-                        }){
-                            Text("sign-up")
-                                .foregroundStyle(Color.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                        }
-                        .background(Color(K.Colors.mainColor))
-                        .cornerRadius(7)
-                        .padding(.top, 20)
-                    }
-                    .padding(.horizontal, 15)
-                    
-                    if viewModel.err != ""{
-                        Text(viewModel.err)
-                            .foregroundStyle(Color(K.Colors.red))
-                            .padding(.horizontal, 15)
-                    }
-                    
-                    Button(action: {
-                        self.showRegister = false
-                        self.showLogin = true
-                    }){
-                        Text("already-acount")
-                            .font(.system(size: 16))
-                            .padding(.top, 20)
-                            .foregroundColor(Color(K.Colors.mainColor))
+                        Text("tap-to-change-image")
+                            .foregroundColor(K.Colors.mainColor)
+                            .font(.callout)
+                            .fontWeight(.regular)
                     }
                 }
-                .onAppear(perform: {
-                    if let countryCode = Locale.current.region?.identifier {
-                        phone = "+\(K.CountryCodes.countryPrefixes[countryCode] ?? "US")"
-                        let country = NSLocale.current.localizedString(forRegionCode: countryCode)
-                        let i = K.Countries.countryList.firstIndex(of: country!) ?? 0
-                        self.country = K.Countries.countryList[i]
+                    .textCase(nil)
+                    .listRowInsets(EdgeInsets())
+                    .frame(maxWidth: .infinity)
+                ){}
+                Section(header: Text("full-name")){
+                    HStack{
+                        TextField("name", text: $name)
+                            .submitLabel(.next)
+                            .focused($focus, equals: .name)
+                            .disableAutocorrection(true)
+                            .textInputAutocapitalization(.words)
+                            .textContentType(.name)
+                        Spacer()
+                        Image(systemName: "person")
                     }
-                })
+                }
+                Section(header: Text("create-username")){
+                    HStack{
+                        TextField("username-low", text: $username)
+                            .submitLabel(.next)
+                            .focused($focus, equals: .username)
+                            .disableAutocorrection(true)
+                            .textInputAutocapitalization(.never)
+                            .keyboardType(.namePhonePad)
+                            .textCase(.lowercase)
+                            .textContentType(.username)
+                            .foregroundStyle(username == "" ? Color(K.Colors.text) : (viewModel.isAvailable ? Color( K.Colors.text) : Color(red: 1, green: 0.39, blue: 0.49)))
+                        Spacer()
+                        Image(systemName: "at")
+                    }
+                    .onReceive(Just(username)) { newText in
+                        username = newText.filter { $0.isEnglishCharacter || $0.isNumber || $0.isAllowedSymbol }
+                    }
+                    .onChange(of: username, perform: { newValue in
+                        if username != ""{
+                            username = String(newValue.filter { !restrictedUsernameSet.contains($0) })
+                            if username.count > maxLength {
+                                username = String(newValue.prefix(maxLength))
+                            }
+                            viewModel.checkUsernameAvailability(username: newValue)
+                        }
+                    })
+                }
+                Section(header: Text("eemail")){
+                    HStack{
+                        TextField(String("email@example.com"), text: $email)
+                            .submitLabel(.next)
+                            .focused($focus, equals: .registerEmail)
+                            .textCase(.lowercase)
+                            .disableAutocorrection(true)
+                            .textInputAutocapitalization(.never)
+                            .keyboardType(.emailAddress)
+                            .textContentType(.emailAddress)
+                            .onChange(of: email, perform: { newValue in
+                                if email != ""{
+                                    email = String(newValue.filter { !restrictedEmaileSet.contains($0) })
+                                }
+                            })
+                        Spacer()
+                        Image(systemName: "envelope")
+                            .onTapGesture{
+                                if !email.contains("@"){
+                                    email += "@gmail.com"
+                                }
+                            }
+                    }
+                }
+                Section(header: Text("country")){
+                    HStack{
+                        TextField("country", text: $country)
+                            .submitLabel(.next)
+                            .focused($focus, equals: .country)
+                            .disableAutocorrection(true)
+                            .textInputAutocapitalization(.never)
+                            .textContentType(.countryName)
+                        Spacer()
+                        Image(systemName: "flag")
+                            .onTapGesture{
+                                if let countryCode = Locale.current.region?.identifier {
+                                    let country = NSLocale.current.localizedString(forRegionCode: countryCode)
+                                    let i = K.Countries.countryList.firstIndex(of: country!) ?? 0
+                                    self.country = K.Countries.countryList[i]
+                                }
+                            }
+                    }
+                }
+                Section(header: Text("pphone")){
+                    HStack{
+                        TextField("pphone", text: $phone)
+                            .submitLabel(.next)
+                            .focused($focus, equals: .phone)
+                            .textInputAutocapitalization(.never)
+                            .disableAutocorrection(true)
+                            .textContentType(.telephoneNumber)
+                            .keyboardType(.numberPad)
+                        Spacer()
+                        Image(systemName: "phone")
+                    }
+                }
+                Section(header: Text("password")){
+                    HStack{
+                        Group{
+                            if !showPassword{
+                                SecureField("∙∙∙∙∙∙∙∙", text: $createPassword)
+                                    .submitLabel(.next)
+                                    .focused($focus, equals: .createPass)
+                                    .disableAutocorrection(true)
+                                    .textInputAutocapitalization(.never)
+                                    .textContentType(.newPassword)
+                            }else{
+                                TextField("create-password", text: $createPassword)
+                                    .submitLabel(.next)
+                                    .foregroundColor(Color(K.Colors.lightGray))
+                                    .disableAutocorrection(true)
+                                    .textInputAutocapitalization(.never)
+                                    .textContentType(.newPassword)
+                            }
+                        }
+                        Spacer()
+                        Image(systemName: showPassword ? "eye.slash" : "eye")
+                            .symbolEffect(.bounce, value: showPassword)
+                            .onTapGesture {
+                                withAnimation{
+                                    self.showPassword.toggle()
+                                }
+                            }
+                    }
+                    HStack{
+                        Group{
+                            if !showPassword{
+                                SecureField("∙∙∙∙∙∙∙∙", text: $repeatPassword)
+                                    .submitLabel(.done)
+                                    .focused($focus, equals: .repeatPass)
+                                    .disableAutocorrection(true)
+                                    .textInputAutocapitalization(.never)
+                                    .textContentType(.newPassword)
+                            }else{
+                                TextField("repeat-password", text: $repeatPassword)
+                                    .submitLabel(.done)
+                                    .foregroundColor(Color(K.Colors.lightGray))
+                                    .disableAutocorrection(true)
+                                    .textInputAutocapitalization(.never)
+                                    .textContentType(.newPassword)
+                            }
+                        }
+                        Spacer()
+                        Image(systemName: showPassword ? "eye.slash" : "eye")
+                            .symbolEffect(.bounce, value: showPassword)
+                            .onTapGesture {
+                                withAnimation{
+                                    self.showPassword.toggle()
+                                }
+                            }
+                    }
+                }
+                Section{
+                    Text("sign-up")
+                        .foregroundStyle(Color.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(K.Colors.mainColor)
+                        .cornerRadius(10)
+                        .onTapGesture {
+                            registerFunc()
+                        }
+                        .listRowInsets(EdgeInsets())
+                    Section{
+                        if viewModel.err != ""{
+                            Text(viewModel.err)
+                                .foregroundStyle(Color(K.Colors.red))
+                                .padding(.horizontal, 15)
+                        }
+                    }footer: {
+                        HStack{
+                            Spacer()
+                            Text("already-acount")
+                                .font(.subheadline)
+                                .foregroundColor(K.Colors.mainColor)
+                                .onTapGesture {
+                                    self.showRegister = false
+                                    self.showLogin = true
+                                    viewModel.err = ""
+                                }
+                            Spacer()
+                        }
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
+                        .textCase(nil)
+                        .listRowInsets(EdgeInsets())
+                        .frame(maxWidth: .infinity)
+                    }
+                }
             }
+            .onSubmit {
+                switch focus {
+                case .name:
+                    focus = .username
+                case .username:
+                    focus = .registerEmail
+                case .registerEmail:
+                    focus = .country
+                case .country:
+                    focus = .phone
+                case .phone:
+                    focus = .createPass
+                case .createPass:
+                    focus = .repeatPass
+                case .repeatPass:
+                    registerFunc()
+                default:
+                    break
+                }
+            }
+            .sheet(isPresented: $showImagePicker) {
+                ImagePicker(image: $image)
+            }
+            .onAppear(perform: {
+                if let countryCode = Locale.current.region?.identifier {
+                    phone = "+\(K.CountryCodes.countryPrefixes[countryCode] ?? "US")"
+                    let country = NSLocale.current.localizedString(forRegionCode: countryCode)
+                    let i = K.Countries.countryList.firstIndex(of: country!) ?? 0
+                    self.country = K.Countries.countryList[i]
+                }
+            })
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: {self.showRegister.toggle()}){
                         Text("cancel")
-                            .foregroundStyle(Color(K.Colors.mainColor))
+                            .foregroundStyle(K.Colors.mainColor)
                     }
                 }
             })
+            .background(Color(K.Colors.listBg))
+            .modifier(DismissingKeyboard())
         }
-        .modifier(DismissingKeyboard())
+        
     }
     
     private func registerFunc(){
@@ -713,7 +571,7 @@ struct LoginPage: View {
             errReg = viewModel.err
             self.showProgressView = true
         }else if name == ""{
-//            viewModel.err = "name-field-is-empty"
+            //            viewModel.err = "name-field-is-empty"
             Toast.shared.present(
                 title: String(localized: "name-field-is-empty"),
                 symbol: "questionmark.square",
@@ -721,7 +579,7 @@ struct LoginPage: View {
                 timing: .long
             )
         }else if viewModel.isAvailable == false{
-//            viewModel.err = "username-is-not-available"
+            //            viewModel.err = "username-is-not-available"
             Toast.shared.present(
                 title: String(localized: "username-is-not-available"),
                 symbol: "exclamationmark.circle.fill",
@@ -729,7 +587,7 @@ struct LoginPage: View {
                 timing: .long
             )
         }else if createPassword != repeatPassword{
-//            viewModel.err = "passwords-do-not-match"
+            //            viewModel.err = "passwords-do-not-match"
             Toast.shared.present(
                 title: String(localized: "passwords-do-not-match"),
                 symbol: "lock.rectangle.on.rectangle",
@@ -741,185 +599,156 @@ struct LoginPage: View {
     var login: some View {
         
         NavigationStack{
-            ScrollView{
-                VStack{
-                    Spacer()
-                    VStack(alignment: .center){
-                        Text("log-in")
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .padding(.bottom, 5)
-                        Text("sign-in-with-email")
-                            .foregroundStyle(.secondary)
-                            .padding(.bottom, 40)
-                        HStack(alignment: .center, spacing: 0.0){
-                            
-                            ZStack(alignment: .leading){
-                                if email.isEmpty {
-                                    Text(verbatim: "j.marin@example.com")
-                                        .padding(.leading)
-                                        .foregroundStyle(.secondary)
-                                }
-                                TextField("", text: $email)
-                                    .submitLabel(.next)
-                                    .focused($focus, equals: .loginEmail)
-                                    .padding(.leading)
-                                    .foregroundColor(Color(K.Colors.lightGray))
-                                    .disableAutocorrection(true)
-                                    .textInputAutocapitalization(.never)
-                                    .opacity(0.75)
-                                    .padding(0)
-                                    .keyboardType(.emailAddress)
-                                    .textContentType(.emailAddress)
-                                    .onSubmit {focus = .loginPass}
-                            }
-                            .frame(height: 45)
-                            Spacer()
-                            Button(action: {
+            List{
+                Section(header:
+                            VStack(alignment: .center){
+                    Text("log-in")
+                        .font(.title)
+                        .fontWeight(.bold)
+                    Text("sign-in-with-email")
+                        .foregroundStyle(.secondary)
+                }
+                    .textCase(nil)
+                    .listRowInsets(EdgeInsets())
+                    .frame(maxWidth: .infinity)
+                ){}
+                Section(header: Text("eemail")){
+                    HStack{
+                        TextField(String("email@example.com"), text: $email)
+                            .submitLabel(.next)
+                            .focused($focus, equals: .loginEmail)
+                            .disableAutocorrection(true)
+                            .textInputAutocapitalization(.never)
+                            .keyboardType(.emailAddress)
+                            .textContentType(.emailAddress)
+                            .onSubmit {focus = .loginPass}
+                        Spacer()
+                        Image(systemName: "envelope")
+                            .onTapGesture {
                                 if !email.contains("@"){
                                     email += "@gmail.com"
                                 }
-                            }){
-                                Image(systemName: "envelope.fill")
-                                    .foregroundStyle(Color(K.Colors.lightGray))
-                                    .padding(.trailing)
                             }
-                        }
-                        .overlay(
-                            RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-                        )
-                        .ignoresSafeArea(.keyboard, edges: .bottom)
-                        HStack(alignment: .center, spacing: 0.0){
-                            ZStack(alignment: .leading){
-                                if password.isEmpty{
-                                    Text(showPassword ? "password" : "∙∙∙∙∙∙∙∙")
-                                        .fontWeight(showPassword ? .regular : .semibold)
-                                        .padding(.leading)
-                                        .foregroundStyle(.secondary)
-                                }
-                                HStack{
-                                    Group{
-                                        if !showPassword{
-                                            SecureField("", text: $password)
-                                                .submitLabel(.done)
-                                                .focused($focus, equals: .loginPass)
-                                                .foregroundColor(Color(K.Colors.lightGray))
-                                                .disableAutocorrection(true)
-                                                .textInputAutocapitalization(.never)
-                                                .padding(0)
-                                                .textContentType(.newPassword)
-                                                .padding(.leading)
-                                        }else{
-                                            TextField("", text: $password)
-                                                .submitLabel(.done)
-                                                .foregroundColor(Color(K.Colors.lightGray))
-                                                .disableAutocorrection(true)
-                                                .textInputAutocapitalization(.never)
-                                                .padding(0)
-                                                .textContentType(.newPassword)
-                                                .padding(.leading)
-                                        }
-                                    }
-                                    Spacer()
-                                    Button(action: {
-                                        self.showPassword.toggle()
-                                    }){
-                                        Image(systemName: showPassword ? "eye.slash.fill" : "eye.fill")
-                                            .foregroundStyle(Color(K.Colors.lightGray))
-                                        //                                        .contentTransition(.symbolEffect(.replace))
-                                            .symbolEffect(.bounce, value: showPassword)
-                                            .padding(.trailing)
-                                    }
-                                }
+                    }
+                }
+                Section(header: Text("password")){
+                    HStack{
+                        Group{
+                            if !showPassword{
+                                SecureField("∙∙∙∙∙∙∙∙", text: $password)
+                                    .submitLabel(.done)
+                                    .focused($focus, equals: .loginPass)
+                                    .disableAutocorrection(true)
+                                    .textInputAutocapitalization(.never)
+                                    .textContentType(.newPassword)
+                            }else{
+                                TextField("password", text: $password)
+                                    .submitLabel(.done)
+                                    .disableAutocorrection(true)
+                                    .textInputAutocapitalization(.never)
+                                    .textContentType(.newPassword)
                             }
-                            .frame(height: 45)
-                        }
-                        .overlay(
-                            RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-                        )
-                        .ignoresSafeArea(.keyboard, edges: .bottom)
-                        .padding(.top, 10)
-                        HStack{
                             Spacer()
-                            NavigationLink(destination: ResetPasswordView(loginEmail: email), label: {
-                                Text("forgot-password")
-                                    .padding(.vertical, 5)
-                                    .font(.system(size: 14))
-                                    .foregroundStyle(Color(K.Colors.mainColor))
-                            })
+                            Image(systemName: showPassword ? "eye.slash" : "eye")
+                                .symbolEffect(.bounce, value: showPassword)
+                                .onTapGesture {
+                                    self.showPassword.toggle()
+                                }
                         }
-                        Button(action: {
+                    }
+                }
+                Section(header:
+                            HStack{
+                                Spacer()
+                                    Text("forgot-password")
+                                        .font(.subheadline)
+                                        .foregroundStyle(K.Colors.mainColor)
+                                        .onTapGesture {
+                                            self.showForgot.toggle()
+                                        }
+                            }
+                    .padding(.bottom, 10)
+                            .navigationDestination(isPresented: $showForgot) {
+                                ResetPasswordView(loginEmail: email)
+                            }
+                    .textCase(nil)
+                    .listRowInsets(EdgeInsets())
+                    .frame(maxWidth: .infinity)
+                ){
+                    Text("log-in")
+                        .foregroundStyle(Color.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(K.Colors.mainColor)
+                        .cornerRadius(10)
+                        .onTapGesture {
                             viewModel.login(email: email, password: password)
                             errLog = viewModel.err
                             if viewModel.err == ""{
                                 self.showProgressView = true
                             }
-                        }){
-                            Text("log-in")
-                                .foregroundStyle(Color.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
                         }
-                        .background(Color(K.Colors.mainColor))
-                        .cornerRadius(7)
-                        .padding(.vertical)
-                    }
-                    .onSubmit {
-                                switch focus {
-                                case .loginEmail:
-                                    focus = .loginPass
-                                case .loginPass:
-                                    viewModel.login(email: email, password: password)
-                                    errLog = viewModel.err
-                                    if viewModel.err == ""{
-                                        self.showProgressView = true
-                                    }
-                                default:
-                                    break
-                                }
-                            }
-                    .padding(.horizontal, 15)
+                        .listRowInsets(EdgeInsets())
+                }
+                Section{
                     if viewModel.err != ""{
                         Text(viewModel.err)
                             .foregroundStyle(Color(K.Colors.pink))
-                            .padding(.horizontal, 15)
                     }
-                    Spacer()
-                    //
-                    Button(action: {
-                        self.showLogin = false
-                        self.showRegister = true
-                    }){
+                }footer: {
+                    HStack{
+                        Spacer()
                         Text("do-not-have-an-account")
-                            .font(.system(size: 16))
-                            .padding(.top, 20)
-                            .foregroundColor(Color(K.Colors.mainColor))
+                            .font(.subheadline)
+                            .foregroundColor(K.Colors.mainColor)
+                            .onTapGesture {
+                                self.showLogin = false
+                                self.showRegister = true
+                                viewModel.err = ""
+                            }
+                        Spacer()
                     }
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    .textCase(nil)
+                    .listRowInsets(EdgeInsets())
+                    .frame(maxWidth: .infinity)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            .onSubmit {
+                switch focus {
+                case .loginEmail:
+                    focus = .loginPass
+                case .loginPass:
+                    viewModel.login(email: email, password: password)
+                    errLog = viewModel.err
+                    if viewModel.err == ""{
+                        self.showProgressView = true
+                    }
+                default:
+                    break
+                }
             }
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: {self.showLogin.toggle()}){
                         Text("cancel")
-                            .foregroundStyle(Color(K.Colors.mainColor))
+                            .foregroundStyle(K.Colors.mainColor)
                     }
                 }
             })
             .onChange(of: viewModel.err) {
                 errReg = viewModel.err
             }
+            .modifier(DismissingKeyboard())
         }
-        .modifier(DismissingKeyboard())
     }
     
     
     
     enum FocusedField:Hashable{
         case name, username, loginEmail, registerEmail, phone, country, loginPass, createPass, repeatPass
-        }
+    }
 }
 
 #Preview {

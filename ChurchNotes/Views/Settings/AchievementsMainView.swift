@@ -74,6 +74,7 @@ struct AchievementsMainView: View {
                         }
                         .padding(.vertical, 10)
                     }
+                    .listRowInsets(EdgeInsets())
                 }
 //                .listRowBackground(Color.clear)
                 Section(header: Text("next-stage"), footer: Text("achievement-for-next")) {
@@ -81,13 +82,16 @@ struct AchievementsMainView: View {
                         HStack{
                             AchievementsItem(text: "", backgroundImage: "shield", image: "medal", imageSize: 40, score: "\(viewModel.currentUser?.next ?? 0)/5", imageColor: Color.brown)
                             Divider()
+                                .padding(.vertical, 10)
                             AchievementsItem(text: "", backgroundImage: "shield", image: "medal", imageSize: 40, score: "\(viewModel.currentUser?.next ?? 0)/20", imageColor: Color.gray)
                                 .opacity((viewModel.currentUser?.next ?? 0) >= 5 ? 1 : 0.3)
                             Divider()
+                                .padding(.vertical, 10)
                             AchievementsItem(text: "", backgroundImage: "shield", image: "medal", imageSize: 40, score: "\(viewModel.currentUser?.next ?? 0)/50", imageColor: Color.yellow)
                                 .opacity((viewModel.currentUser?.next ?? 0) >= 20 ? 1 : 0.3)
                         }
                     }
+                    .listRowInsets(EdgeInsets())
                 }
                 .onAppear(perform: {
                     print(viewModel.currentUser?.next ?? 0)
@@ -98,13 +102,16 @@ struct AchievementsMainView: View {
                         HStack{
                             AchievementsItem(text: "", backgroundImage: "shield.fill", image: "trophy", imageSize: 40, score: "\(viewModel.currentUser?.done ?? 0)/1", image2: "3")
                             Divider()
+                                .padding(.vertical, 10)
                             AchievementsItem(text: "", backgroundImage: "shield.fill", image: "trophy", imageSize: 40, score: "\(viewModel.currentUser?.done ?? 0)/5", image2: "2")
                                 .opacity((viewModel.currentUser?.done ?? 0) >= 1 ? 1 : 0.3)
                             Divider()
+                                .padding(.vertical, 10)
                             AchievementsItem(text: "", backgroundImage: "shield.fill", image: "trophy", imageSize: 40, score: "\(viewModel.currentUser?.done ?? 0)/15", image2: "1")
                                 .opacity((viewModel.currentUser?.done ?? 0) >= 5 ? 1 : 0.3)
                         }
                     }
+                    .listRowInsets(EdgeInsets())
                 }
 //                .listRowBackground(Color.clear)
 //                Section(header: Text("Bloger"), footer: Text("Achievement for recording and sending videos for people.")) {

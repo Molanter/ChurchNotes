@@ -9,20 +9,24 @@ import SwiftUI
 
 struct AppearanceView: View {
     @EnvironmentObject var viewModel: AppViewModel
+    @Environment(\.colorScheme) var colorScheme: ColorScheme
 
     @State var presentAlert = false
     @State var presentingPreview = false
-    @State var oldColor = ""
+    @State var oldColor = Color(K.Colors.bluePurple)
+    @State private var oldColorValue = ""
     @State var appearance = 0
     @State var showColor = false
     @State var toggle = false
     @State var dark = false
     @State var favouriteSignNow = ""
+    @State private var favSignColor = ""
+    @State private var mainColorNow = K.Colors.mainColor
+    @State var pickerColor = K.Colors.mainColor
     @State var isExpanded = true
     @State var testFeatures = false
-    @State var swipeStage = false
     @State var emailPush = ""
-
+    
     let restrictedEmaileSet = "" //"!#$%^&*()?/>,<~`±§}{[]|\"÷≥≤µ˜∫√ç≈Ω`åß∂ƒ©˙∆˚¬…æ«‘“πøˆ¨¥†®´∑œ§¡™£¢∞§¶•ªº≠"
 
     let profileImage: String
@@ -52,13 +56,12 @@ struct AppearanceView: View {
                         .disabled(!showColor)
                         .pickerStyle(.segmented)
                     }
-//                    .listRowBackground(Color.clear)
                     
                     Section(header: Text("accent-color")) {
                         ScrollViewReader { scrollProxy in
                             ScrollView(.horizontal) {
                                 HStack {
-                                    ForEach(K.Colors.colorsDictionary.sorted(by: >), id: \.value) { order, value in
+                                    ForEach(K.Colors.colorsDictionary.sorted(by: >), id: \.value) { text, value in
                                         HStack(spacing: 10) {
                                             Button(action: {
                                                 changeMainColor(value)
@@ -67,9 +70,9 @@ struct AppearanceView: View {
                                                     RoundedRectangle(cornerRadius: 15)
                                                         .fill(Color(value))
                                                         .frame(width: 60, height: 60)
-                                                        .shadow(color: Color(K.Colors.bluePurple), radius: 2)
-                                                        .opacity(K.Colors.mainColor == value ? 1 : 0.3)
-                                                    Text(order)
+                                                        .shadow(color: Color(value), radius: 2)
+                                                        .opacity(K.Colors.mainColor == Color(value) ? 1 : 0.3)
+                                                    Text(text)
                                                         .lineLimit(2)
                                                         .font(.body)
                                                         .foregroundStyle(Color(K.Colors.lightGray))
@@ -79,79 +82,141 @@ struct AppearanceView: View {
                                             .frame(width: 100)
                                             .padding(.vertical, 5)
                                             .padding(5)
+                                            .disabled(mainColorNow == Color(value))
                                             Divider()
                                         }
                                     }
                                     .frame(height: 150)
-                                    .onAppear {
-                                        withAnimation {
-                                            let col = K.Colors.mainColor
-                                            scrollProxy.scrollTo(col, anchor: .center)
+                                    if K.Colors.color == "color"{
+                                        HStack(spacing: 10) {
+                                                VStack(spacing: 15) {
+                                                    RoundedRectangle(cornerRadius: 15)
+                                                        .fill(K.Colors.mainColor)
+                                                        .frame(width: 60, height: 60)
+                                                        .shadow(color: K.Colors.mainColor, radius: 2)
+                                                        .opacity(K.Colors.color == "color" ? 1 : 0.3)
+                                                    Text("custom-color")
+                                                        .lineLimit(2)
+                                                        .font(.body)
+                                                        .foregroundStyle(Color(K.Colors.lightGray))
+                                                }
+                                                .frame(height: 100, alignment: .top)
+                                            .frame(width: 100)
+                                            .padding(.vertical, 5)
+                                            .padding(5)
                                         }
+                                        .id("color")
+                                    }
+                                }
+                                .onAppear {
+                                    withAnimation {
+                                        scrollProxy.scrollTo(K.Colors.color, anchor: .center)
                                     }
                                 }
                             }
                         }
-                    }
-//                    .listRowBackground(Color.clear)
-                    
-                    Section {
-                        HStack {
-                            Text("favourite-sign")
-                            Picker("", selection: $favouriteSignNow) {
-                                Label("heart", systemImage: "heart").tag("heart")
-                                Label("star", systemImage: "star").tag("star")
+                        .listRowInsets(EdgeInsets())
+                        NavigationLink {
+                            VStack(alignment: .center, spacing: 15){
+                                List{
+                                    Section{
+                                        ColorPicker("choose-yor-own", selection: $pickerColor, supportsOpacity: false)
+                                            .tint(K.Colors.mainColor)
+                                    }
+                                    Section{
+                                        Text("save")
+                                            .foregroundStyle(Color.white)
+                                            .frame(maxWidth: .infinity)
+                                            .padding()
+                                            .background(K.Colors.mainColor)
+                                            .cornerRadius(10)
+                                            .onTapGesture {
+                                                self.oldColor = K.Colors.mainColor
+                                                oldColorValue = K.Colors.color
+                                                print("changed")
+                                                K.Colors.color = "color"
+                                                K.Colors.mainColor = pickerColor
+                                                self.presentingPreview = true
+                                            }
+                                            .listRowInsets(EdgeInsets())
+                                    }
+                                }
                             }
-                            .accentColor(Color(K.Colors.mainColor))
+                            
+                        } label: {
+                            Text("choose-yor-own")
                         }
                     }
-//                    .listRowBackground(Color.clear)
-                    .onChange(of: favouriteSignNow) {
-                        K.Colors.favouriteSignColor = favouriteSignNow == "heart" ? "redd" : "yelloww"
-                        K.favouriteSign = favouriteSignNow
+                    
+                    Section(header: Text("favourite-sign")){
+                        HStack{
+                            Text("favourite-sign")
+                            Spacer()
+                            Menu{
+                                Button{
+                                    K.Colors.favouriteSignColor = "redd"
+                                    favouriteSignNow = "heart"
+                                    K.favouriteSign = favouriteSignNow
+                                    favSignColor = "redd"
+                                }label: {
+                                    Label("heart", systemImage: "heart")
+                                }
+                                Button{
+                                    K.Colors.favouriteSignColor = "yelloww"
+                                    favouriteSignNow = "star"
+                                    K.favouriteSign = favouriteSignNow
+                                    favSignColor = "yelloww"
+                                }label: {
+                                    Label("star", systemImage: "star")
+                                }
+                            }label: {
+                                Image(systemName: "\(favouriteSignNow).fill")
+                            }
+                        }
+                            .accentColor(Color(favSignColor))
+                        
+                        
+                        HStack{
+                            Text("favourite-sign-color")
+                            Spacer()
+                            Menu{
+                                ForEach(K.Colors.colorsDictionary.sorted(by: >), id: \.value) { text, value in
+                                    Button{
+                                        K.Colors.favouriteSignColor = value
+                                        favSignColor = value
+                                    }label: {
+                                        HStack{
+                                            Text(text)
+                                            Spacer()
+                                            RoundedRectangle(cornerRadius: 2)
+                                                .fill(Color(K.Colors.favouriteSignColor))
+                                        }
+                                    }
+                                }
+                            }label: {
+                                RoundedRectangle(cornerRadius: 5)
+                                    .fill(Color(favSignColor))
+                                    .frame(width: 20, height: 20)
+                            }
+                        }
                     }
-                    Section {
-//                        HStack {
-//                            Text("llanguage")
-//                            Picker("", selection: $languageManager.currentLanguage) {
-//                                ForEach(K.Languages.languagesArray){ lan in
-//                                    HStack(spacing: 3){
-////                                        Text(lan.image)
-//                                        Text(lan.name)
-//                                    }.tag(lan.short)
-//                                }
-//                            }
-//                            .accentColor(Color(K.Colors.mainColor))
-//                        }
+                    Section(header: Text("aapp-ssettings")){
                         HStack{
                             Text("llanguage")
                             Spacer()
                             Link(String(localized: "open-in-settings"), destination: URL(string: UIApplication.openSettingsURLString)!)
-                                .accentColor(Color(K.Colors.mainColor))
+                                .accentColor(mainColorNow)
                         }
                     }
-//                    .listRowBackground(Color.clear)
-                    Section(header: Text("test-eatures")) {
-                        Toggle(isOn: $testFeatures) {
-                            Text("test-eatures")
-                        }
-                        .onChange(of: testFeatures) { old, new in
-                            K.testFeatures = new
-                        }
-                        if testFeatures == true{
-                            Label("Double tap on List / Settings icons on tab bar", systemImage: "hand.tap")
-                            Label("App Support", systemImage: "wrench.and.screwdriver")
-                        }
-                    }
-//                    .listRowBackground(Color.clear)
                 }
-//                .listStyle(.grouped)
             }
             .frame(maxWidth: .infinity)
             .onAppear {
-                self.swipeStage = K.swipeStage
-                self.testFeatures = K.testFeatures
+                mainColorNow = K.Colors.mainColor
+                let color = K.Colors.favouriteSignColor
                 favouriteSignNow = K.favouriteSign
+                favSignColor = color
+                
                 appearance = K.Colors.appearance
                 if appearance == 0 {
                     showColor = false
@@ -168,10 +233,14 @@ struct AppearanceView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
                         self.showColor = true
-                        self.dark.toggle()
+                        if dark || colorScheme == .dark{
+                            dark = false
+                        }else{
+                            dark = true
+                        }
                     }){
-                        Image(systemName: dark ? "sun.max" : "moon")
-                            .foregroundStyle(Color(K.Colors.mainColor))
+                        Image(systemName: dark || colorScheme == .dark ? "sun.max" : "moon")
+                            .foregroundStyle(Color(mainColorNow))
                             .symbolEffect(.bounce, value: dark)
 
                     }
@@ -183,11 +252,11 @@ struct AppearanceView: View {
             .onChange(of: dark) {
                 updateAppearance()
             }
-            .alert("color-has-changed", isPresented: $presentAlert) {
-                Button(K.Hiden.ok.randomElement()!, role: .cancel) {}
-            } message: {
-                Text("restart-the-app-to-see-the-changes")
-            }
+//            .alert("color-has-changed", isPresented: $presentAlert) {
+//                Button(K.Hiden.ok.randomElement()!, role: .cancel) {}
+//            } message: {
+//                Text("restart-the-app-to-see-the-changes")
+//            }
             .navigationTitle("appearance")
             .sheet(isPresented: $presentingPreview) {
                 NavigationStack {
@@ -197,9 +266,12 @@ struct AppearanceView: View {
                                 Button(role: .destructive) {
                                     self.presentingPreview.toggle()
                                     K.Colors.mainColor = oldColor
+                                    pickerColor = oldColor
+                                    K.Colors.color = oldColorValue
                                 } label: {
                                     Image(systemName: "xmark.circle")
                                 }
+                                .foregroundStyle(K.Colors.mainColor)
                             }
                             ToolbarItem(placement: .topBarTrailing) {
                                 Button {
@@ -207,10 +279,11 @@ struct AppearanceView: View {
                                 } label: {
                                     Image(systemName: "checkmark.circle")
                                 }
+                                .foregroundStyle(K.Colors.mainColor)
                             }
                         }
                 }
-                .accentColor(Color(K.Colors.mainColor))
+                .accentColor(Color(mainColorNow))
             }
             
         }
@@ -228,24 +301,25 @@ struct AppearanceView: View {
     
     private func changeMainColor(_ color: String) {
         self.oldColor = K.Colors.mainColor
+        oldColorValue = K.Colors.color
         
-        K.Colors.mainColor = color
-        self.presentingPreview.toggle()
+        pickerColor = Color(color)
+        K.Colors.color = color
+        K.Colors.mainColor = Color(color)
+        self.presentingPreview = true
     }
     private func colorChanged(){
-        self.presentingPreview.toggle()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            withAnimation{
-                self.presentAlert = true
-            }
+        mainColorNow = K.Colors.mainColor
+        self.presentingPreview = false
+        if oldColor != K.Colors.mainColor{
+            Toast.shared.present(
+                title: String(localized: "color-has-changed"),
+                symbol: "paintpalette",
+                isUserInteractionEnabled: true,
+                timing: .long
+            )
         }
     }
-    private func reload() {
-           let newState = UUID().uuidString
-           self.state = newState
-        print("changed")
-       }
-    @State private var state = UUID().uuidString
 }
 
 
@@ -280,3 +354,5 @@ struct LocalizedStrings {
 //        currentLanguage = language
 //    }
 //}
+
+

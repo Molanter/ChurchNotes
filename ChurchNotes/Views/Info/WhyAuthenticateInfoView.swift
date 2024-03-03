@@ -19,7 +19,6 @@ struct WhyAuthenticateInfoView: View {
                 Section{
                     Text("Authentication is a crucial component of our app, and it serves several important purposes, both for us users and for our app's functionality. Here's why a you need to authenticate when using our app:")
                         .font(.body)
-                        .foregroundStyle(.secondary)
                 }
                 Section(header: Text("Personalization:")){
                     Text("Authentication allows your app to provide a personalized experience to users. By knowing who the user is, you can tailor the content, recommendations, and settings to their preferences. This personal touch enhances the user experience.")
@@ -54,10 +53,8 @@ struct WhyAuthenticateInfoView: View {
                 Section{
                     Text("In summary, authentication is essential for personalization, data security, access control, and creating a supportive and accountable user community. It enables your app to offer a tailored, secure, and engaging experience that meets the needs and expectations of our users.")
                         .font(.body)
-                        .foregroundStyle(.secondary)
                 }
             }
-            .listStyle(.grouped)
         }
     }
 }

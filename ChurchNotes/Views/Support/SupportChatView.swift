@@ -10,7 +10,7 @@ import PhotosUI
 
 struct SupportChatView: View {
     var support: Bool = false
-    
+    var uid: String = ""
     @StateObject var imagePicker = ImagePickerViewModel()
     
     @EnvironmentObject var published: PublishedVariebles
@@ -69,7 +69,7 @@ struct SupportChatView: View {
                                                                 .blur(radius: 9, opaque: true)
                                                                 .background(Color(K.Colors.text).opacity(0.1))
                                                         }else{
-                                                            Color(K.Colors.mainColor)
+                                                            K.Colors.mainColor
                                                         }
                                                     }
                                                     .clipShape(.rect(cornerRadius: 20))
@@ -106,7 +106,7 @@ struct SupportChatView: View {
                                                         .padding(.leading, 7)
                                                         .padding(.trailing, 13)
                                                         .foregroundColor(Color.white)
-                                                        .background(Color(K.Colors.mainColor))
+                                                        .background(K.Colors.mainColor)
                                                 }
                                             }else{
                                                 ChatBubble(direction: .right) {
@@ -189,13 +189,13 @@ struct SupportChatView: View {
                                 .foregroundStyle(Color(K.Colors.justLightGray))
                             HStack(spacing: 10){
                                 Image(systemName: messageTypeImage)
-                                    .foregroundStyle(Color(K.Colors.mainColor))
+                                    .foregroundStyle(K.Colors.mainColor)
                                     .font(.system(size: 22))
                                 RoundedRectangle(cornerRadius: .infinity)
                                     .frame(width: 2, height: 22)
                                     .foregroundStyle(.secondary)
                                 Text(messageType)
-                                    .foregroundStyle(Color(K.Colors.mainColor))
+                                    .foregroundStyle(K.Colors.mainColor)
                                     .font(.system(size: 18))
                                 Spacer()
                                 Image(systemName: "xmark")
@@ -223,7 +223,7 @@ struct SupportChatView: View {
                         HStack(spacing: 10){
                                 Image(systemName: imagePicker.showImagePicker ? "xmark" : "photo.on.rectangle.angled")
                                     .font(.system(size: 20))
-                                    .foregroundStyle(Color(K.Colors.mainColor))
+                                    .foregroundStyle(K.Colors.mainColor)
                                     .onTapGesture {
                                         withAnimation{
                                             imagePickerOpened.toggle()
@@ -242,7 +242,7 @@ struct SupportChatView: View {
                             }label:{
                                 Image(systemName: "chevron.left.forwardslash.chevron.right")
                                     .font(.system(size: 20))
-                                    .foregroundStyle(Color(K.Colors.mainColor))
+                                    .foregroundStyle(K.Colors.mainColor)
                             }
                             HStack{
                                 ZStack(alignment: .leading){
@@ -267,11 +267,14 @@ struct SupportChatView: View {
                                 }
                                 if !message.isEmpty{
                                     Button{
-                                        if sendType == "message", let msgType = messageType{
+                                        if sendType == "message"{
                                             viewModel.sentMessage(message: message, image: nil, type: messageType ?? "", from: from)
-                                            viewModel.setLastMessage(message: message, image: false, type: msgType)
+                                            viewModel.setLastMessage(message: message, image: false, type: messageType ?? "", uid: uid.isEmpty ? published.uid ?? "" : uid)
                                         }else if sendType == "mail"{
                                             self.showSendMail = true
+                                        }
+                                        if support{
+                                            viewModel.getFcmByEmail(email: published.supportPersonChat?.email ?? "", messageText: message, subtitle: "New message from support", title: "Support", imageURL: "", link: "", badgeCount: 0)
                                         }
                                         self.messageType = nil
                                         self.messageTypeImage = nil
@@ -280,7 +283,7 @@ struct SupportChatView: View {
                                     }label:{
                                         Image(systemName: "paperplane.fill")
                                             .font(.system(size: 20))
-                                            .foregroundStyle(Color(K.Colors.mainColor))
+                                            .foregroundStyle(K.Colors.mainColor)
                                             .padding(10)
                                     }
                                     .contextMenu(menuItems: {
@@ -289,14 +292,14 @@ struct SupportChatView: View {
                                         }label:{
                                             Label(String(localized: "ssend-mmessage"), systemImage: "message")
                                                 .font(.system(size: 20))
-                                                .foregroundStyle(Color(K.Colors.mainColor))
+                                                .foregroundStyle(K.Colors.mainColor)
                                         }
                                         Button{
                                             self.sendType = "mail"
                                         }label:{
                                             Label(String(localized: "ssend-mmail"), systemImage: "envelope")
                                                 .font(.system(size: 20))
-                                                .foregroundStyle(Color(K.Colors.mainColor))
+                                                .foregroundStyle(K.Colors.mainColor)
                                         }
                                     })
                                 }
@@ -461,26 +464,43 @@ struct SupportChatView: View {
                 )
             }
             .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    
-                }
                 ToolbarItem(placement: .principal) {
                     HStack{
                         Text("ssupport")
                             .bold()
                         Image(systemName: "checkmark.seal.fill")
                             .font(.system(size: 12))
-                            .foregroundStyle(Color(K.Colors.mainColor))
+                            .foregroundStyle(K.Colors.mainColor)
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink(destination: {
                         SupportChatInfoView()
                     }, label: {
-                        Image("LogoPng")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 40)
+                        ZStack{
+                            if support{
+//                                AsyncImage(url: URL(string: published.supportPersonChat?.profileImage)){image in
+//                                    image.resizable()
+//                                    
+//                                }placeholder: {
+//                                    ProgressView()
+//                                        .aspectRatio(contentMode: .fill)
+//                                        .frame(width: 100, height: 100)
+//                                }
+//                                .aspectRatio(contentMode: .fill)
+//                                .frame(width: 40, height: 40)
+//                                .cornerRadius(20)
+//                                .overlay(
+//                                    Circle().stroke(.gray.opacity(0.6), lineWidth: 1)
+//                                )
+
+                            }else{
+                                Image("LogoPng")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 40)
+                            }
+                        }
                     })
                 }
             }
@@ -497,7 +517,7 @@ struct SupportChatView: View {
                 imagePicker.selectedImagePreview = nil
             }, content: {
                 
-                PreviewView(show: $imagePicker.showPreview, from: from)
+                PreviewView(show: $imagePicker.showPreview, from: from, uid: uid.isEmpty ? published.uid ?? "" : uid)
                     .environmentObject(imagePicker)
                     .onDisappear {
                         if imagePicker.showPreview == false{
@@ -507,6 +527,9 @@ struct SupportChatView: View {
             })
             .modifier(DismissingKeyboard())
             .onAppear(perform: {
+                if !uid.isEmpty, !support{
+                    viewModel.loadUserByUID(uid: uid.isEmpty ? published.uid ?? "" : uid)
+                }
                 viewModel.fetchMessages()
             })
         }

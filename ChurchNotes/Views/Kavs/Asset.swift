@@ -21,7 +21,8 @@ struct PreviewView: View {
     
     @Binding var show: Bool
     var from: String
-
+    var uid: String
+    
     var body: some View{
         
         // For Top Buttons...
@@ -50,12 +51,12 @@ struct PreviewView: View {
                     
                     Button(action: {
                         viewModel.sentMessage(message: "", image: imagePicker.selectedImagePreview, type: "/image", from: from)
-                        viewModel.setLastMessage(message: "", image: true, type: "/image")
+                        viewModel.setLastMessage(message: "", image: true, type: "/image", uid: uid)
                         imagePicker.selectedImagePreview = nil
                         self.show = false
                     }, label: {
                         Text("Send")
-                            .foregroundStyle(Color(K.Colors.mainColor))
+                            .foregroundStyle(K.Colors.mainColor)
                     })
                 }
             })

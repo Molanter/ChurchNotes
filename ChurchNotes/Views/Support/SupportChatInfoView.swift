@@ -9,11 +9,12 @@ import SwiftUI
 
 struct SupportChatInfoView: View {
     @EnvironmentObject var viewModel: AppViewModel
+    @Environment(\.presentationMode) var presentationMode
     
     @State private var copied = false
     @State private var showSendMail = false
-    @Environment(\.presentationMode) var presentationMode
-
+    @State private var listHeight: CGFloat = 0
+    
     private var messages: [MessageModel]{
         return viewModel.messagesArray.sorted { $0.time < $1.time }
     }
@@ -36,7 +37,7 @@ struct SupportChatInfoView: View {
                                         .bold()
                                     Image(systemName: "checkmark.seal.fill")
                                         .font(.system(size: 16))
-                                        .foregroundStyle(Color(K.Colors.mainColor))
+                                        .foregroundStyle(K.Colors.mainColor)
                                 }
                                 Text("Status: \(messages.last?.from == viewModel.currentUser?.uid ? "requested" : "answered")")
                                     .foregroundStyle(.secondary)
@@ -53,6 +54,7 @@ struct SupportChatInfoView: View {
                         }
                     }
                     List{
+                        
                         Section {
                             Menu{
                                 Button("ccoppy-email") {
@@ -70,7 +72,7 @@ struct SupportChatInfoView: View {
                                         Text("eemail-low")
                                             .foregroundStyle(Color(K.Colors.lightGray))
                                         Text(verbatim: "prayer.navigator@gmail.com")
-                                            .foregroundStyle(Color(K.Colors.mainColor))
+                                            .foregroundStyle(K.Colors.mainColor)
                                     }
                                     .font(.body)
                                 }
@@ -79,7 +81,7 @@ struct SupportChatInfoView: View {
                                 Text("cchat-low")
                                     .foregroundStyle(Color(K.Colors.lightGray))
                                 Text("open-support-chat")
-                                    .foregroundStyle(Color(K.Colors.mainColor))
+                                    .foregroundStyle(K.Colors.mainColor)
                                     .onTapGesture {
                                         presentationMode.wrappedValue.dismiss()
                                     }
@@ -92,7 +94,7 @@ struct SupportChatInfoView: View {
                             HStack(alignment: .top){
                                 Image(systemName: "checkmark.seal.fill")
                                     .font(.system(size: 16))
-                                    .foregroundStyle(Color(K.Colors.mainColor))
+                                    .foregroundStyle(K.Colors.mainColor)
                                 Text("-vertification-checkmark-meaning")
                                     .foregroundStyle(Color(K.Colors.lightGray))
                                     .font(.body)
@@ -100,7 +102,7 @@ struct SupportChatInfoView: View {
                             HStack(alignment: .top){
                                 Image(systemName: "iphone")
                                     .font(.system(size: 16))
-                                    .foregroundStyle(Color(K.Colors.mainColor))
+                                    .foregroundStyle(K.Colors.mainColor)
                                 Text("-photo-rules-info")
                                     .foregroundStyle(Color(K.Colors.lightGray))
                                     .font(.body)
@@ -108,7 +110,7 @@ struct SupportChatInfoView: View {
                             HStack(alignment: .top){
                                 Image(systemName: "paperplane.fill")
                                     .font(.system(size: 16))
-                                    .foregroundStyle(Color(K.Colors.mainColor))
+                                    .foregroundStyle(K.Colors.mainColor)
                                 Text("-send-report-in-one-message")
                                     .foregroundStyle(Color(K.Colors.lightGray))
                                     .font(.body)
@@ -119,10 +121,12 @@ struct SupportChatInfoView: View {
                     }
                     .scrollIndicators(.hidden)
                     .scrollDisabled(true)
-                    //                    .listStyle(.grouped)
                     .frame(height: 450)
                 }
             }
+            .background(
+                Color(K.Colors.listBg)
+            )
             .sheet(isPresented: $showSendMail) {
                 ImageMailComposeView(recipients: ["prayer.navigator@gmail.com"], message: "", image: nil)
             }

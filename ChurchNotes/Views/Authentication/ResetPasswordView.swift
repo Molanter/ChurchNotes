@@ -20,85 +20,76 @@ struct ResetPasswordView: View{
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10){
-            Text("send-reset-password-email")
-                .foregroundStyle(.primary)
-                .font(.largeTitle)
-                .fontWeight(.bold)
-            ZStack(alignment: .leading){
-                if email.isEmpty {
-                    Text("eemail")
-                        .padding(.leading)
-                        .foregroundStyle(.secondary)
-                }
-                TextField("", text: $email)
-                    .padding(.leading)
-                    .disableAutocorrection(true)
-                    .textInputAutocapitalization(.never)
-                    .opacity(0.75)
-                    .padding(0)
-                    .keyboardType(.emailAddress)
-                    .textContentType(.emailAddress)
-                    .onChange(of: email, perform: { newValue in
-                        if email != ""{
-                            email = String(newValue.filter { !restrictedEmaileSet.contains($0) })
+        NavigationStack{
+            List{
+                Section(header: Text("eemail")){
+                    HStack{
+                        TextField("eemail", text: $email)
+                            .disableAutocorrection(true)
+                            .textInputAutocapitalization(.never)
+                            .keyboardType(.emailAddress)
+                            .textContentType(.emailAddress)
+                            .onChange(of: email, perform: { newValue in
+                                if email != ""{
+                                    email = String(newValue.filter { !restrictedEmaileSet.contains($0) })
+                                }
+                            })
+                        Spacer()
+                        Image(systemName: "envelope")
+                    }
+                    }
+                    Section{
+                        Text(published.sended ? "send-again-after: \(published.minute)s" : "send")
+                            .foregroundStyle(published.sended ? Color(K.Colors.lightGray) : Color.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .onReceive(timer) { firedDate in
+                                if published.sended && published.minute != 0{
+                                    print("timer fired")
+                                    published.minute -= 1
+                                }else if published.minute == 0 {
+                                    published.sended = false
+                                    published.minute = 60
+                                }
+                            }
+                            .background(K.Colors.mainColor)
+                    .cornerRadius(10)
+                    .opacity(published.sended ? 0.5 : 1)
+                    .disabled(published.sended)
+                    .onTapGesture {
+                        if email != "" && published.sended == false{
+                            timerSend()
                         }
-                    })
-            }
-            .frame(height: 50)
-            .overlay(
-                RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                    .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-            )
-            Button(action: {
-                if email != "" && published.sended == false{
-                    timerSend()
-                }
-            }){
-                Text(published.sended ? "send-again-after: \(published.minute)s" : "send")
-                    .foregroundStyle(published.sended ? Color(K.Colors.lightGray) : Color.white)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .onReceive(timer) { firedDate in
-                        if published.sended && published.minute != 0{
-                            print("timer fired")
-                            published.minute -= 1
-                        }else if published.minute == 0 {
-                            published.sended = false
-                            published.minute = 60
+                    }
+                    .listRowInsets(EdgeInsets())
+                    if let str = viewModel.passwordReseted{
+                        Text(str)
+                            .foregroundStyle(.secondary)
+                            .font(.title2)
+                            .fontWeight(.bold)
                         }
                     }
             }
-            .background(Color(K.Colors.mainColor))
-            .cornerRadius(7)
-            .opacity(published.sended ? 0.5 : 1)
-            .disabled(published.sended)
-            Text(viewModel.passwordReseted ?? "")
-                .foregroundStyle(.secondary)
-                .font(.title2)
-                .fontWeight(.bold)
-            Spacer()
-        }
-        .onAppear {
-            if published.minute != 60{
-                published.sended = true
+            .navigationTitle("send-reset-password-email")
+            .onAppear {
+                if published.minute != 60{
+                    published.sended = true
+                }
+                self.email = self.loginEmail
             }
-            self.email = self.loginEmail
-        }
-        .padding(.horizontal, 15)
-        .frame(maxWidth: .infinity, alignment: .topLeading)
-        .accentColor(Color(K.Colors.mainColor))
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    HStack {
-                        Image(systemName: "chevron.backward")
-                        Text("Back")
+            .accentColor(K.Colors.mainColor)
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        HStack {
+                            Image(systemName: "chevron.backward")
+                            Text("Back")
+                        }
+                        .foregroundStyle(K.Colors.mainColor)
                     }
-                    .foregroundStyle(Color(K.Colors.mainColor))
                 }
             }
         }

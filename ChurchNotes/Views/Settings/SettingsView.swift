@@ -45,7 +45,7 @@ struct SettingsView: View {
     var body: some View{
         NavigationStack{
             ZStack(alignment: .top){
-                ScrollView{
+                List{
                     HStack(spacing: 19){
                         if profileImage != ""{
                             AsyncImage(url: URL(string: profileImage)){image in
@@ -86,7 +86,7 @@ struct SettingsView: View {
                             VStack(alignment: .leading, spacing: 0){
                                 HStack{
                                     Text(name)
-                                        .font(.system(size: 20))
+                                        .font(.title3)
                                         .fontWeight(.bold)
                                     Text(cristian ? "†" : "")
                                         .font(.title2)
@@ -103,7 +103,7 @@ struct SettingsView: View {
                                                         .padding(4)
                                                         .background(
                                                             Circle()
-                                                                .fill(Color(K.Colors.mainColor))
+                                                                .fill(K.Colors.mainColor)
                                                                 .opacity(0.7)
                                                         )                                            }else{
                                                     Image(systemName: b.image)
@@ -112,7 +112,7 @@ struct SettingsView: View {
                                                         .padding(4)
                                                         .background(
                                                             Circle()
-                                                                .fill(Color(K.Colors.mainColor))
+                                                                .fill(K.Colors.mainColor)
                                                                 .opacity(0.7)
                                                         )
                                                 }
@@ -121,88 +121,125 @@ struct SettingsView: View {
                                     }
                                     Divider()
                                     Text(email)
-                                        .foregroundStyle(Color(K.Colors.mainColor))
+                                        .foregroundStyle(K.Colors.mainColor)
                                         .fontWeight(.light)
-                                        .font(.system(size: 15))
+                                        .font(.body)
                                 }
                             }
                         }
                         Spacer()
                     }
-                    .padding(.top, 16)
-                    .padding(.horizontal, bigPhoto ? 0 : 25)
-                    VStack(alignment: .leading, spacing: 20){
-                        VStack{
-                            NavigationLink(destination: CurrentPersonView().onAppear(perform: {
-                                published.tabsAreHidden = true
-                            })
-                                .toolbar(.hidden, for: .tabBar)
-                                .navigationBarTitleDisplayMode(.inline)
-                            ){
-                                            HStack(spacing: 29){
-                                                Image(systemName: "person")
-                                                    .font(.system(size: 29))
-                                                    .fontWeight(.light)
-                                                VStack(alignment: .leading, spacing: 5){
-                                                    Text("profile-info")
-                                                        .fontWeight(.semibold)
-                                                        .font(.system(size: 15))
-                                                        .foregroundStyle(.primary)
-                                                    Text("info-email-username")
-                                                        .font(.system(size: 11))
-                                                        .foregroundStyle(.secondary)
-                                                }
-                                                Spacer()
-                                                Image(systemName: "chevron.forward")
-                                                    .frame(width: 28)
-                                            }
-                                            .padding(.horizontal, 25)
+//                    .padding(.top, 16)
+//                    .padding(.horizontal, bigPhoto ? 0 : 25)
+                    .frame(maxWidth: .infinity)
+                    .listRowBackground(Color(K.Colors.listBg))
+//                    List{
+                        Section{
+                            VStack{
+                                NavigationLink(destination: CurrentPersonView().onAppear(perform: {
+                                    published.tabsAreHidden = true
+                                })
+//                                    .toolbar(.hidden, for: .tabBar)
+                                    .navigationBarTitleDisplayMode(.inline)
+                                ){
+                                    HStack(spacing: 29){
+                                        Image(systemName: "person")
+                                            .font(.system(size: 29))
+                                            .fontWeight(.light)
+                                        VStack(alignment: .leading, spacing: 5){
+                                            Text("profile-info")
+                                                .fontWeight(.semibold)
+                                                .font(.subheadline)
+                                                .foregroundStyle(.primary)
+                                            Text("info-email-username")
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
                                         }
-                            .navigationDestination(
-                                isPresented: Binding(
-                                    get: { published.currentSettingsNavigationLink == "profile-info" },
-                                    set: { newValue in
-                                        published.currentSettingsNavigationLink = newValue ? "profile-info" : nil
                                     }
-                                )
-                            ) {
-                                CurrentPersonView()
+                                    .padding(.leading, 5)
+                                }
+                                .navigationDestination(
+                                    isPresented: Binding(
+                                        get: { published.currentSettingsNavigationLink == "profile-info" },
+                                        set: { newValue in
+                                            published.currentSettingsNavigationLink = newValue ? "profile-info" : nil
+                                        }
+                                    )
+                                ) {
+                                    CurrentPersonView()
+                                        .onAppear(perform: {
+                                            published.tabsAreHidden = true
+                                        })
+//                                        .toolbar(.hidden, for: .tabBar)
+                                        .navigationBarTitleDisplayMode(.inline)
+                                }
+                            }
+                            VStack{
+                                NavigationLink(destination: AccountSettingsView()
                                     .onAppear(perform: {
                                         published.tabsAreHidden = true
                                     })
-                                        .toolbar(.hidden, for: .tabBar)
-                                    .navigationBarTitleDisplayMode(.inline)
+//                                        .toolbar(.hidden, for: .tabBar)
+                                        .navigationBarTitleDisplayMode(.inline)
+                                ){
+                                    HStack(spacing: 29){
+                                        Image(systemName: "gearshape")
+                                            .font(.system(size: 29))
+                                            .fontWeight(.light)
+                                        VStack(alignment: .leading, spacing: 5){
+                                            Text("account-settings")
+                                                .fontWeight(.semibold)
+                                                .font(.subheadline)
+                                                .foregroundStyle(.primary)
+                                            Text("change-password-email")
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                    }
+                                    .padding(.leading, 5)
+                                }
+                                .navigationDestination(
+                                    isPresented: Binding(
+                                        get: { published.currentSettingsNavigationLink == "settings" },
+                                        set: { newValue in
+                                            published.currentSettingsNavigationLink = newValue ? "settings" : nil
+                                        }
+                                    )
+                                ) {
+                                    AccountSettingsView()
+                                        .onAppear(perform: {
+                                            published.tabsAreHidden = true
+                                        })
+//                                        .toolbar(.hidden, for: .tabBar)
+                                        .navigationBarTitleDisplayMode(.inline)
+                                }
                             }
-                            Divider()
                         }
+
                         VStack{
                             NavigationLink(destination: SettingsPeopleView()
                                 .onAppear(perform: {
                                     published.tabsAreHidden = true
                                 })
-                                    .toolbar(.hidden, for: .tabBar)
-                                .navigationBarTitleDisplayMode(.inline)
+//                                    .toolbar(.hidden, for: .tabBar)
+                                    .navigationBarTitleDisplayMode(.inline)
                             ){
-                                            HStack(spacing: 15){
-                                                Image(systemName: "person.3")
-                                                    .font(.system(size: 25))
-                                                    .fontWeight(.light)
-                                                VStack(alignment: .leading, spacing: 5){
-                                                    Text("people")
-                                                        .font(.system(size: 15))
-                                                        .fontWeight(.semibold)
-                                                        .foregroundStyle(.primary)
-                                                    Text("all-people-favourite-deleted")
-                                                        .font(.system(size: 11))
-                                                        .foregroundStyle(.secondary)
-                                                }
-                                                Spacer()
-                                                Image(systemName: "chevron.forward")
-                                                    .frame(width: 28)
-                                            }
-                                            .padding(.leading, 20)
-                                            .padding(.trailing, 25)
-                                        }
+                                HStack(spacing: 15){
+                                    Image(systemName: "person.3")
+                                        .font(.system(size: 25))
+                                        .fontWeight(.light)
+                                    VStack(alignment: .leading, spacing: 5){
+                                        Text("people")
+                                            .font(.subheadline)
+                                            .fontWeight(.semibold)
+                                            .foregroundStyle(.primary)
+                                        Text("all-people-favourite-deleted")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+//                                .padding(.leading, 5)
+                            }
                             .navigationDestination(
                                 isPresented: Binding(
                                     get: { published.currentSettingsNavigationLink == "people" },
@@ -215,84 +252,76 @@ struct SettingsView: View {
                                     .onAppear(perform: {
                                         published.tabsAreHidden = true
                                     })
-                                        .toolbar(.hidden, for: .tabBar)
+//                                    .toolbar(.hidden, for: .tabBar)
                                     .navigationBarTitleDisplayMode(.inline)
                             }
-                            Divider()
                         }
                         VStack{
                             NavigationLink(destination: AchievementsMainView()
                                 .onAppear(perform: {
                                     published.tabsAreHidden = true
                                 })
-                                    .toolbar(.hidden, for: .tabBar)
-                                .navigationBarTitleDisplayMode(.inline)
+//                                    .toolbar(.hidden, for: .tabBar)
+                                    .navigationBarTitleDisplayMode(.inline)
                             ){
-                                            HStack(spacing: 29){
-                                                Image(systemName: "medal")
-                                                    .font(.system(size: 29))
-                                                    .fontWeight(.light)
-                                                VStack(alignment: .leading, spacing: 5){
-                                                    Text("achievements")
-                                                        .font(.system(size: 15))
-                                                        .fontWeight(.semibold)
-                                                        .foregroundStyle(.primary)
-                                                    Text("your-achievements-score")
-                                                        .font(.system(size: 11))
-                                                        .foregroundStyle(.secondary)
-                                                }
-                                                Spacer()
-                                                Image(systemName: "chevron.forward")
-                                                    .frame(width: 28)
-                                            }
-                                            .padding(.horizontal, 25)
-                                        }
-                                .navigationDestination(
-                                    isPresented: Binding(
-                                        get: { published.currentSettingsNavigationLink == "achievements" },
-                                        set: { newValue in
-                                            published.currentSettingsNavigationLink = newValue ? "achievements" : nil
-                                        }
-                                    )
-                                ) {
-                                    AchievementsMainView()
-                                        .onAppear(perform: {
-                                            published.tabsAreHidden = true
-                                        })
-                                            .toolbar(.hidden, for: .tabBar)
-                                        .navigationBarTitleDisplayMode(.inline)
+                                HStack(spacing: 29){
+                                    Image(systemName: "medal")
+                                        .font(.system(size: 29))
+                                        .fontWeight(.light)
+                                    VStack(alignment: .leading, spacing: 5){
+                                        Text("achievements")
+                                            .font(.subheadline)
+                                            .fontWeight(.semibold)
+                                            .foregroundStyle(.primary)
+                                        Text("your-achievements-score")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
                                 }
-                            Divider()
+                                .padding(.leading, 5)
+                            }
+                            .navigationDestination(
+                                isPresented: Binding(
+                                    get: { published.currentSettingsNavigationLink == "achievements" },
+                                    set: { newValue in
+                                        published.currentSettingsNavigationLink = newValue ? "achievements" : nil
+                                    }
+                                )
+                            ) {
+                                AchievementsMainView()
+                                    .onAppear(perform: {
+                                        published.tabsAreHidden = true
+                                    })
+//                                    .toolbar(.hidden, for: .tabBar)
+                                    .navigationBarTitleDisplayMode(.inline)
+                            }
                         }
                         VStack{
                             NavigationLink(destination: NotificationView()
                                 .onAppear(perform: {
                                     published.tabsAreHidden = true
                                 })
-                                    .toolbar(.hidden, for: .tabBar)
-                                .navigationBarTitleDisplayMode(.inline)
+//                                    .toolbar(.hidden, for: .tabBar)
+                                    .navigationBarTitleDisplayMode(.inline)
                             ){
-                                            HStack(spacing: 29){
-                                                Image(systemName: "bell.badge")
-                                                    .symbolRenderingMode(.palette)
-                                                    .foregroundStyle(Color(K.Colors.mainColor), Color(K.Colors.lightGray))
-                                                    .font(.system(size: 29))
-                                                    .fontWeight(.light)
-                                                VStack(alignment: .leading, spacing: 5){
-                                                    Text("notifications")
-                                                        .fontWeight(.semibold)
-                                                        .font(.system(size: 15))
-                                                        .foregroundStyle(.primary)
-                                                    Text("notifications-reminders")
-                                                        .font(.system(size: 11))
-                                                        .foregroundStyle(.secondary)
-                                                }
-                                                Spacer()
-                                                Image(systemName: "chevron.forward")
-                                                    .frame(width: 28)
-                                            }
-                                            .padding(.horizontal, 25)
-                                        }
+                                HStack(spacing: 29){
+                                    Image(systemName: "bell.badge")
+                                        .symbolRenderingMode(.palette)
+                                        .foregroundStyle(K.Colors.mainColor, Color(K.Colors.text))
+                                        .font(.system(size: 29))
+                                        .fontWeight(.light)
+                                    VStack(alignment: .leading, spacing: 5){
+                                        Text("notifications")
+                                            .fontWeight(.semibold)
+                                            .font(.subheadline)
+                                            .foregroundStyle(.primary)
+                                        Text("notifications-reminders")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                                .padding(.leading, 5)
+                            }
                             .navigationDestination(
                                 isPresented: Binding(
                                     get: { published.currentSettingsNavigationLink == "notifications" },
@@ -305,38 +334,34 @@ struct SettingsView: View {
                                     .onAppear(perform: {
                                         published.tabsAreHidden = true
                                     })
-                                        .toolbar(.hidden, for: .tabBar)
+//                                    .toolbar(.hidden, for: .tabBar)
                                     .navigationBarTitleDisplayMode(.inline)
                             }
-                            Divider()
                         }
                         VStack{
                             NavigationLink(destination: AppearanceView(profileImage: profileImage, name: name, email: email, username: username, phone: phone, country: country, notes: notes, timeStamp: timeStamp)
                                 .onAppear(perform: {
                                     published.tabsAreHidden = true
                                 })
-                                    .toolbar(.hidden, for: .tabBar)
-                                .navigationBarTitleDisplayMode(.inline)
+//                                    .toolbar(.hidden, for: .tabBar)
+                                    .navigationBarTitleDisplayMode(.inline)
                             ){
-                                            HStack(spacing: 29){
-                                                Image(systemName: "paintbrush")
-                                                    .font(.system(size: 29))
-                                                    .fontWeight(.light)
-                                                VStack(alignment: .leading, spacing: 5){
-                                                    Text("appearance")
-                                                        .fontWeight(.semibold)
-                                                        .font(.system(size: 15))
-                                                        .foregroundStyle(.primary)
-                                                    Text("theme-color")
-                                                        .font(.system(size: 11))
-                                                        .foregroundStyle(.secondary)
-                                                }
-                                                Spacer()
-                                                Image(systemName: "chevron.forward")
-                                                    .frame(width: 28)
-                                            }
-                                            .padding(.horizontal, 25)
-                                        }
+                                HStack(spacing: 29){
+                                    Image(systemName: "paintbrush")
+                                        .font(.system(size: 29))
+                                        .fontWeight(.light)
+                                    VStack(alignment: .leading, spacing: 5){
+                                        Text("appearance")
+                                            .fontWeight(.semibold)
+                                            .font(.subheadline)
+                                            .foregroundStyle(.primary)
+                                        Text("theme-color")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                                .padding(.leading, 5)
+                            }
                             .navigationDestination(
                                 isPresented: Binding(
                                     get: { published.currentSettingsNavigationLink == "appearance" },
@@ -349,84 +374,35 @@ struct SettingsView: View {
                                     .onAppear(perform: {
                                         published.tabsAreHidden = true
                                     })
-                                        .toolbar(.hidden, for: .tabBar)
+//                                    .toolbar(.hidden, for: .tabBar)
                                     .navigationBarTitleDisplayMode(.inline)
                             }
-                            Divider()
                         }
-                        VStack{
-                            NavigationLink(destination: AccountSettingsView()
-                                .onAppear(perform: {
-                                    published.tabsAreHidden = true
-                                })
-                                    .toolbar(.hidden, for: .tabBar)
-                                .navigationBarTitleDisplayMode(.inline)
-                            ){
-                                            HStack(spacing: 29){
-                                                Image(systemName: "gearshape")
-                                                    .font(.system(size: 29))
-                                                    .fontWeight(.light)
-                                                VStack(alignment: .leading, spacing: 5){
-                                                    Text("settings")
-                                                        .fontWeight(.semibold)
-                                                        .font(.system(size: 15))
-                                                        .foregroundStyle(.primary)
-                                                    Text("change-password-email")
-                                                        .font(.system(size: 11))
-                                                        .foregroundStyle(.secondary)
-                                                }
-                                                Spacer()
-                                                Image(systemName: "chevron.forward")
-                                                    .frame(width: 28)
-                                            }
-                                            .padding(.horizontal, 25)
-                                        }
-                            .navigationDestination(
-                                isPresented: Binding(
-                                    get: { published.currentSettingsNavigationLink == "settings" },
-                                    set: { newValue in
-                                        published.currentSettingsNavigationLink = newValue ? "settings" : nil
-                                    }
-                                )
-                            ) {
-                                AccountSettingsView()
-                                    .onAppear(perform: {
-                                        published.tabsAreHidden = true
-                                    })
-                                        .toolbar(.hidden, for: .tabBar)
-                                    .navigationBarTitleDisplayMode(.inline)
-                            }
-                            Divider()
-                        }
-                        if K.testFeatures{
+                    if viewModel.currentUser?.role == "volunteer" || viewModel.currentUser?.role == "developer" || viewModel.currentUser?.role == "jedai"{
                             VStack{
                                 NavigationLink(destination: SupportMainView()
                                     .onAppear(perform: {
                                         published.tabsAreHidden = true
                                     })
-                                        .toolbar(.hidden, for: .tabBar)
-                                    .navigationBarTitleDisplayMode(.inline)
+//                                        .toolbar(.hidden, for: .tabBar)
+                                        .navigationBarTitleDisplayMode(.inline)
                                 ){
-                                                HStack(spacing: 29){
-                                                    Image(systemName: "wrench.and.screwdriver")
-                                                        .font(.system(size: 25))
-                                                        .fontWeight(.light)
-                                                    VStack(alignment: .leading, spacing: 5){
-                                                        Text("ssupport")
-                                                            .font(.system(size: 15))
-                                                            .fontWeight(.semibold)
-                                                            .foregroundStyle(.primary)
-                                                        Text("support-reports-questions")
-                                                            .font(.system(size: 11))
-                                                            .foregroundStyle(.secondary)
-                                                    }
-                                                    Spacer()
-                                                    Image(systemName: "chevron.forward")
-                                                        .frame(width: 28)
-                                                }
-                                                .padding(.leading, 20)
-                                                .padding(.trailing, 25)
-                                            }
+                                    HStack(spacing: 29){
+                                        Image(systemName: "wrench.and.screwdriver")
+                                            .font(.system(size: 25))
+                                            .fontWeight(.light)
+                                        VStack(alignment: .leading, spacing: 5){
+                                            Text("aapp-support")
+                                                .font(.subheadline)
+                                                .fontWeight(.semibold)
+                                                .foregroundStyle(.primary)
+                                            Text("support-reports-questions")
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                    }
+                                    .padding(.leading, 5)
+                                }
                                 .navigationDestination(
                                     isPresented: Binding(
                                         get: { published.currentSettingsNavigationLink == "support" },
@@ -439,70 +415,69 @@ struct SettingsView: View {
                                         .onAppear(perform: {
                                             published.tabsAreHidden = true
                                         })
-                                            .toolbar(.hidden, for: .tabBar)
+//                                        .toolbar(.hidden, for: .tabBar)
                                         .navigationBarTitleDisplayMode(.inline)
                                 }
-                                Divider()
                             }
                         }
-                        VStack{
-                            Button(action: {
-                                self.logoutAlert.toggle()
-                            }){
-                                HStack(spacing: 29){
-                                    Image(systemName: "rectangle.portrait.and.arrow.right")
-                                        .symbolRenderingMode(.palette)
-                                        .foregroundStyle(Color(K.Colors.lightGray), Color(K.Colors.lightGray))
-                                        .font(.system(size: 29))
-                                        .fontWeight(.light)
-                                    Text("log-out")
-                                        .fontWeight(.semibold)
-                                        .font(.system(size: 15))
-                                        .foregroundStyle(.primary)
-                                    
-                                    Spacer()
+                        Section{
+                            VStack{
+                                Button(action: {
+                                    self.logoutAlert.toggle()
+                                }){
+                                    HStack(spacing: 29){
+                                        Image(systemName: "rectangle.portrait.and.arrow.right")
+                                            .symbolRenderingMode(.palette)
+                                            .foregroundStyle(Color(K.Colors.text))
+                                            .font(.system(size: 29))
+                                            .fontWeight(.light)
+                                        Text("log-out")
+                                            .fontWeight(.semibold)
+                                            .font(.subheadline)
+                                            .foregroundStyle(.primary)
+                                        
+                                        Spacer()
+                                    }
+                                    .padding(.leading, 5)
+                                    .padding(.vertical, 3)
                                 }
-                                .padding(.horizontal, 25)
+                                .accentColor(Color(K.Colors.text))
                             }
-                            .accentColor(Color(K.Colors.lightGray))
-                            Divider()
-                                .padding(.bottom, 25)
                         }
-                    }
-                    .accentColor(Color(K.Colors.lightGray))
-                    .padding(.top, bigPhoto ? 10 : 67)
-                    //                    .background(GeometryReader {
-                    //                        Color.clear.preference(key: ViewOffsetKey.self,
-                    //                                               value: -$0.frame(in: .named("scroll")).origin.y)
-                    //                    })
-                    //                    .onPreferenceChange(ViewOffsetKey.self) {
-                    //                        print("offset >> \($0)")
-                    //                        if $0 <= -235 {
-                    //                            withAnimation{
-                    //                                bigPhoto = true
-                    //                            }
-                    //                        }else if bigPhoto == true && $0 >= -310{
-                    //                            withAnimation{
-                    //                                bigPhoto = false
-                    //                            }
-                    //                        }else if $0 <= -160{
-                    //                            withAnimation{
-                    //                                bigPhoto = false
-                    //                            }
-                    //                        }
-                    //                    }
-                    
+//                    }
+//                    .frame(height: 600)
+//                    .scrollDisabled(true)
+//                    .accentColor(Color(K.Colors.lightGray))
+//                    .padding(.top, bigPhoto ? 10 : 67)
                 }
-                .alert("logout", isPresented: $logoutAlert) {
-                    Button("cancel", role: .cancel) {}
-                    Button("yes", role: .destructive) {
-                        self.logoutAlert.toggle()
-                        viewModel.logOut()
-                        viewModel.deleteFcmToken(token: published.fcm)
-                    }
-                }message: {
-                    Text("are-you-sure")
+                .background(
+                    Color(K.Colors.listBg)
+                )
+                .actionSheet(isPresented: $logoutAlert) {
+                    ActionSheet(title: Text("logout"),
+                                message: Text("are-you-sure"),
+                                buttons: [
+                                    .cancel(),
+                                    .destructive(
+                                        Text("yes")
+                                    ){
+                                        self.logoutAlert.toggle()
+                                        viewModel.logOut()
+                                        viewModel.deleteFcmToken(token: published.fcm)
+                                    }
+                                ]
+                    )
                 }
+//                .alert("logout", isPresented: $logoutAlert) {
+//                    Button("cancel", role: .cancel) {}
+//                    Button("yes", role: .destructive) {
+//                        self.logoutAlert.toggle()
+//                        viewModel.logOut()
+//                        viewModel.deleteFcmToken(token: published.fcm)
+//                    }
+//                }message: {
+//                    Text("are-you-sure")
+//                }
                 if width{
                     VStack(alignment: .center){
                         if profileImage != ""{
@@ -663,6 +638,7 @@ struct SettingsView: View {
     }
 }
 
-#Preview {
-    SettingsView()
-}
+//#Preview {
+//    SettingsView()
+//}
+

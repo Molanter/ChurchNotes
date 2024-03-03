@@ -25,7 +25,7 @@ struct IndexView: View {
                                 HStack{
                                     Spacer()
                                     Image(systemName: "xmark")
-                                        .foregroundStyle(Color(K.Colors.mainColor))
+                                        .foregroundStyle(K.Colors.mainColor)
 //                                        .offset(x: 10, y: 10)
                                         .frame(alignment: .topTrailing)
                                         .onTapGesture {
@@ -46,7 +46,7 @@ struct IndexView: View {
                                     }
                                 }
                                 .padding(20)
-                                .background(Color(K.Colors.mainColor).opacity(0.35))
+                                .background(K.Colors.mainColor.opacity(0.35))
                                 .cornerRadius(7)
                                 .shadow(radius: 10)
                                 .padding(.bottom, 45)
@@ -78,11 +78,11 @@ struct IndexView: View {
                     viewModel.fetchUser()
                     viewModel.fetchBadges()
                 }
-                .accentColor(Color(K.Colors.mainColor))
+                .accentColor(K.Colors.mainColor)
                 .environmentObject(networkMonitor)
             }else{
                 LoginPage()
-                    .accentColor(Color(K.Colors.mainColor))
+                    .accentColor(K.Colors.mainColor)
             }
         }
 //        .fullScreenCover(isPresented: Binding(
@@ -99,7 +99,7 @@ struct IndexView: View {
 //                        
 //                    } label: {
 //                        Text("ggot-iit")
-//                            .foregroundStyle(Color(K.Colors.mainColor))
+//        .foregroundStyle(K.Colors.mainColor)
 //                    }
 //                }
 //            }
@@ -109,7 +109,8 @@ struct IndexView: View {
             utilities.overrideDisplayMode()
             print("apeaaarssss")
             viewModel.signedIn = viewModel.isSignedIn
-        }    }
+        }
+}
     
     
 }

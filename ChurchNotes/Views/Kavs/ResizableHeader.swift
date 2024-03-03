@@ -142,7 +142,7 @@ struct ResizableHeader: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 20)
-                            .foregroundStyle(Color(K.Colors.mainColor))
+                            .foregroundStyle(K.Colors.mainColor)
                             .fontWeight(.light)
                     }
                     Text(item.name.isEmpty ? "name" : item.name)
@@ -163,7 +163,7 @@ struct ResizableHeader: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 20)
-                                    .foregroundStyle(Color(K.Colors.mainColor))
+                                    .foregroundStyle(K.Colors.mainColor)
                                     .fontWeight(.light)
                             }
                             Text(item.email)
@@ -185,7 +185,7 @@ struct ResizableHeader: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 20)
-                                .foregroundStyle(Color(K.Colors.mainColor))
+                                .foregroundStyle(K.Colors.mainColor)
                                 .fontWeight(.light)
                         }
                         HStack(alignment: .center, spacing: 0.0){
@@ -208,7 +208,7 @@ struct ResizableHeader: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 20)
-                                .foregroundStyle(Color(K.Colors.mainColor))
+                                .foregroundStyle(K.Colors.mainColor)
                                 .fontWeight(.light)
                         }
                         Text(item.title)
@@ -228,7 +228,7 @@ struct ResizableHeader: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 20)
-                                .foregroundStyle(Color(K.Colors.mainColor))
+                                .foregroundStyle(K.Colors.mainColor)
                                 .fontWeight(.light)
                         }
                         HStack(spacing: 1){
@@ -253,7 +253,7 @@ struct ResizableHeader: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 20)
-                                    .foregroundStyle(Color(K.Colors.mainColor))
+                                    .foregroundStyle(K.Colors.mainColor)
                                     .fontWeight(.light)
                             }
                             Text(item.notes)
@@ -276,7 +276,7 @@ struct ResizableHeader: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 25)
-                                .foregroundStyle(Color(K.Colors.mainColor))
+                                .foregroundStyle(K.Colors.mainColor)
                                 .fontWeight(.light)
                                 .offset(x: 2)
                         }
@@ -309,7 +309,7 @@ struct ResizableHeader: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 30)
-                                .foregroundStyle(Color(K.Colors.mainColor))
+                                .foregroundStyle(K.Colors.mainColor)
                                 .fontWeight(.light)
                         }
                         HStack(spacing: 0.0){
@@ -336,7 +336,7 @@ struct ResizableHeader: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 30)
-                                .foregroundStyle(Color(K.Colors.mainColor))
+                                .foregroundStyle(K.Colors.mainColor)
                                 .fontWeight(.light)
                         }
                         HStack(spacing: 0.0){

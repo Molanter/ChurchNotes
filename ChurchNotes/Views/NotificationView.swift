@@ -14,6 +14,7 @@ struct NotificationView: View {
     @State var showRemoveAll = false
     @State var selectedDate = Date.now
     @State var deleteItem: Notifics?
+    @State var editItem: Notifics?
     @State var showInfo = false
     let notify = NotificationHandler()
     @EnvironmentObject var viewModel: AppViewModel
@@ -52,17 +53,37 @@ struct NotificationView: View {
                                     .foregroundStyle(.secondary)
                                     .font(.body)
                                     Spacer()
-                                    Button(action: {
-                                        self.deleteItem = notf
-                                        self.showActionSheet.toggle()
-                                    }){
                                         Image(systemName: "xmark")
                                             .font(.title2)
-                                    }
+                                            .onTapGesture {
+                                                self.deleteItem = notf
+                                                self.showActionSheet.toggle()
+                                            }
                                 }
                                 Text(notf.message)
                                     .font(.body)
+                                Text(notf.device)
+                                    .frame(alignment: .leading)
+                                    .foregroundStyle(.secondary)
+                                    .font(.body)
                             }
+                            .contextMenu(menuItems: {
+                                if !notf.device.isEmpty{
+                                    Text(notf.device)
+                                }
+                                Button{
+                                    editItem = notf
+                                    
+                                }label: {
+                                    Label("edit", systemImage: "square.and.pencil")
+                                }
+                                Button(role: .destructive){
+                                    showActionSheet = true
+                                    deleteItem = notf
+                                }label: {
+                                    Label("delete", systemImage: "trash")
+                                }
+                            })
                             .actionSheet(isPresented: $showActionSheet) {
                                 ActionSheet(title: Text("you-want-to-remove-this-notification"),
                                             message: Text("press-remove-to-resume"),
@@ -71,7 +92,9 @@ struct NotificationView: View {
                                                 .destructive(
                                                     Text("remove")
                                                 ){
-                                                    removeNotification(item: notf)
+                                                    if let deleteItem = deleteItem{
+                                                        removeNotification(item: deleteItem)
+                                                    }
                                                 }
                                             ]
                                 )
@@ -84,7 +107,6 @@ struct NotificationView: View {
                             }
                         }
                         }
-//                        .listStyle(.plain)
                     }else{
                         VStack(alignment: .leading){
                             Image(systemName: "bell.slash")
@@ -103,11 +125,12 @@ struct NotificationView: View {
                         Image(systemName: "info.circle")
                             .font(.system(size: 22))
                             .aspectRatio(contentMode: .fit)
-                            .foregroundStyle(Color(K.Colors.mainColor))
+                            .foregroundStyle(K.Colors.mainColor)
                             .padding(15)
                     }
                 }
             }
+            .background(Color(K.Colors.listBg))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationTitle("notifications")
             .onAppear{
@@ -131,30 +154,50 @@ struct NotificationView: View {
             .sheet(isPresented: $showInfo, content: {
                 NavigationStack{
                     NotificationsInfo()
+                        .navigationTitle("note-this")
+                        .navigationBarTitleDisplayMode(.large)
                         .toolbar(content: {
                             ToolbarItem(placement: .topBarTrailing) {
                                 Button(action: {
                                     self.showInfo = false
                                 }){
                                     Text("done")
-                                        .foregroundStyle(Color(K.Colors.mainColor))
+                                        .foregroundStyle(K.Colors.mainColor)
                                 }
                             }
                         })
                 }
                     .presentationDetents([.height(250)])
             })
+            .sheet(item: $editItem, content: { item in
+                NavigationStack{
+                    EditNotificationView(showEdit: $editItem, notific: item)
+                        .accentColor(K.Colors.mainColor)
+                        .navigationBarTitleDisplayMode(.large)
+                        .toolbar(content: {
+                            ToolbarItem(placement: .topBarLeading) {
+                                Button(action: {
+                                    editItem = nil
+                                }){
+                                    Text("cancel")
+                                        .foregroundStyle(K.Colors.mainColor)
+                                }
+                            }
+                        })
+                }
+            })
             .sheet(isPresented: $addNotification, content: {
                 NavigationStack{
                     AddNotificationView(showView: $addNotification)
-                        .accentColor(Color(K.Colors.mainColor))
+                        .accentColor(K.Colors.mainColor)
+                        .navigationBarTitleDisplayMode(.large)
                         .toolbar(content: {
                             ToolbarItem(placement: .topBarLeading) {
                                 Button(action: {
                                     self.addNotification = false
                                 }){
                                     Text("cancel")
-                                        .foregroundStyle((Color(K.Colors.mainColor)))
+                                        .foregroundStyle(K.Colors.mainColor)
                                 }
                             }
                         })

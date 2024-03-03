@@ -36,212 +36,158 @@ struct AddPersonView: View {
     
     
     var body: some View {
-        NavigationView{
-            ZStack(alignment: .bottom){
-                ScrollView{
-                    VStack(alignment: .center){
-                        Button (action: {
-                            shouldShowImagePicker.toggle()
-                        }){
-                            VStack(alignment: . center){
-                                if let image = self.image{
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .frame(width: 100, height: 100)
-                                        .cornerRadius(50)
-                                        .overlay(
-                                            Circle().stroke(Color(K.Colors.mainColor), lineWidth: 2)
-                                        )
-                                        .padding(15)
-                                    
-                                }else{
-                                    Image(systemName: "person.fill.viewfinder")
-                                        .resizable()
-                                        .frame(width: 100, height: 100)
-                                        .foregroundColor(Color(K.Colors.mainColor))
-                                        .padding(15)
-                                    
-                                    
-                                }
-                                Text("tap-to-change-image")
-                                    .foregroundStyle(.secondary)
-                                    .foregroundStyle(Color(K.Colors.mainColor))
-                            }
-                            .padding(15)
+//        NavigationView{
+            List{
+                Section(header:
+                            Button (action: {
+                    shouldShowImagePicker.toggle()
+                }){
+                    VStack(alignment: . center){
+                        if let image = self.image{
+                            Image(uiImage: image)
+                                .resizable()
+                                .frame(width: 100, height: 100)
+                                .cornerRadius(50)
+                                .overlay(
+                                    Circle().stroke(K.Colors.mainColor, lineWidth: 2)
+                                )
+                                .padding(15)
+                            
+                        }else{
+                            Image(systemName: "person.fill.viewfinder")
+                                .resizable()
+                                .frame(width: 100, height: 100)
+                                .foregroundColor(K.Colors.mainColor)
+                                .padding(15)
+                            
+                            
                         }
-                        VStack(alignment: .leading, spacing: 20){
-                            VStack(alignment: .leading){
-                                HStack{
-                                    Text("write-person-name")
-                                        .font(.title2)
-                                        .fontWeight(.medium)
-                                    Text("*")
-                                        .font(.title2)
-                                        .foregroundStyle(Color(K.Colors.red))
-                                        .fontWeight(.medium)
-                                }
-                                HStack{
-                                    TextField("name", text: $name)
-                                        .offset(y: -keyboard.keyboardHeight / 2)
-                                        .focused($focus, equals: .name)
-                                        .textContentType(.name)
-                                }
-                                .padding(10)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.gray), lineWidth: 1)
-                                )
-                            }
-                            VStack(alignment: .leading){
-                                Text("eemail")
-                                    .font(.title2)
-                                    .fontWeight(.medium)
-                                HStack{
-                                    TextField("eemail", text: $email)
-                                        .offset(y: -keyboard.keyboardHeight / 2)
-                                        .focused($focus, equals: .email)
-                                        .textInputAutocapitalization(.never)
-                                        .disableAutocorrection(true)
-                                        .textContentType(.emailAddress)
-                                        .keyboardType(.emailAddress)
-                                }
-                                .padding(10)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.gray), lineWidth: 1)
-                                )
-                            }
-                            VStack(alignment: .leading){
-                                Text("pphone")
-                                    .font(.title2)
-                                    .fontWeight(.medium)
-                                HStack(alignment: .center, spacing: 0.0){
-                                    TextField("pphone", text: $phoneNumber)
-                                        .offset(y: -keyboard.keyboardHeight / 2)
-                                        .focused($focus, equals: .phone)
-                                        .textInputAutocapitalization(.never)
-                                        .disableAutocorrection(true)
-                                        .textContentType(.telephoneNumber)
-                                        .keyboardType(.numberPad)
-                                }
-                                .padding(10)
-                                .overlay(
-                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                        .stroke(Color(K.Colors.gray), lineWidth: 1)
-                                )
-                            }
-                            VStack(alignment: .leading){
-                                Text("notes")
-                                    .font(.title2)
-                                    .fontWeight(.medium)
-                                HStack{
-                                    TextField("notes", text: $notes)
-                                        .offset(y: -keyboard.keyboardHeight / 2)
-                                        .focused($focus, equals: .notes)
-                                }
-                                .padding(10)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.gray), lineWidth: 1)
-                                )
-                            }
-                            VStack(alignment: .leading){
-                                HStack{
-                                    Text("bbirthday")
-                                        .font(.title2)
-                                        .fontWeight(.medium)
-                                    //                                    Spacer()
-                                    //                                    Text("long-press")
-                                    //                                        .foregroundStyle(.secondary)
-                                }
-                                HStack{
-                                    DatePicker(
-                                        String(localized: "long-press"),
-                                        selection: $birthDay,
-                                        displayedComponents: [.date]
-                                    )
-                                    .datePickerStyle(.compact)
-                                    .foregroundStyle(Color.secondary)
-                                }
-                                .padding(8)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.gray), lineWidth: 1)
-                                )
-                            }
-                            .padding(.bottom, 50)
-                            Button(action: {
-                                if viewModel.peopleArray.count < 20 && !name.isEmpty{
-                                    addItem()
-                                }else if viewModel.peopleArray.count > 20{
-                                    showError(false)
-                                }else if name.isEmpty && viewModel.peopleArray.count < 20{
-                                    showError()
-                                }
-                            }){
-                                Text("add")
-                                    .foregroundColor(Color.white)
-                                    .padding(.vertical, 10)
-                                    .frame(maxWidth: .infinity)
-                                    .background(Color(K.Colors.mainColor))
-                                    .cornerRadius(7)
-                            }
-                        }
-                        .onSubmit {
-                            switch focus {
-                            case .name:
-                                focus = .email
-                            case .email:
-                                focus = .phone
-                            case .phone:
-                                focus = .notes
-                            case .notes:
-                                focus = .birthday
-                            case .birthday:
-                                if viewModel.peopleArray.count < 20 && !name.isEmpty{
-                                    addItem()
-                                }else if viewModel.peopleArray.count > 20{
-                                    showError(false)
-                                }else if name.isEmpty && viewModel.peopleArray.count < 20{
-                                    showError()
-                                }
-                            default:
-                                break
-                            }
-                        }
-                        .padding(15)
+                        Text("tap-to-change-image")
+                            .foregroundStyle(.secondary)
+                            .foregroundStyle(K.Colors.mainColor)
                     }
-                    Spacer()
+                    .padding(15)
                 }
-                VStack(alignment: .center, spacing: 30){
+                    .textCase(nil)
+                    .listRowInsets(EdgeInsets())
+                    .frame(maxWidth: .infinity)
+                ){
                     
-                    if nameIsEmpty{
-                        HStack(alignment: .center){
-                            Text(errorText)
-                                .foregroundStyle(Color(K.Colors.justDarkGray))
-                        }
-                        .frame(height: 40)
-                        .frame(maxWidth: .infinity)
-                        .background(Color(K.Colors.justLightGray))
-                        .cornerRadius(7)
-                        .onTapGesture(perform: {
-                            withAnimation{
-                                nameIsEmpty = false
-                            }
-                        })
-                        .offset(y: nameIsEmpty ? -20 : 150)
+                }
+                Section{
+                    HStack{
+                        TextField("name", text: $name, axis: .horizontal)
+                            .lineLimit(1)
+                            .disableAutocorrection(true)
+                            .textInputAutocapitalization(.words)
+                            .keyboardType(.default)
+                            .textSelection(.enabled)
+                            .focused($focus, equals: .name)
+                        Spacer()
+                        Image(systemName: "person")
+                    }
+                }header: {
+                    Text("write-person-name")
+                }footer: {
+                    Text(name.isEmpty ? "rrequired" : "")
+                }
+                Section(header: Text("eemail")){
+                    HStack{
+                        TextField("eemail", text: $email)
+                            .offset(y: -keyboard.keyboardHeight / 2)
+                            .focused($focus, equals: .email)
+                            .textInputAutocapitalization(.never)
+                            .disableAutocorrection(true)
+                            .textContentType(.emailAddress)
+                            .keyboardType(.emailAddress)
+                            .textSelection(.enabled)
+                        Spacer()
+                        Image(systemName: "envelope")
                     }
                 }
-                .padding(.bottom, nameIsEmpty ? 0 : 15)
-                .padding(.horizontal, 15)
+                Section(header: Text("pphone")){
+                    HStack{
+                        TextField("pphone", text: $phoneNumber)
+                            .offset(y: -keyboard.keyboardHeight / 2)
+                            .focused($focus, equals: .phone)
+                            .textInputAutocapitalization(.never)
+                            .disableAutocorrection(true)
+                            .textContentType(.telephoneNumber)
+                            .keyboardType(.numberPad)
+                            .textSelection(.enabled)
+                        Spacer()
+                        Image(systemName: "phone")
+                    }
+                }
+                Section(header: Text("notes")){
+                    HStack{
+                        TextField("notes", text: $notes, axis: .vertical)
+                            .offset(y: -keyboard.keyboardHeight / 2)
+                            .focused($focus, equals: .notes)
+                            .lineLimit(5)
+                            .disableAutocorrection(false)
+                            .textInputAutocapitalization(.sentences)
+                            .keyboardType(.default)
+                            .textSelection(.enabled)
+                        Spacer()
+                        Image(systemName: "list.bullet")
+                    }
+                }
+                Section(header: Text("bbirthday")){
+                    DatePicker(
+                        String(localized: "long-press"),
+                        selection: $birthDay,
+                        displayedComponents: [.date]
+                    )
+                    .datePickerStyle(.compact)
+                    .padding(.vertical, 1)
+                }
+                Section{
+                    
+                        Text("add")
+                            .foregroundColor(Color.white)
+                            .padding(.vertical, 10)
+                            .frame(maxWidth: .infinity)
+                            .background(K.Colors.mainColor)
+                            .cornerRadius(10)
+                    .listRowInsets(EdgeInsets())
+                    .onTapGesture {
+                        if viewModel.peopleArray.count < 20 && !name.isEmpty{
+                            addItem()
+                        }else if viewModel.peopleArray.count >= 20{
+                            showError(false)
+                        }else if name.isEmpty && viewModel.peopleArray.count < 20{
+                            showError()
+                        }
+                    }
+                }
+            }
+            .onSubmit {
+                switch focus {
+                case .name:
+                    focus = .email
+                case .email:
+                    focus = .phone
+                case .phone:
+                    focus = .notes
+                case .notes:
+                    focus = .birthday
+                case .birthday:
+                    if viewModel.peopleArray.count < 20 && !name.isEmpty{
+                        addItem()
+                    }else if viewModel.peopleArray.count > 20{
+                        showError(false)
+                    }else if name.isEmpty && viewModel.peopleArray.count < 20{
+                        showError()
+                    }
+                default:
+                    break
+                }
             }
             .modifier(DismissingKeyboard())
             .sheet(isPresented: $shouldShowImagePicker) {
                 ImagePicker(image: $image)
             }
-            //        .onAppear(perform: {
-            //            if let countryCode = Locale.current.region?.identifier {
-            //                phoneNumber = "+\(K.CountryCodes.countryPrefixes[countryCode] ?? "US")"
-            //                let country = NSLocale.current.localizedString(forRegionCode: countryCode)
-            //                let i = K.Countries.countryList.firstIndex(of: country!) ?? 0
-            //            }
-            //        })
             .onAppear {
                 if let newName = createName{
                     self.name = newName
@@ -249,31 +195,29 @@ struct AddPersonView: View {
                 }
             }
             .onDisappear {
-                //                self.createName = nil
                 self.published.createPersonName = ""
             }
-        }
-        .toolbar{
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    if viewModel.peopleArray.count < 20 && !name.isEmpty{
-                        addItem()
-                    }else if viewModel.peopleArray.count >= 20{
-                        showError(false)
-                    }else if name.isEmpty && viewModel.peopleArray.count < 20{
-                        showError()
+            .toolbar{
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        if viewModel.peopleArray.count < 20 && !name.isEmpty{
+                            addItem()
+                        }else if viewModel.peopleArray.count >= 20{
+                            showError(false)
+                        }else if name.isEmpty && viewModel.peopleArray.count < 20{
+                            showError()
+                        }
+                    }){
+                        Text("add")
+                            .foregroundColor(K.Colors.mainColor)
                     }
-                }){
-                    Text("add")
-                        .foregroundColor(Color(K.Colors.mainColor))
                 }
             }
-        }
+//        }
     }
     
     func showError(_ name: Bool = true){
         if name{
-//            self.errorText = String(localized: "name-is-empty")
             Toast.shared.present(
                 title: String(localized: "name-is-empty"),
                 symbol: "questionmark.square",
@@ -281,7 +225,6 @@ struct AddPersonView: View {
                 timing: .long
             )
         }else{
-//            self.errorText = String(localized: "people-limit-reached")
             Toast.shared.present(
                 title: String(localized: "people-limit-reached"),
                 symbol: "person.3.sequence",
@@ -289,14 +232,6 @@ struct AddPersonView: View {
                 timing: .long
             )
         }
-//        withAnimation{
-//            nameIsEmpty = true
-//        }
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-//            withAnimation{
-//                nameIsEmpty = false
-//            }
-//        }
     }
     
     func addItem() {

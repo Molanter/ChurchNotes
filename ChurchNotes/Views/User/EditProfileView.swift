@@ -12,7 +12,7 @@ import Combine
 
 struct EditProfileView: View {
     @FocusState var focus: FocusedField?
-
+    
     @State var name = ""
     @State var phone = ""
     @State var email = ""
@@ -31,6 +31,7 @@ struct EditProfileView: View {
     @State var documentId = ""
     @State var firebaseError = false
     @State var firebaseErr = ""
+    @State private var anonymously = false
     
     let restrictedUsernameSet = "!@#$%^&*()+?/.>,<~`±§}{[]|\"÷≥≤µ˜∫√ç≈Ω`åß∂ƒ©˙∆˚¬…æ«‘“πøˆ¨¥†®´∑œ§¡™£¢∞§¶•ªº–≠"
     let restrictedEmaileSet = "!@#$%^&*()+?/.>,<~`±§}{[]|\"÷≥≤µ˜∫√ç≈Ω`åß∂ƒ©˙∆˚¬…æ«‘“πøˆ¨¥†®´∑œ§¡™£¢∞§¶•ªº–≠"
@@ -44,283 +45,196 @@ struct EditProfileView: View {
     var body: some View {
         NavigationStack{
             ZStack(alignment: email == "" ? .center : .top){
-                ScrollView{
-                    Spacer()
-                    VStack(alignment: .center){
-                        VStack(alignment: .center){
-                            Text("editing-profile")
-                                .font(.title)
-                                .fontWeight(.bold)
-                                .padding(.bottom, 5)
-                            Text("'\(email)'")
-                                .foregroundStyle(.secondary)
-                                .font(.system(size: 14))
-                                .padding(.bottom, 10)
-                        }
-                        Button (action: {
-                            showImagePicker.toggle()
-                        }){
-                            VStack(alignment: . center){
-                                if profileImage != "" && image == nil{
-                                    AsyncImage(url: URL(string: profileImage)){image in
-                                        image.resizable()
-                                        
-                                    }placeholder: {
-                                        ProgressView()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: 100, height: 100)
-                                    }
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 100, height: 100)
-                                    .cornerRadius(width ? 0 : .infinity)
+                List{
+                    Section(header:
+                                Button (action: {
+                        showImagePicker.toggle()
+                    }){
+                        VStack(alignment: . center){
+                            if profileImage != "" && image == nil{
+                                AsyncImage(url: URL(string: profileImage)){image in
+                                    image.resizable()
+                                    
+                                }placeholder: {
+                                    ProgressView()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 100, height: 100)
+                                }
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 100, height: 100)
+                                .cornerRadius(width ? 0 : .infinity)
+                            }else{
+                                if let image = self.image{
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 100, height: 100)
+                                        .cornerRadius(50)
+                                        .overlay(
+                                            Circle().stroke(K.Colors.mainColor, lineWidth: 2)
+                                        )
+                                        .padding(15)
+                                    
                                 }else{
-                                    if let image = self.image{
-                                        Image(uiImage: image)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: 100, height: 100)
-                                            .cornerRadius(50)
-                                            .overlay(
-                                                Circle().stroke(Color(K.Colors.mainColor), lineWidth: 2)
-                                            )
-                                            .padding(15)
-                                        
-                                    }else{
-                                        Image(systemName: "person.fill.viewfinder")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 100, height: 100)
-                                            .foregroundColor(Color(K.Colors.mainColor))
-                                            .padding(15)
-                                            .fontWeight(.regular)
-                                    }
+                                    Image(systemName: "person.fill.viewfinder")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 100, height: 100)
+                                        .foregroundColor(K.Colors.mainColor)
+                                        .padding(15)
+                                        .fontWeight(.regular)
                                 }
-                                Text("tap-to-change-image")
-                                    .foregroundColor(Color(K.Colors.mainColor))
-                                    .font(.system(size: 14))
-                                    .fontWeight(.regular)
                             }
-                        }
-                        .sheet(isPresented: $showImagePicker) {
-                            ImagePicker(image: $image)
-                        }
-                        .padding(.bottom, 30)
-                        VStack(alignment: .leading, spacing: 20){
-                            VStack(alignment: .leading, spacing: 20){
-                                Text("full-name")
-                                    .fontWeight(.semibold)
-                                    .font(.system(size: 15))
-                                HStack(alignment: .center, spacing: 0.0){
-                                    ZStack(alignment: .leading){
-                                        if name.isEmpty {
-                                            Text("Name")
-                                                .padding(.leading)
-                                                .foregroundColor(Color(K.Colors.lightGray))
-                                        }
-                                        TextField("", text: $name)
-                                            .ignoresSafeArea(.keyboard, edges: .bottom)
-                                            .focused($focus, equals: .name)
-                                            .padding(.leading)
-                                            .disableAutocorrection(true)
-                                            .textInputAutocapitalization(.never)
-                                            .opacity(0.75)
-                                            .padding(0)
-                                            .keyboardType(.default)
-                                            .textContentType(.name)
-                                    }
-                                    Spacer()
-                                    Image(systemName: "person.fill")
-                                        .foregroundStyle(Color(K.Colors.lightGray))
-                                        .padding(.trailing)
-                                }
-                                .frame(height: 50)
-                                .overlay(
-                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                        .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-                                )
-                            }
-                            VStack(alignment: .leading, spacing: 20){
-                                Text("username")
-                                    .fontWeight(.semibold)
-                                    .font(.system(size: 15))
-                                HStack(alignment: .center, spacing: 0.0){
-                                    ZStack(alignment: .leading){
-                                        if username.isEmpty {
-                                            Text("username")
-                                                .padding(.leading)
-                                                .foregroundColor(Color(K.Colors.lightGray))
-                                        }
-                                        TextField("", text: $username)
-                                            .ignoresSafeArea(.keyboard, edges: .bottom)
-                                            .focused($focus, equals: .username)
-                                            .padding(.leading)
-                                            .disableAutocorrection(true)
-                                            .textInputAutocapitalization(.never)
-                                            .opacity(0.75)
-                                            .padding(0)
-                                            .keyboardType(.namePhonePad)
-                                            .textCase(.lowercase)
-                                            .textContentType(.username)
-                                    }
-                                    Spacer()
-                                    Image(systemName: "at")
-                                        .foregroundStyle(Color(K.Colors.lightGray))
-                                        .padding(.trailing)
-                                }
-                                .frame(height: 50)
-                                .overlay(
-                                        RoundedRectangle(cornerRadius: 7)
-                                            .inset(by: 0.5)
-                                            .stroke(username == "" ? Color(K.Colors.justLightGray) : (viewModel.isAvailable ? Color( K.Colors.justLightGray).opacity(0.5) : Color(red: 1, green: 0.39, blue: 0.49)), lineWidth: 1)
-                                    )
-                                .onReceive(Just(username)) { newText in
-                                    username = newText.filter { $0.isEnglishCharacter || $0.isNumber || $0.isAllowedSymbol }
-                                            }
-                                .onChange(of: username, perform: { newValue in
-                                    if username != ""{
-                                        username = String(newValue.filter { !restrictedUsernameSet.contains($0) })
-                                        if username.count > maxLength {
-                                            username = String(newValue.prefix(maxLength))
-                                        }
-                                        viewModel.checkUsernameAvailability(username: newValue)
-                                    }
-                                })
-                            }
-                            VStack(alignment: .leading, spacing: 20){
-                                Text("country")
-                                    .fontWeight(.semibold)
-                                    .font(.system(size: 15))
-                                HStack(alignment: .center, spacing: 0.0){
-                                    ZStack(alignment: .leading){
-                                        if country.isEmpty {
-                                            Text("country")
-                                                .padding(.leading)
-                                                .foregroundColor(Color(K.Colors.lightGray))
-                                        }
-                                        TextField("", text: $country)
-                                            .ignoresSafeArea(.keyboard, edges: .bottom)
-                                            .focused($focus, equals: .country)
-                                            .padding(.leading)
-                                            .disableAutocorrection(true)
-                                            .textInputAutocapitalization(.never)
-                                            .opacity(0.75)
-                                            .padding(0)
-                                            .textContentType(.countryName)
-                                    }
-                                    Spacer()
-                                    Image(systemName: "flag.fill")
-                                        .foregroundStyle(Color(K.Colors.lightGray))
-                                        .padding(.trailing)
-                                }
-                                .frame(height: 50)
-                                .overlay(
-                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                        .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-                                )
-                            }
-                            VStack(alignment: .leading, spacing: 20){
-                                Text("pphone")
-                                    .fontWeight(.semibold)
-                                    .font(.system(size: 15))
-                                HStack(alignment: .center, spacing: 0.0){
-                                    ZStack(alignment: .leading){
-                                        if phone.isEmpty {
-                                            Text("pphone")
-                                                .padding(.leading)
-                                                .foregroundColor(Color(K.Colors.lightGray))
-                                        }
-                                    TextField("pphone", text: $phone)
-                                        .ignoresSafeArea(.keyboard, edges: .bottom)
-                                        .padding(.leading)
-                                        .focused($focus, equals: .phone)
-                                        .textInputAutocapitalization(.never)
-                                        .disableAutocorrection(true)
-                                        .textContentType(.telephoneNumber)
-                                        .keyboardType(.numberPad)
-                                }
-                                    Spacer()
-                                    Image(systemName: "phone.fill")
-                                        .foregroundStyle(Color(K.Colors.lightGray))
-                                        .padding(.trailing)
-                                }
-                                .frame(height: 50)
-                                .overlay(
-                                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                                        .stroke(Color(K.Colors.justLightGray).opacity(0.5), lineWidth: 1)
-                                )
-                            }
-                            
-                            
-                        }
-                        .onSubmit {
-                                    switch focus {
-                                    case .name:
-                                        focus = .username
-                                    case .username:
-                                        focus = .country
-                                    case .country:
-                                        focus = .phone
-                                    case .phone:
-                                        updateFunc()
-                                    default:
-                                        break
-                                    }
-                                }
-                        Button(action: {updateFunc()}){
-                            Text("save")
-                                .foregroundStyle(Color.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color(K.Colors.mainColor))
-                                .cornerRadius(7)
-                                .padding(.vertical)
+                            Text("tap-to-change-image")
+                                .foregroundColor(K.Colors.mainColor)
+                                .font(.system(size: 14))
+                                .fontWeight(.regular)
                         }
                     }
-                    .padding(.horizontal, 15)
-                    
-                    if errReg != ""{
-                        Text(errReg)
-                            .foregroundStyle(Color(K.Colors.pink))
-                            .padding(.horizontal, 15)
+                        .textCase(nil)
+                        .listRowInsets(EdgeInsets())
+                        .frame(maxWidth: .infinity)
+                    ){}
+                    Section{
+                        HStack{
+                            TextField("name", text: $name)
+                                .focused($focus, equals: .name)
+                                .disableAutocorrection(true)
+                                .textInputAutocapitalization(.words)
+                                .keyboardType(.default)
+                                .textContentType(.name)
+                                .textSelection(.enabled)
+                            Spacer()
+                            Image(systemName: "person")
+                        }
+                    }header: {
+                        Text("full-name")
+                    }footer: {
+                        Text(name.isEmpty ? "rrequired" :"")
+                    }
+                    Section(header: Text("username")){
+                        HStack{
+                            TextField("username", text: $username)
+                                .ignoresSafeArea(.keyboard, edges: .bottom)
+                                .focused($focus, equals: .username)
+                                .disableAutocorrection(true)
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.namePhonePad)
+                                .textCase(.lowercase)
+                                .textContentType(.username)
+                                .textSelection(.enabled)
+                                .foregroundStyle(username == "" ? Color(K.Colors.text) : (viewModel.isAvailable ? Color( K.Colors.text) : Color(red: 1, green: 0.39, blue: 0.49)))
+                            Spacer()
+                            Image(systemName: "at")
+                        }
+                        .onReceive(Just(username)) { newText in
+                            username = newText.filter { $0.isEnglishCharacter || $0.isNumber || $0.isAllowedSymbol }
+                        }
+                        .onChange(of: username, perform: { newValue in
+                            if username != ""{
+                                username = String(newValue.filter { !restrictedUsernameSet.contains($0) })
+                                if username.count > maxLength {
+                                    username = String(newValue.prefix(maxLength))
+                                }
+                                viewModel.checkUsernameAvailability(username: newValue)
+                            }
+                        })
+                    }
+                    Section(header: Text("country")){
+                        HStack{
+                            TextField("country", text: $country)
+                                .ignoresSafeArea(.keyboard, edges: .bottom)
+                                .focused($focus, equals: .country)
+                                .disableAutocorrection(true)
+                                .textInputAutocapitalization(.never)
+                                .textContentType(.countryName)
+                                .textSelection(.enabled)
+                            Spacer()
+                            Image(systemName: "globe")
+                        }
+                    }
+                    Section(header: Text("pphone")){
+                        HStack{
+                            TextField("pphone", text: $phone)
+                                .ignoresSafeArea(.keyboard, edges: .bottom)
+                                .focused($focus, equals: .phone)
+                                .textInputAutocapitalization(.never)
+                                .disableAutocorrection(true)
+                                .textContentType(.telephoneNumber)
+                                .keyboardType(.numberPad)
+                                .textSelection(.enabled)
+                            Spacer()
+                            Image(systemName: "phone")
+                        }
+                        
+                        
+                    }
+                    if !(viewModel.currentUser?.profileImageUrl ?? "").isEmpty{
+                        Section{
+                            HStack{
+                                Image(systemName: anonymously ? "checkmark.square.fill" : "square")
+                                    .foregroundColor(.primary)
+                                Text("rremove-iimage")
+                            }
+                            .onTapGesture {
+                                anonymously.toggle()
+                            }
+                        }
+                    }
+                    Section{
+                        Text("save")
+                            .foregroundStyle(Color.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(K.Colors.mainColor)
+                            .cornerRadius(10)
+                            .onTapGesture(perform: {
+                                updateFunc()
+                            })
+                            .listRowInsets(EdgeInsets())
                     }
                 }
-                .opacity(email == "" ? 0.5 : 1)
-                if firebaseError{
-                    HStack(alignment: .center){
-                        Text(firebaseErr)
-                            .foregroundStyle(Color(K.Colors.justDarkGray))
+                .onSubmit {
+                    switch focus {
+                    case .name:
+                        focus = .username
+                    case .username:
+                        focus = .country
+                    case .country:
+                        focus = .phone
+                    case .phone:
+                        updateFunc()
+                    default:
+                        break
                     }
-                    .padding(15)
-                    .frame(height: 40)
-                    .frame(maxWidth: .infinity)
-                    .background(Color(K.Colors.justLightGray))
-                    .cornerRadius(7)
-                    .onTapGesture(perform: {
-                        withAnimation{
-                            firebaseError = false
-                        }
-                    })
-                    .padding(.horizontal, 15)
-                    .offset(y: firebaseError ? 20 : -150)
                 }
                 if email == ""{
                     ProgressView()
                         .frame(alignment: .center)
                 }
             }
+            .opacity(email == "" ? 0.5 : 1)
             .onAppear(perform: {
                 fetchDictionary()
             })
             .modifier(DismissingKeyboard())
-        }
-        .toolbar(content: {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(action: {updateFunc()}){
-                    Text("save")
-                        .foregroundStyle(Color(K.Colors.mainColor))
+            .navigationTitle("editing-profile")
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar(content: {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {updateFunc()}){
+                        Text("save")
+                            .foregroundStyle(K.Colors.mainColor)
+                    }
                 }
+                ToolbarItem(placement: .principal) {
+                    Text(email)
+                }
+            })
+            .sheet(isPresented: $showImagePicker) {
+                ImagePicker(image: $image)
             }
-        })
+        }
     }
     
     func fetchDictionary(){
@@ -386,6 +300,11 @@ struct EditProfileView: View {
     private func updateFunc(){
         
         if name != "" && username != "" && viewModel.isAvailable{
+            if anonymously{
+                viewModel.deleteImageFromCurrentUser()
+                viewModel.currentUser?.profileImageUrl = ""
+                image = nil
+            }
             viewModel.updateProfile(image: image, name: name, username: username, country: country, phone: phone, documentId: documentId, oldImageLink: profileImage, userId: Auth.auth().currentUser?.uid ?? "")
             self.fetchDictionary()
             errReg = viewModel.err
@@ -394,7 +313,7 @@ struct EditProfileView: View {
                 self.showingEditingProfile = false
             }
         }else if !viewModel.isAvailable{
-//            showError(error: String(localized: "username-is-not-available"))
+            //            showError(error: String(localized: "username-is-not-available"))
             Toast.shared.present(
                 title: String(localized: "username-is-not-available"),
                 symbol: "exclamationmark.circle.fill",
@@ -402,7 +321,7 @@ struct EditProfileView: View {
                 timing: .long
             )
         }else if name != "" && username == ""{
-//            showError(error: String(localized: "username-is-empty"))
+            //            showError(error: String(localized: "username-is-empty"))
             Toast.shared.present(
                 title: String(localized: "username-is-empty"),
                 symbol: "questionmark.square",
@@ -410,7 +329,7 @@ struct EditProfileView: View {
                 timing: .long
             )
         }else if name == "" && username != ""{
-//            showError(error: String(localized: "name-is-empty"))
+            //            showError(error: String(localized: "name-is-empty"))
             Toast.shared.present(
                 title: String(localized: "name-is-empty"),
                 symbol: "questionmark.square",
@@ -418,7 +337,7 @@ struct EditProfileView: View {
                 timing: .long
             )
         }else{
-//            showError(error: String(localized: "some-fields-are-empty"))
+            //            showError(error: String(localized: "some-fields-are-empty"))
             Toast.shared.present(
                 title: String(localized: "some-fields-are-empty"),
                 symbol: "questionmark.square",
@@ -429,8 +348,8 @@ struct EditProfileView: View {
     }
     
     enum FocusedField:Hashable{
-            case name, username, phone, country
-        }
+        case name, username, phone, country
+    }
 }
 
 //#Preview {

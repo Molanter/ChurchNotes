@@ -8,14 +8,16 @@
 import SwiftUI
 
 struct DonePeople: View {
+    @EnvironmentObject var viewModel: AppViewModel
+
     @State private var searchText = ""
     @State private var currentItem: Person?
     @State var sheetPesonInfo = false
-    let notify = NotificationHandler()
     @State private var lastItem: Person?
-    @EnvironmentObject var viewModel: AppViewModel
     @State private var isShowingDeleteAlert = false
 
+    let notify = NotificationHandler()
+    
     var body: some View {
         NavigationStack{
             List{
@@ -86,30 +88,6 @@ struct DonePeople: View {
                                         }
                                     }
                             }
-                            .alert("delete-person", isPresented: Binding(
-                                get: { self.isShowingDeleteAlert && lastItem != nil },
-                                set: { newValue in
-                                    if !newValue {
-                                        self.isShowingDeleteAlert = false
-                                    }
-                                }
-                            )) {
-                                Button("cancel", role: .cancel) {}
-                                Button("delete", role: .destructive) {
-                                    viewModel.deletePerson(documentId: lastItem?.documentId ?? item.documentId)
-                                    isShowingDeleteAlert = false
-                                }
-                            } message: {
-                                Text("do-you-really-want-to-delete-this-person")
-                            }
-                            .swipeActions(edge: .trailing) {
-                                Button(role: .destructive, action: {
-                                    self.lastItem = item
-                                    self.isShowingDeleteAlert.toggle()
-                                } ) {
-                                    Label("delete", systemImage: "trash")
-                                }
-                            }
                             .contextMenu {
                                 Button{
                                     withAnimation{
@@ -134,6 +112,22 @@ struct DonePeople: View {
                                 }
                             }
                         }
+                        .actionSheet(isPresented: $isShowingDeleteAlert) {
+                            ActionSheet(title: Text("delete-person"),
+                                        message: Text("do-you-really-want-to-delete-this-person"),
+                                        buttons: [
+                                            .cancel(),
+                                            .destructive(
+                                                Text("delete")
+                                            ){
+                                                withAnimation{
+                                                    viewModel.deletePerson(documentId: lastItem?.documentId ?? item.documentId)
+                                                    isShowingDeleteAlert = false
+                                                }
+                                            }
+                                        ]
+                            )
+                        }
                         .sheet(item: $currentItem, onDismiss: nil){ item in
                             NavigationStack{
                                 ItemPersonView(item: item, currentItem: $currentItem)
@@ -142,7 +136,7 @@ struct DonePeople: View {
                                             Button(action: {
                                                 currentItem = nil
                                             }){
-                                                Image(systemName: "xmark.circle")
+                                                Text("cancel")
                                             }
                                         }
                                     }
@@ -168,7 +162,6 @@ struct DonePeople: View {
                 viewModel.fetchPeople()
             }
             .toolbar(content: {
-                
                 ToolbarItem(placement: .topBarTrailing) {
                     EditButton()
                 }
@@ -180,7 +173,6 @@ struct DonePeople: View {
         }
         .navigationTitle("done")
     }
-
 }
 
 #Preview {

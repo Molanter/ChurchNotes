@@ -1,18 +1,19 @@
 //
-//  AddNotificationView.swift
+//  EditNotificationView.swift
 //  ChurchNotes
 //
-//  Created by Edgars Yarmolatiy on 11/5/23.
+//  Created by Edgars Yarmolatiy on 2/16/24.
 //
 
 import SwiftUI
 
-struct AddNotificationView: View {
+struct EditNotificationView: View {
     @EnvironmentObject var viewModel: AppViewModel
     
-    @Binding var showView: Bool
-    
     @State var picked = 4
+    @State var showAlert = false
+    @Binding var showEdit: Notifics?
+    
     @State var sunday = false
     @State var monday = false
     @State var tuesday = false
@@ -22,9 +23,9 @@ struct AddNotificationView: View {
     @State var saturday = false
     @State var notificationTime = Date.now
     @State var message = ""
-    @State var showAlert = false
     @State var dayTaped = false
     
+    var notific: Notifics
     let notify = NotificationHandler()
     
     var body: some View {
@@ -48,9 +49,8 @@ struct AddNotificationView: View {
                     }
                 }
                 Section{
-                    Picker(selection: $picked, label: Text("choose-days")) {
+                    Picker(selection: $picked, label: Text("edit-days")) {
                         Text("all-days").tag(1)
-                            .font(.title3)
                         Text("weekdays").tag(2)
                         Text("weekends").tag(3)
                         Text("custom").tag(4)
@@ -61,40 +61,40 @@ struct AddNotificationView: View {
                         if !dayTaped{
                             withAnimation{
                                 if newValue == 1{
-                                    self.sunday = true
-                                    self.monday = true
-                                    self.tuesday = true
-                                    self.wednsday = true
-                                    self.thursday = true
-                                    self.friday = true
-                                    self.saturday = true
+                                    sunday = true
+                                    monday = true
+                                    tuesday = true
+                                    wednsday = true
+                                    thursday = true
+                                    friday = true
+                                    saturday = true
                                 }else if newValue == 2{
-                                    self.sunday = false
-                                    self.monday = true
-                                    self.tuesday = true
-                                    self.wednsday = true
-                                    self.thursday = true
-                                    self.friday = true
-                                    self.saturday = false
+                                    sunday = false
+                                    monday = true
+                                    tuesday = true
+                                    wednsday = true
+                                    thursday = true
+                                    friday = true
+                                    saturday = false
                                 }else if newValue == 3{
-                                    self.sunday = true
-                                    self.monday = false
-                                    self.tuesday = false
-                                    self.wednsday = false
-                                    self.thursday = false
-                                    self.friday = false
-                                    self.saturday = true
+                                    sunday = true
+                                    monday = false
+                                    tuesday = false
+                                    wednsday = false
+                                    thursday = false
+                                    friday = false
+                                    saturday = true
                                 }else if newValue == 4{
-                                    self.sunday = false
-                                    self.monday = false
-                                    self.tuesday = false
-                                    self.wednsday = false
-                                    self.thursday = false
-                                    self.friday = false
-                                    self.saturday = false
+                                    sunday = false
+                                    monday = false
+                                    tuesday = false
+                                    wednsday = false
+                                    thursday = false
+                                    friday = false
+                                    saturday = false
                                 }
                             }
-                        }else {
+                        }else{
                             dayTaped = false
                         }
                     }
@@ -104,7 +104,7 @@ struct AddNotificationView: View {
                                 .onTapGesture {
                                     dayTaped = true
                                     withAnimation{
-                                        self.sunday.toggle()
+                                        sunday.toggle()
                                         if sunday && monday && tuesday && wednsday && thursday && friday && saturday{
                                             picked = 1
                                         }else if sunday && !monday && !tuesday && !wednsday && !thursday && !friday && saturday{
@@ -113,8 +113,7 @@ struct AddNotificationView: View {
                                             picked = 2
                                         }else{
                                             picked = 4
-                                        }
-                                    }
+                                        }                                    }
                                 }
                                 .foregroundStyle(sunday ? Color.white : Color(K.Colors.justLightGray))
                                 .padding()
@@ -129,7 +128,7 @@ struct AddNotificationView: View {
                                 .onTapGesture {
                                     dayTaped = true
                                     withAnimation{
-                                        self.monday.toggle()
+                                        monday.toggle()
                                         if sunday && monday && tuesday && wednsday && thursday && friday && saturday{
                                             picked = 1
                                         }else if sunday && !monday && !tuesday && !wednsday && !thursday && !friday && saturday{
@@ -138,8 +137,7 @@ struct AddNotificationView: View {
                                             picked = 2
                                         }else{
                                             picked = 4
-                                        }
-                                    }
+                                        }                                    }
                                 }
                                 .foregroundStyle(monday ? Color.white : Color(K.Colors.justLightGray))
                                 .padding()
@@ -154,7 +152,7 @@ struct AddNotificationView: View {
                                 .onTapGesture {
                                     dayTaped = true
                                     withAnimation{
-                                        self.tuesday.toggle()
+                                        tuesday.toggle()
                                         if sunday && monday && tuesday && wednsday && thursday && friday && saturday{
                                             picked = 1
                                         }else if sunday && !monday && !tuesday && !wednsday && !thursday && !friday && saturday{
@@ -178,7 +176,7 @@ struct AddNotificationView: View {
                                 .onTapGesture {
                                     dayTaped = true
                                     withAnimation{
-                                        self.wednsday.toggle()
+                                        wednsday.toggle()
                                         if sunday && monday && tuesday && wednsday && thursday && friday && saturday{
                                             picked = 1
                                         }else if sunday && !monday && !tuesday && !wednsday && !thursday && !friday && saturday{
@@ -202,7 +200,7 @@ struct AddNotificationView: View {
                                 .onTapGesture {
                                     dayTaped = true
                                     withAnimation{
-                                        self.thursday.toggle()
+                                        thursday.toggle()
                                         if sunday && monday && tuesday && wednsday && thursday && friday && saturday{
                                             picked = 1
                                         }else if sunday && !monday && !tuesday && !wednsday && !thursday && !friday && saturday{
@@ -211,8 +209,7 @@ struct AddNotificationView: View {
                                             picked = 2
                                         }else{
                                             picked = 4
-                                        }
-                                    }
+                                        }                                    }
                                 }
                                 .foregroundStyle(thursday ? Color.white : Color(K.Colors.justLightGray))
                                 .padding()
@@ -227,7 +224,7 @@ struct AddNotificationView: View {
                                 .onTapGesture {
                                     dayTaped = true
                                     withAnimation{
-                                        self.friday.toggle()
+                                        friday.toggle()
                                         if sunday && monday && tuesday && wednsday && thursday && friday && saturday{
                                             picked = 1
                                         }else if sunday && !monday && !tuesday && !wednsday && !thursday && !friday && saturday{
@@ -251,7 +248,7 @@ struct AddNotificationView: View {
                                 .onTapGesture {
                                     dayTaped = true
                                     withAnimation{
-                                        self.saturday.toggle()
+                                        saturday.toggle()
                                         if sunday && monday && tuesday && wednsday && thursday && friday && saturday{
                                             picked = 1
                                         }else if sunday && !monday && !tuesday && !wednsday && !thursday && !friday && saturday{
@@ -276,16 +273,16 @@ struct AddNotificationView: View {
                     }
                     .listRowInsets(EdgeInsets())
                 }
-                
                 Section{
                     DatePicker(
-                        "set-time",
+                        "edit-time",
                         selection: $notificationTime,
                         displayedComponents: [.hourAndMinute]
                     )
                     .padding(.vertical, 1)
                 }
-                Section(header: Text("write-message")){
+                Section(header: Text("edit-message")){
+                    
                     TextField("pray-for", text: $message, axis: .vertical)
                         .lineLimit(5)
                         .disableAutocorrection(false)
@@ -302,45 +299,91 @@ struct AddNotificationView: View {
                             self.setNotifications()
                         }
                     }){
-                        Text("set-notifications")
+                        Text("save")
                             .foregroundStyle(Color.white)
                             .padding()
                             .frame(maxWidth: .infinity)
                     }
                     .background(K.Colors.mainColor)
-                    .cornerRadius(10)
+                    .cornerRadius(7)
                     .listRowInsets(EdgeInsets())
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .navigationTitle("add-notification")
-        }
-        .toolbar(content: {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(action: {
-                    self.setNotifications()
-                }){
-                    Text("add")
-                        .foregroundStyle(K.Colors.mainColor)
+            .navigationTitle("edit-notification")
+            .toolbar(content: {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        self.setNotifications()
+                    }){
+                        Text("save")
+                            .foregroundStyle(K.Colors.mainColor)
+                    }
+                }
+            })
+            .actionSheet(isPresented: $showAlert) {
+                ActionSheet(title: Text("hhey"),
+                            message: Text("you-did-not-choose-the-time"),
+                            buttons: [
+                                .cancel(),
+                                .default(
+                                    Text(K.Hiden.ok.randomElement()!)
+                                ){
+                                    showAlert.toggle()
+                                }
+                            ]
+                )
+            }
+            .onAppear {
+                sunday = notific.sunday
+                monday = notific.monday
+                tuesday = notific.tuesday
+                wednsday = notific.wednsday
+                thursday = notific.thursday
+                friday = notific.friday
+                saturday = notific.saturday
+                notificationTime = notific.date
+                message = notific.message
+                if sunday && monday && tuesday && wednsday && thursday && friday && saturday{
+                    picked = 1
+                }else if sunday && !monday && !tuesday && !wednsday && !thursday && !friday && saturday{
+                    picked = 3
+                }else if !sunday && monday && tuesday && wednsday && thursday && friday && !saturday{
+                    picked = 2
+                }else{
+                    picked = 4
                 }
             }
-        })
-        .actionSheet(isPresented: $showAlert) {
-            ActionSheet(title: Text("hhey"),
-                        message: Text("you-did-not-choose-the-time"),
-                        buttons: [
-                            .cancel(),
-                            .default(
-                                Text(K.Hiden.ok.randomElement()!)
-                            ){
-                                showAlert.toggle()
-                            }
-                        ]
-            )
         }
     }
     
+    private func removeNotification(item: Notifics){
+        if item.sunday{
+            notify.stopNotifying(day: 1, count: item.orderIndex)
+        }
+        if item.monday{
+            notify.stopNotifying(day: 2, count: item.orderIndex)
+        }
+        if item.tuesday{
+            notify.stopNotifying(day: 3, count: item.orderIndex)
+        }
+        if item.wednsday{
+            notify.stopNotifying(day: 4, count: item.orderIndex)
+        }
+        if item.thursday{
+            notify.stopNotifying(day: 5, count: item.orderIndex)
+        }
+        if item.friday{
+            notify.stopNotifying(day: 6, count: item.orderIndex)
+        }
+        if item.saturday{
+            notify.stopNotifying(day: 7, count: item.orderIndex)
+        }
+        viewModel.stopNotifing(item: item)
+    }
+    
     private func setNotifications(){
+        removeNotification(item: notific)
         let count = viewModel.notificationsArray.count
         if sunday{
             notify.scheduleNotifications(days: [1], message: message, date: notificationTime, count: count)
@@ -364,10 +407,10 @@ struct AddNotificationView: View {
             notify.scheduleNotifications(days: [7], message: message, date: notificationTime, count: count)
         }
         viewModel.createNotification(sunday: sunday, monday: monday, tuesday: tuesday, wednsday: wednsday, thursday: thursday, friday: friday, saturday: saturday, date: notificationTime, message: message, count: count)
-        self.showView = false
+        showEdit = nil
     }
 }
 
 //#Preview {
-//    AddNotificationView()
+//    EditNotificationView()
 //}

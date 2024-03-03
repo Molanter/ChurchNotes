@@ -272,8 +272,8 @@ class AppViewModel: ObservableObject{
                         if let userIdsDict = data["userId"] as? [String: [String: Any]],
                            let userDict = userIdsDict[userId],
                            let isLiked = userDict["isLiked"] as? Bool,
-                           let orderIndex = userDict["orderIndex"] as? Int {
-                            let personModel = Person(documentId: docId, data: data, isLiked: isLiked, orderIndex: orderIndex)
+                           var orderIndex = userDict["orderIndex"] as? Int {
+                            var personModel = Person(documentId: docId, data: data, isLiked: isLiked, orderIndex: orderIndex)
                             self.peopleArray.append(personModel)
                         } else {
                             print("userId or isLiked not found in the document")
@@ -442,6 +442,10 @@ class AppViewModel: ObservableObject{
                 }
                 storegeProfileRef.downloadURL { url, error in
                     if let metaImageUrl = url?.absoluteString{
+                        if let index = self.peopleArray.firstIndex(where: { $0.documentId == documentId }) {
+                            self.peopleArray[index].imageData = metaImageUrl
+                        }
+                        
                         ref.updateData(
                             [
                                 "name": name,
@@ -462,6 +466,20 @@ class AppViewModel: ObservableObject{
         }
     }
     
+    func changeorderIndex(documentId: String, orderIndex: Int){
+        let ref = db.collection("people").document(documentId)
+        guard let userId = auth.currentUser?.uid else{return}
+        let fieldPath = "userId.\(userId).orderIndex"
+        
+        ref.updateData(
+            [fieldPath: orderIndex]){error in
+                if let error = error{
+                    print("Error while updating orderIndex:  -\(error)")
+                }else{
+                    print("orderIndex is updated!")
+                }
+            }
+    }
     
     func isDonePerson(documentId: String, isDone: Bool){
         let ref = db.collection("people").document(documentId)
@@ -528,7 +546,7 @@ class AppViewModel: ObservableObject{
     
     func changeEmail(currentPassword: String, newEmail: String) {
         guard let user = Auth.auth().currentUser else {
-            self.err = "no-user-logged-in"
+            self.err = String(localized: "no-user-logged-in")
             return
         }
         guard let userId = auth.currentUser?.uid else{return}
@@ -546,7 +564,7 @@ class AppViewModel: ObservableObject{
                     } else {
                         // Email changed successfully
                         // You might want to sign out the user and ask them to log in with the new email
-                        self.err = "email-changed-successfully"
+                        self.err = String(localized: "email-changed-successfully")
                         ref.updateData(
                             ["email": newEmail
                             ]){error in
@@ -561,6 +579,29 @@ class AppViewModel: ObservableObject{
                 }
             }
         }
+    }
+    
+    func deleteImageFromCurrentUser(){
+        guard let userId = auth.currentUser?.uid else{return}
+        let ref = db.collection("users").document(userId)
+        
+        ref.updateData(
+            [
+                "profileImageUrl": ""
+            ]){error in
+                if let error = error{
+                    print("Error while updating user:  -\(error)")
+                }else{
+                    self.storage.child("users").child(userId).delete { error in
+                        if let error = error {
+                            print("Error while updating user:  -\(error)")
+                        } else {
+                            print("image is deleted from storege!")
+                        }
+                    }
+                    print("image is deleted from user!")
+                }
+            }
     }
     
     func fetchUser(){
@@ -705,6 +746,7 @@ class AppViewModel: ObservableObject{
                 self?.err = error!.localizedDescription
             }else{
                 self?.signedIn = true
+                self?.err = ""
                 print("User logined succesfuly!")
             }
         }
@@ -740,6 +782,7 @@ class AppViewModel: ObservableObject{
                         if let err = err {
                             print("Error writing document: \(err.localizedDescription)")
                         } else {
+                            self?.err = ""
                             self?.signedIn = true
                             print("Document successfully written!")
                         }
@@ -809,6 +852,7 @@ class AppViewModel: ObservableObject{
                                 if let err = err {
                                     print("Error writing document: \(err.localizedDescription)")
                                 } else {
+                                    self?.err = ""
                                     self?.signedIn = true
                                     print("Document successfully written!")
                                 }
@@ -1049,6 +1093,7 @@ class AppViewModel: ObservableObject{
     
     //MARK: Notifications
     func createNotification(sunday: Bool, monday: Bool, tuesday: Bool, wednsday: Bool, thursday: Bool, friday: Bool, saturday: Bool, date: Date, message: String, count: Int){
+        print(UIDevice.current.name)
         guard let uid = Auth.auth().currentUser?.uid else{return}
         let dictionary: Dictionary <String, Any> = [
             "uid": uid,
@@ -1061,7 +1106,8 @@ class AppViewModel: ObservableObject{
             "saturday": saturday,
             "date": date,
             "orderIndex": count,
-            "message": message == "" ? "time-to-pray_take-you-time" : message
+            "message": message == "" ? String(localized: "time-to-pray_take-you-time") : message,
+            "device": UIDevice.current.name
         ]
         self.db.collection("notifications").document().setData(dictionary) { err in
             if let err = err {
@@ -1228,7 +1274,6 @@ class AppViewModel: ObservableObject{
                     "badge": badgeCount  // Add badge count to the notification payload
                 ],
                 "data": [
-                    "badge": 5, // Set the badge count here
                     "sound": "default",
                     "link": link
                 ]
@@ -1502,7 +1547,7 @@ class AppViewModel: ObservableObject{
         }
     }
     
-    func setLastMessage(message: String, image: Bool, type: String?){
+    func setLastMessage(message: String, image: Bool, type: String?, uid: String){
         guard let userId = auth.currentUser?.uid else { return }
         let ref = db.collection("messages").document(userId)
         let date = Date.now
@@ -1513,7 +1558,8 @@ class AppViewModel: ObservableObject{
             "from": userId,
             "image": image,
             "time": date,
-            "type": type
+            "type": type,
+            "uid": uid
         ]) { error in
             if let error = error {
                 print("Error while creating message: \(error)")
@@ -1579,22 +1625,22 @@ class AppViewModel: ObservableObject{
         messagesCollection
             .order(by: "time", descending: false)
             .getDocuments { (querySnapshot, error) in
-            if let error = error {
-                print("Error getting documents: \(error)")
-            } else {
-                for document in querySnapshot!.documents {
-                    print("Document ID: \(document.documentID)")
-                    self.supportMessageArray.removeAll()
-                    querySnapshot?.documents.forEach { queryDocumentSnapshot in
-                        let data = queryDocumentSnapshot.data()
-                        let docId = queryDocumentSnapshot.documentID
-                        
-                        let model = LastMessageModel(documentId: docId, data: data)
-                        self.supportMessageArray.append(model)
+                if let error = error {
+                    print("Error getting documents: \(error)")
+                } else {
+                    for document in querySnapshot!.documents {
+                        print("Document ID: \(document.documentID)")
+                        self.supportMessageArray.removeAll()
+                        querySnapshot?.documents.forEach { queryDocumentSnapshot in
+                            let data = queryDocumentSnapshot.data()
+                            let docId = queryDocumentSnapshot.documentID
+                            
+                            let model = LastMessageModel(documentId: docId, data: data)
+                            self.supportMessageArray.append(model)
+                        }
                     }
                 }
             }
-        }
     }
     
     func deleteMessage(documentId: String){
@@ -1607,12 +1653,12 @@ class AppViewModel: ObservableObject{
             .collection("support")
             .document(documentId)
             .delete() { err in
-            if let err = err {
-                print("Error removing document: \(err)")
-            } else {
-                print("Document successfully removed!")
+                if let err = err {
+                    print("Error removing document: \(err)")
+                } else {
+                    print("Document successfully removed!")
+                }
             }
-        }
     }
     
     func deleteImage(docId: String){
@@ -1639,5 +1685,26 @@ class AppViewModel: ObservableObject{
                     print("Document successfully removed!")
                 }
             }
+    }
+    
+    //MARK: Chats
+    
+    func loadUserByUID(uid: String){
+        db.collection("users").document(uid).getDocument { querySnapshot, err in
+            if let err = err {
+                print("Error getting documents: \(err)")
+                self.err = err.localizedDescription
+            } else {
+                self.published.supportPersonChat = nil
+                if let  document = querySnapshot {
+                    let dictionary = document.data()
+                    if let dictionary = dictionary{
+                        
+                        let curUser = Users(data: dictionary)
+                        self.published.supportPersonChat = curUser
+                    }
+                }
+            }
+        }
     }
 }

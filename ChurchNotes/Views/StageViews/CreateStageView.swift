@@ -11,96 +11,61 @@ struct CreateStageView: View {
     @EnvironmentObject var viewModel: AppViewModel
     @State var title = ""
     @Binding var presentSheet: Bool
-    @State private var nameIsEmpty = false
-
+    
     var body: some View {
-        ZStack(alignment: .bottom){
-            VStack(alignment: .leading, spacing: 20){
-                Text("write-new-stage-name")
-                    .font(.title2)
-                    .fontWeight(.medium)
-                HStack{
-                    ZStack(alignment: .leading){
-                        if title.isEmpty {
-                            Text("have-coffee")
-                                .foregroundStyle(.secondary)
-                        }
-                        TextField("", text: $title)
+        NavigationStack{
+            List{
+                Section(header: Text("write-new-stage-name")){
+                    HStack{
+                        TextField("have-coffee", text: $title)
                             .disableAutocorrection(true)
                             .textInputAutocapitalization(.never)
-                            .opacity(0.75)
-                            .padding(0)
-                            .textContentType(.countryName)
                             .onSubmit {
                                 addItemTitle()
                             }
+                        Spacer()
+                        Image(systemName: "folder")
                     }
                 }
-                .padding(10)
-                .overlay(
-                    RoundedRectangle(cornerSize: .init(width: 7, height: 7))
-                        .stroke(Color(K.Colors.gray), lineWidth: 1)
-                )
-                Button(action: {addItemTitle()}){
+                Section{
                     Text("add")
                         .foregroundColor(Color.white)
-                        .padding(.vertical, 10)
+                        .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color(K.Colors.mainColor))
-                        .cornerRadius(7)
+                        .background(K.Colors.mainColor)
+                        .cornerRadius(10)
+                        .onTapGesture {
+                            addItemTitle()
+                        }
+                        .listRowInsets(EdgeInsets())
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            Spacer()
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding()
             .toolbar{
                 ToolbarItem(placement: .navigationBarLeading){
                     Button(action: {
                         presentSheet.toggle()
                     }){
                         Text("cancel")
-                            .foregroundColor(Color(K.Colors.mainColor))
+                            .foregroundColor(K.Colors.mainColor)
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {addItemTitle()}){
-                        Text("save")
-                            .foregroundColor(Color(K.Colors.mainColor))
+                        Text("add")
+                            .foregroundColor(K.Colors.mainColor)
                     }
                 }
-            }
-            .edgesIgnoringSafeArea(.bottom)
-            Spacer()
-            if nameIsEmpty{
-                HStack(alignment: .center){
-                    Text("stage-name-is-empty")
-                        .foregroundStyle(Color(K.Colors.justDarkGray))
-                }
-                .frame(height: 40)
-                .frame(maxWidth: .infinity)
-                .background(Color(K.Colors.justLightGray))
-                .cornerRadius(7)
-                .onTapGesture(perform: {
-                    withAnimation{
-                        nameIsEmpty = false
-                    }
-                })
-                .offset(y: nameIsEmpty ? -20 : 150)
             }
         }
-        .padding(.horizontal, 15)
     }
     
     func nameError(){
-        withAnimation{
-            nameIsEmpty = true
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-            withAnimation{
-                nameIsEmpty = false
-            }
-            }
+        Toast.shared.present(
+            title: String(localized: "stage-name-is-empty"),
+            symbol: "questionmark.square",
+            isUserInteractionEnabled: true,
+            timing: .long
+        )
     }
     
     func addItemTitle(){

@@ -184,7 +184,7 @@ struct PeopleView: View {
                                                     Button(action: {
                                                         currentItem = nil
                                                     }){
-                                                        Image(systemName: "xmark.circle")
+                                                        Text("cancel")
                                                     }
                                                 }
                                             }
@@ -209,7 +209,7 @@ struct PeopleView: View {
                 ToolbarItem(placement: .topBarTrailing, content: {
                     Button(action: {self.showAddPersonView.toggle()}){
                         Image(systemName: "person.badge.plus")
-                            .foregroundStyle(Color(K.Colors.mainColor))
+                            .foregroundStyle(K.Colors.mainColor)
                     }
                 })
                 ToolbarItem(placement: .topBarTrailing) {
@@ -239,7 +239,7 @@ struct PeopleView: View {
                         }
                     }
             }
-            .accentColor(Color(K.Colors.mainColor))
+            .accentColor(K.Colors.mainColor)
             .edgesIgnoringSafeArea(.bottom)
             .presentationDetents([.large])
         }

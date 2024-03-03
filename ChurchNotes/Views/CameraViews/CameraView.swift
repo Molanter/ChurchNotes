@@ -34,7 +34,7 @@ struct CameraView: View {
                     Rectangle ()
                         .fill(.black.opacity (0.25))
                     Rectangle()
-                        .fill(Color(K.Colors.mainColor))
+                        .fill(K.Colors.mainColor)
                         .frame(width: (size.size.width * (frontCameraModel.recordedDuration / frontCameraModel.maxDuration)))
                 }
                 .onReceive(Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()) {_ in

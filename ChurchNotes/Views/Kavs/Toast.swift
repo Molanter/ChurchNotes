@@ -112,6 +112,8 @@ fileprivate struct ToastGroup: View {
 }
 
 fileprivate struct ToastView: View {
+    @Environment(\.colorScheme) var colorScheme: ColorScheme
+
     var size: CGSize
     var item: ToastItem
     /// View Properties
@@ -126,36 +128,18 @@ fileprivate struct ToastView: View {
                     .padding(.trailing, 10)
             }
             Text(item.title)
-                .font(.system(size: 16))
+                .font(.headline)
                 .lineLimit(2)
                 .multilineTextAlignment(.leading)
             Spacer()
         }
-        .foregroundStyle(Color.white)
+        .frame(maxWidth: .infinity)
+        .foregroundStyle(returnForegraund())
         .padding(.horizontal, 15)
         .padding(.vertical, 8)
-        //        .background(
-        //            Color(K.Colors.mainColor),
-        //            .background
-        //                .shadow(.drop(color: .primary.opacity(0.06), radius: 5, x: 5, y: 5))
-        //                .shadow(.drop(color: .primary.opacity(0.06), radius: 8, x: -5, y: -5)),
-        //            in: .rect(cornerRadius: 7)
-        //            RoundedRectangle(cornerRadius: 7)
-        //                .fill(Color.black)
-        //                .opacity(0.75)
-        //                .blur(radius: 5)
-        //        )
         .background(
-            ZStack{
-                GlassBackGround(width: UIScreen.screenWidth - 30, height: 40, color: Color(K.Colors.lightGray))
-                    .shadow(color: .black, radius: 2, x: 2, y: 2)
-                TransparentBlurView(removeAllFilters: false)
-                    .blur(radius: 9, opaque: true)
-                    .background(.white.opacity(0.05))
-                    .cornerRadius(7)
-            }
+            RoundedRectangle(cornerRadius: 10).fill(returnBackground())
         )
-        .contentShape(.rect(cornerRadius: 7))
         .gesture(
             DragGesture(minimumDistance: 0)
                 .onEnded({ value in
@@ -181,10 +165,20 @@ fileprivate struct ToastView: View {
             }
         }
         /// Limiting Size
-        .frame(maxWidth: .infinity)
+//        .frame(maxWidth: .infinity)
         .padding(.horizontal, 15)
         //        .padding(.bottom, 50)
         .transition(.offset(y: 150))
+    }
+    
+    func returnBackground() -> Color{
+        var color = K.Colors.appearance == 0 && colorScheme == .light ? Color.black : (K.Colors.appearance == 2 ? Color.black : Color.white)
+        return color
+    }
+    
+    func returnForegraund() -> Color{
+        var color = K.Colors.appearance == 0 && colorScheme == .light ? Color.white : (K.Colors.appearance == 2 ? Color.white : Color.black)
+        return color
     }
     
     func removeToast() {

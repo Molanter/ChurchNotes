@@ -48,10 +48,11 @@ struct ShakeReportView: View {
                 }
                 .padding(.vertical, 10)
                 .frame(maxWidth: .infinity)
-                .background(Color(K.Colors.mainColor))
+                .background(K.Colors.mainColor)
                 .cornerRadius(7)
             }
             .padding(15)
+        Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

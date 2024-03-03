@@ -42,7 +42,7 @@ struct FinalPreview: View {
                     })
                 VStack(alignment: .leading, spacing: 15){
                     Text("recipient: \(item.name)")
-                        .font(.system(size: 18))
+                        .font(.body)
                         .padding(.top, 30)
                         .foregroundStyle(Color(K.Colors.text))
                     Button(action: {self.saveMessage()}){
@@ -109,7 +109,7 @@ struct FinalPreview: View {
                     ScrollView(.horizontal){
                         HStack(spacing: 15){
                             Button(action: {self.saveMessage()}){
-                                SendButtons(text: "save", imageName: "square.and.arrow.down", backgroundColor: Color(K.Colors.mainColor), itemColor: Color.white)
+                                SendButtons(text: "save", imageName: "square.and.arrow.down", backgroundColor: K.Colors.mainColor, itemColor: Color.white)
                             }
                             Button(action: {self.showMailComposeView = true}){
                                 SendButtons(text: "eemail", imageName: "envelope.fill", backgroundColor: Color.lightBlue, itemColor: Color.white)
@@ -125,7 +125,7 @@ struct FinalPreview: View {
                                 SendButtons(text: "message", imageName: "message.badge.filled.fill", backgroundColor: Color.lightGreen, itemColor: Color.white)
                             }
                             Button(action: {self.isShareSheetPresented = true}){
-                                SendButtons(text: "another", imageName: "square.and.arrow.up", backgroundColor: Color(K.Colors.mainColor), itemColor: Color.white)
+                                SendButtons(text: "another", imageName: "square.and.arrow.up", backgroundColor: K.Colors.mainColor, itemColor: Color.white)
                             }
                         }
                         .padding(.horizontal, 15)
@@ -143,7 +143,7 @@ struct FinalPreview: View {
                         self.dismissViewController()
                     }){
                         Text("done")
-                            .foregroundStyle(Color(K.Colors.mainColor))
+                            .foregroundStyle(K.Colors.mainColor)
                     }
                 }
             })

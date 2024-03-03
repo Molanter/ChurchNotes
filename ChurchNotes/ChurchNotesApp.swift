@@ -137,6 +137,7 @@ struct ChurchNotesApp: App {
             let googleModel = AuthenticationViewModel()
             
             IndexView()
+                .accentColor(K.Colors.mainColor)
                 .environmentObject(published)
                 .environmentObject(viewModel)
                 .environmentObject(googleModel)
@@ -157,7 +158,7 @@ struct ChurchNotesApp: App {
                         if component.contains("tab=") {
                             let tabRawValue = component.replacingOccurrences(of: "tab=", with: "")
                             if let requestedTab = Int(tabRawValue) {
-                                if requestedTab == 0 || requestedTab == 1 {
+                                if requestedTab <= 2 {
                                     published.currentTabView = requestedTab
                                 } else {
                                     published.currentTabView = 0

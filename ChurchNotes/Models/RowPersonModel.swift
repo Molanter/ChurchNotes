@@ -9,8 +9,10 @@ import SwiftUI
 
 struct RowPersonModel: View {
     @EnvironmentObject var viewModel: AppViewModel
+    @EnvironmentObject var published: PublishedVariebles
+    
     var item: Person
-
+    
     var body: some View{
             HStack{
                 ZStack(alignment: .bottomTrailing){
@@ -40,41 +42,51 @@ struct RowPersonModel: View {
                         }
                         
                     }
-                    //                                                Circle()
-                    //                                                    .overlay(
-                    //                                                        Circle().stroke(.white, lineWidth: 1)
-                    //                                                    )
-                    //                                                    .frame(width: 15)
-                    //                                                    .foregroundColor(Color(K.Colors.green))
                 }
+                
                 VStack(alignment: .leading, spacing: 3){
                     Text(item.name.capitalized )
                         .padding(.vertical, 3)
                         .fontWeight(.medium)
                         .foregroundStyle(.primary)
-                        .font(.system(size: 13))
+                        .font(.footnote)
                     HStack(spacing: 1){
                         Text(item.timestamp, format: .dateTime.month(.wide))
                         Text(item.timestamp, format: .dateTime.day())
                         Text(", \(item.timestamp, format: .dateTime.year()), ")
                         Text(item.timestamp, style: .time)
                     }
-                    .font(.system(size: 11))
+                    .font(.caption2)
                     .foregroundStyle(Color(K.Colors.lightGray))
                 }
                 Spacer()
-                Image(systemName: item.isLiked ? "\(K.favouriteSign).fill" : "")
-                    .foregroundStyle(Color(K.Colors.favouriteSignColor))
-                    .contentTransition(.symbolEffect(.replace))
-                    .padding()
-                    .onTapGesture {
-                        withAnimation{
-                            viewModel.likePerson(documentId: item.documentId, isLiked: false)
+                if !published.isEditing{
+                    Image(systemName: item.isLiked ? "\(K.favouriteSign).fill" : "")
+                        .foregroundStyle(Color(K.Colors.favouriteSignColor))
+                        .contentTransition(.symbolEffect(.replace))
+                        .padding()
+                        .onTapGesture {
+                            withAnimation{
+                                viewModel.likePerson(documentId: item.documentId, isLiked: false)
+                            }
                         }
-                    }
+                }
             }
+//            .frame(height: 40)
             .frame(maxWidth: .infinity)
-            .background(Color(K.Colors.blackAndWhite))
+            .contentShape(RoundedRectangle(cornerRadius: 10))
+            .onTapGesture(count: 2, perform: {
+                if !published.isEditing{
+                    published.deletePeopleArray.removeAll()
+                    viewModel.likePerson(documentId: item.documentId, isLiked: true)
+                }
+            })
+            .onTapGesture(count: 1, perform: {
+                if !published.isEditing{
+                    published.deletePeopleArray.removeAll()
+                    published.currentItem = item
+                }
+            })
     }
 }
 
