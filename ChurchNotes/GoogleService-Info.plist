@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>574179617459-dq2gn1jgt0nv6m5q0v1e55jib2eqbhcr.apps.googleusercontent.com</string>
+	<string>your_id</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.574179617459-dq2gn1jgt0nv6m5q0v1e55jib2eqbhcr</string>
+	<string>your_id</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAqNO4eqeev6orzzNNKnhYKUUmxlcXiMvo</string>
+	<string>your_id</string>
 	<key>GCM_SENDER_ID</key>
-	<string>574179617459</string>
+	<string>your_id</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.molanter.PrayerNavigator</string>
+	<string>your_idr</string>
 	<key>PROJECT_ID</key>
 	<string>curchnote</string>
 	<key>STORAGE_BUCKET</key>
-	<string>curchnote.appspot.com</string>
+	<string>your_id</string>
 	<key>IS_ADS_ENABLED</key>
 	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true/>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:574179617459:ios:d6a11fb0d1ad35b2ab1ec6</string>
+	<string>your_id</string>
 </dict>
 </plist>
