@@ -1283,7 +1283,7 @@ class AppViewModel: ObservableObject{
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.setValue("key=AAAAha_FqrM:APA91bFphB5J-VnxnFqeEdX2U-kjuBB9tSiKuWQSXfZ04MthgYj7FKpD_XRfonba91-xwdHZ0JyKV4NaKmPQowFnw295mr8KSnVfbcG2xvQzatDLHQFIKEfvktBGMfSB7S1a0Eq7KQVE", forHTTPHeaderField: "Authorization")
+            request.setValue("your_key", forHTTPHeaderField: "Authorization")
             
             do {
                 print("not 1")
