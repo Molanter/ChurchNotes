@@ -6,10 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AllStagesView: View {
     @EnvironmentObject var viewModel: AppViewModel
     @Environment(\.dismissSearch) private var dismissSearch
+
+    @Query var ints: [IntDataModel]
+    @Query var strings: [StringDataModel]
 
     @State private var searchText = ""
     @State private var currentItem: Person?
@@ -18,15 +22,31 @@ struct AllStagesView: View {
     @State var presentSheet = false
     @State var stage: Stage?
     @State var appStage: AppStage?
-    
     @State private var showActionSheet = false
 
-    let notify = NotificationHandler()
+    let notify = ReminderHandler()
+    
     private var sortedStages: [Stage]{
         return searchText.isEmpty ? viewModel.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex }) : viewModel.stagesArray.filter { $0.name.contains(searchText)}
     }
     private var appStages: [AppStage]{
         return searchText.isEmpty ? K.AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex }) : K.AppStages.stagesArray.filter { $0.name.contains(searchText)}
+    }
+    
+    var rowStyle: Int {
+        if let intModel = ints.first(where: { $0.name == "rowStyle" }) {
+            return intModel.int
+        }else {
+            return 0
+        }
+    }
+    
+    var backgroundType: String {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            return strModel.string
+        }else {
+            return "none"
+        }
     }
     
     var body: some View {
@@ -35,45 +55,93 @@ struct AllStagesView: View {
                     ForEach(appStages){ item in
                         VStack(alignment: .leading){
                             NavigationLink(destination: PeopleView(itemTitles: item.name)){
-                                HStack(spacing: 29){
-                                        Image(systemName: "folder.badge.gearshape")
-                                            .font(.system(size: 29))
-                                            .fontWeight(.light)
-                                            .foregroundStyle(K.Colors.mainColor, Color.primary)
-                                    VStack(alignment: .leading, spacing: 5){
+                                if rowStyle == 1 {
+                                    HStack(spacing: 20) {
+                                        ZStack(alignment: .center) {
+                                            RoundedRectangle(cornerRadius: 5)
+                                                .fill(K.Colors.colorArray[item.orderIndex])
+                                                .frame(width: 30, height: 30)
+                                            Image(systemName: "folder.badge.gearshape")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .foregroundStyle(Color.white)
+                                                .frame(width: 20, height: 20)
+                                        }
                                         Text(item.name)
-                                            .fontWeight(.semibold)
-                                            .font(.subheadline)
-                                            .foregroundStyle(.primary)
-                                        Text("\(viewModel.peopleArray.filter { $0.title.contains(item.name) }.count) people-in-stage")
+                                            .font(.body)
+                                    }
+                                    .badge(viewModel.peopleArray.filter { $0.title.contains(item.name) }.count)
+                                }else if rowStyle == 0 {
+                                    HStack(spacing: 29){
+                                            Image(systemName: "folder.badge.gearshape")
+                                                .font(.system(size: 29))
+                                                .fontWeight(.light)
+                                                .foregroundStyle(K.Colors.mainColor, Color.primary)
+                                        VStack(alignment: .leading, spacing: 5){
+                                            Text(item.name)
+                                                .fontWeight(.semibold)
+                                                .font(.subheadline)
+                                                .foregroundStyle(.primary)
+                                            HStack{
+                                                Text("\(viewModel.peopleArray.filter { $0.title.contains(item.name) }.count) ")
+                                                Text("people-in-stage")
+                                            }
                                             .font(.caption)
                                             .foregroundStyle(.secondary)
+                                        }
                                     }
                                 }
                             }
                         }
+                        .listRowBackground(
+                            GlassListRow()
+                        )
                     }
                     .accentColor(Color(K.Colors.lightGray))
                     ForEach(sortedStages){ item in
                         VStack(alignment: .leading){
                             NavigationLink(destination: PeopleView(itemTitles: item.name)){
-                                HStack(spacing: 29){
-                                        Image(systemName: "folder.badge.person.crop")
-                                            .font(.system(size: 29))
-                                            .fontWeight(.light)
-                                            .foregroundStyle(K.Colors.mainColor, Color.primary)
-                                    VStack(alignment: .leading, spacing: 5){
+                                if rowStyle == 1 {
+                                    HStack(spacing: 20) {
+                                        ZStack(alignment: .center) {
+                                            RoundedRectangle(cornerRadius: 5)
+                                                .fill(K.Colors.colorArray[item.orderIndex + 6])
+                                                .frame(width: 30, height: 30)
+                                            Image(systemName: "folder.badge.person.crop")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .foregroundStyle(Color.white)
+                                                .frame(width: 20, height: 20)
+                                        }
                                         Text(item.name)
-                                            .fontWeight(.semibold)
-                                            .font(.system(size: 15))
-                                            .foregroundStyle(.primary)
-                                        Text("\(viewModel.peopleArray.filter { $0.title.contains(item.name) }.count) people-in-stage")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
+                                            .font(.body)
+                                    }
+                                    .badge(viewModel.peopleArray.filter { $0.title.contains(item.name) }.count)
+                                }else if rowStyle == 0 {
+                                    HStack(spacing: 29){
+                                            Image(systemName: "folder.badge.person.crop")
+                                                .font(.system(size: 29))
+                                                .fontWeight(.light)
+                                                .foregroundStyle(K.Colors.mainColor, Color.primary)
+                                        VStack(alignment: .leading, spacing: 5){
+                                            Text(item.name)
+                                                .fontWeight(.semibold)
+                                                .font(.system(size: 15))
+                                                .foregroundStyle(.primary)
+                                            HStack {
+                                                Text("\(viewModel.peopleArray.filter { $0.title.contains(item.name) }.count) ")
+                                                Text("people-in-stage")
+                                            }
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                        }
                                     }
                                 }
                             }
                         }
+                        .listRowBackground(
+                            GlassListRow()
+                        )
                         .contextMenu {
                             Button {
                                 self.stage = item
@@ -123,6 +191,11 @@ struct AllStagesView: View {
             .searchable(text: $searchText,
                         placement: .navigationBarDrawer(displayMode: .automatic),
                         prompt: "search-stage")
+            
+            .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+            .background {
+                ListBackground()
+            }
             Button(action: {
                 self.presentSheet.toggle()
             }){
@@ -157,6 +230,7 @@ struct AllStagesView: View {
             .presentationDetents([.medium])
         }
         .navigationTitle("sstages")
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 

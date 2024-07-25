@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct DonePeople: View {
     @EnvironmentObject var viewModel: AppViewModel
+
+    @Query var strings: [StringDataModel]
 
     @State private var searchText = ""
     @State private var currentItem: Person?
@@ -16,7 +19,15 @@ struct DonePeople: View {
     @State private var lastItem: Person?
     @State private var isShowingDeleteAlert = false
 
-    let notify = NotificationHandler()
+    let notify = ReminderHandler()
+    
+    var backgroundType: String {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            return strModel.string
+        }else {
+            return "none"
+        }
+    }
     
     var body: some View {
         NavigationStack{
@@ -112,6 +123,9 @@ struct DonePeople: View {
                                 }
                             }
                         }
+                        .listRowBackground(
+                            GlassListRow()
+                        )
                         .actionSheet(isPresented: $isShowingDeleteAlert) {
                             ActionSheet(title: Text("delete-person"),
                                         message: Text("do-you-really-want-to-delete-this-person"),
@@ -158,6 +172,10 @@ struct DonePeople: View {
 //
 //                }
             }
+            .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+            .background {
+                ListBackground()
+            }
             .refreshable{
                 viewModel.fetchPeople()
             }
@@ -171,7 +189,8 @@ struct DonePeople: View {
             .listStyle(.plain)
             .frame(maxHeight: .infinity)
         }
-        .navigationTitle("done")
+        .navigationTitle("done-people")
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 

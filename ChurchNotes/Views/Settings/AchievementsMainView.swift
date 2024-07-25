@@ -6,77 +6,87 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AchievementsMainView: View {
     @EnvironmentObject var viewModel: AppViewModel
     
-    var badgesArray: [Badge] {
-        var array: [Badge] = []
-        let badgesInstance = K.Badges()
-        for name in viewModel.badgesArray {
-            if let badge = badgesInstance.getBadgeArray()[name] as? Badge {
-                array.append(badge)
-            }
-        }
-        return array
-    }
+    @Query var strings: [StringDataModel]
 
+    var backgroundType: String {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            return strModel.string
+        }else {
+            return "none"
+        }
+    }
 
     var body: some View {
         NavigationStack{
             List{
-                Section(header: Text("bbadges"), footer: Text("list-of-your-badges")) {
-                    ScrollView(.horizontal) {
-                        HStack(alignment: .center) {
-                            
-                            ForEach(badgesArray) { badge in
+                if !viewModel.firebadgesArray.isEmpty {
+                    Section(header: Text("bbadges"), footer: Text("list-of-your-badges")) {
+                        ScrollView(.horizontal) {
+                            HStack(alignment: .center) {
                                 
-                                Menu{
-                                    Button {
-                                        viewModel.setBadge(name: badge.strId)
-                                        viewModel.currentUser?.badge = badge.strId
-                                    } label: {
-                                        Label(String(localized: "sset-bbadge"), systemImage: badge.image)
-                                    }
-                                } label: {
-                                    VStack(spacing: 15){
-                                        ZStack(alignment: .center) {
-                                            if badge.string != "" {
-                                                Text(badge.string)
-                                                    .font(.system(size: 45))
-                                                    .fontWeight(.medium)
-                                            } else {
-                                                Image(systemName: String(badge.image))
-                                                    .font(.system(size: 45))
-                                                    .fontWeight(.medium)
-//                                                .foregroundStyle(Color(badge.color))
+                                ForEach(viewModel.firebadgesArray, id:\.strId) { badge in
+                                    
+                                    Menu{
+                                        Section {
+                                            Text(badge.name)
+                                        }
+                                        Section {
+                                            Button {
+                                                viewModel.setBadge(name: badge.strId)
+                                                viewModel.currentUser?.badge = badge.strId
+                                            } label: {
+                                                Label(String(localized: "sset-bbadge"), systemImage: badge.image)
                                             }
                                         }
-                                        Divider()
-                                            .foregroundStyle(Color(K.Colors.text))
-                                            .padding(.top, 5)
-                                        Text(badge.name)
-                                            .bold()
-                                            .font(.title2)
+                                    } label: {
+                                        VStack(spacing: 15){
+                                            ZStack(alignment: .center) {
+                                                if badge.type == "string" {
+                                                    Text(badge.string)
+                                                        .font(.system(size: 45))
+                                                        .fontWeight(.medium)
+                                                } else if badge.type == "sfSymbol" {
+                                                    Image(systemName: String(badge.image))
+                                                        .font(.system(size: 45))
+                                                        .fontWeight(.medium)
+    //                                                .foregroundStyle(Color(badge.color))
+                                                }
+                                            }
+                                            Divider()
+                                                .foregroundStyle(Color(K.Colors.text))
+                                                .padding(.top, 5)
+                                            Text(badge.name)
+                                                .bold()
+                                                .font(.title2)
+                                        }
+                                        .foregroundStyle(Color(K.Colors.text))
+                                        .padding(5)
+                                        .padding(.horizontal, 10)
+                                        .frame(width: 120, height: 150)
+                                        .background(Color(K.Colors.whiteGray))
+                                        .cornerRadius(10)
+    //                                    .shadow(color: Color(red: 0.2, green: 0.2, blue: 0.28).opacity(0.08), radius: 14, x: 0, y: 22)
+    //                                    .shadow(color: Color(red: 0.2, green: 0.2, blue: 0.28).opacity(0.08), radius: 6, x: 0, y: 14)
+                                        .padding(.horizontal, 5)
                                     }
-                                    .foregroundStyle(Color(K.Colors.text))
-                                    .padding(5)
-                                    .padding(.horizontal, 10)
-                                    .frame(width: 120, height: 150)
-                                    .background(Color(K.Colors.whiteGray))
-                                    .cornerRadius(10)
-                                    .shadow(color: Color(red: 0.2, green: 0.2, blue: 0.28).opacity(0.08), radius: 14, x: 0, y: 22)
-                                    .shadow(color: Color(red: 0.2, green: 0.2, blue: 0.28).opacity(0.08), radius: 6, x: 0, y: 14)
-                                    .padding(.horizontal, 5)
+                                    Divider()
                                 }
-                                Divider()
                             }
+                            .padding(.vertical, 10)
                         }
-                        .padding(.vertical, 10)
+                        .listRowBackground(Color.clear)
+                        .scrollIndicators(.hidden)
+                        .listRowInsets(EdgeInsets())
                     }
-                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(
+                        GlassListRow()
+                    )
                 }
-//                .listRowBackground(Color.clear)
                 Section(header: Text("next-stage"), footer: Text("achievement-for-next")) {
                     ScrollView(.horizontal){
                         HStack{
@@ -93,6 +103,9 @@ struct AchievementsMainView: View {
                     }
                     .listRowInsets(EdgeInsets())
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 .onAppear(perform: {
                     print(viewModel.currentUser?.next ?? 0)
                 })
@@ -113,7 +126,9 @@ struct AchievementsMainView: View {
                     }
                     .listRowInsets(EdgeInsets())
                 }
-//                .listRowBackground(Color.clear)
+                .listRowBackground(
+                    GlassListRow()
+                )
 //                Section(header: Text("Bloger"), footer: Text("Achievement for recording and sending videos for people.")) {
 //                    ScrollView(.horizontal){
 //                        HStack{
@@ -125,12 +140,27 @@ struct AchievementsMainView: View {
 //                        }
 //                    }
 //                }
-//                .listRowBackground(Color.clear)
+//                .listRowBackground(
+//                    GlassListRow()
+//                ) 
             }
 //            .listStyle(.grouped)
+            .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+            .background {
+                ListBackground()
+            }
+            .refreshable {
+                viewModel.fetchBadges()
+            }
             .navigationTitle("achievements")
+            .navigationBarTitleDisplayMode(.large)
+            .onAppear {
+                viewModel.fetchBadges()
+            }
         }
     }
+    
+    
 }
 
 //#Preview {

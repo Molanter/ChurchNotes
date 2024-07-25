@@ -46,7 +46,7 @@ class ImagePickerViewModel: NSObject,ObservableObject,PHPhotoLibraryChangeObserv
         // requesting Permission...
         PHPhotoLibrary.requestAuthorization(for: .readWrite) {[self] (status) in
             
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 
                 switch status{
                 

@@ -10,16 +10,16 @@ import MessageUI
 
 struct SupportSendEmailView: View {
     @EnvironmentObject var viewModel: AppViewModel
-
+    
     @State var image: UIImage?
     @State var showImagePicker = false
     @State var mailMessage = ""
     @State private var anonymously = false
     @State var showSendMail = false
-
+    
     var body: some View {
         VStack{
-            HStack(alignment: .center){
+            HStack(alignment: .top){
                 VStack(alignment: .center){
                     Button{
                         self.showImagePicker = true
@@ -33,17 +33,17 @@ struct SupportSendEmailView: View {
                                 .onTapGesture {
                                     self.showImagePicker = true
                                 }                    }else{
-                            Image(systemName: "iphone")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 75)
-                                .foregroundColor(K.Colors.mainColor)
-                                .padding(15)
-                                .fontWeight(.regular)
-                                .onTapGesture {
-                                    self.showImagePicker = true
+                                    Image(systemName: "iphone")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 75)
+                                        .foregroundColor(K.Colors.mainColor)
+                                        .padding(15)
+                                        .fontWeight(.regular)
+                                        .onTapGesture {
+                                            self.showImagePicker = true
+                                        }
                                 }
-                        }
                     }
                     .frame(width: (UIScreen.screenWidth / 4) - 15, height: (((UIScreen.screenWidth / 4) - 15) / 3) * 5)
                     Text("tap-to-change-image")
@@ -55,34 +55,37 @@ struct SupportSendEmailView: View {
                             self.showImagePicker = true
                         }
                 }
-                VStack(alignment: .leading){
-                    HStack{
+                List {
+                    Section{
                         TextField("write-here", text: $mailMessage, axis: .vertical)
-                            .lineLimit(10)
-                            .frame(alignment: .topLeading)
                     }
-                    .padding(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.gray), lineWidth: 1)
-                    )
-                    HStack{
-                        Image(systemName: anonymously ? "checkmark.square.fill" : "square")
-                            .contentTransition(.symbolEffect(.replace))
-                            .onTapGesture {
-                                self.anonymously.toggle()
-                            }
-                        Text("write-anonymously")
-                    }
-                    Button(action: {
-                        self.showSendMail = true
-                    }){
+                    Section {
+                        HStack{
+                            Image(systemName: anonymously ? "checkmark.square.fill" : "square")
+                                .contentTransition(.symbolEffect(.replace))
+                                .onTapGesture {
+                                    self.anonymously.toggle()
+                                }
+                            Text("write-anonymously")
+                        }
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden, edges: .all)
+                        .listRowInsets(EdgeInsets())
                         Text("send")
+                            .disabled(mailMessage.isEmpty)
                             .foregroundColor(Color.white)
+                            .padding(10)
+                            .frame(maxWidth: .infinity)
+                            .background(K.Colors.mainColor)
+                            .cornerRadius(10)
+                            .onTapGesture {
+                                self.showSendMail = true
+                            }
+                            .listRowBackground(Color.clear)
+                            .listRowInsets(EdgeInsets())
+                            .listRowSeparator(.hidden, edges: .all)
                     }
-                    .padding(.vertical, 10)
-                    .frame(maxWidth: .infinity)
-                    .background(K.Colors.mainColor)
-                    .cornerRadius(7)
+                    .listSectionSpacing(5)
                 }
             }
             .sheet(isPresented: $showImagePicker) {
@@ -98,6 +101,8 @@ struct SupportSendEmailView: View {
             }
             Spacer()
         }
+        .padding(.horizontal, 15)
+        .background(Color(K.Colors.listBg))
     }
 }
 
@@ -111,7 +116,7 @@ struct ImageMailComposeView: UIViewControllerRepresentable {
     var message: String
     var image: UIImage?
     private let mailComposeDelegate = MailDelegate()
-
+    
     func makeUIViewController(context: Context) -> MFMailComposeViewController {
         let vc = MFMailComposeViewController()
         vc.setToRecipients(self.recipients)
@@ -125,17 +130,17 @@ struct ImageMailComposeView: UIViewControllerRepresentable {
         vc.mailComposeDelegate = mailComposeDelegate
         return vc
     }
-
+    
     func updateUIViewController(_ uiViewController: MFMailComposeViewController, context: Context) {
         uiViewController.setToRecipients(self.recipients)
     }
-
+    
     private class MailDelegate: NSObject, MFMailComposeViewControllerDelegate {
-
+        
         func mailComposeController(_ controller: MFMailComposeViewController,
                                    didFinishWith result: MFMailComposeResult,
                                    error: Error?) {
-
+            
             controller.dismiss(animated: true)
         }
     }

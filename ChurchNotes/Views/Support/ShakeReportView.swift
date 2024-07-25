@@ -13,48 +13,52 @@ struct ShakeReportView: View {
     @EnvironmentObject var viewModel: AppViewModel
 
     var body: some View {
-        VStack(alignment: .leading){
-            VStack(alignment: .leading, spacing: 20){
+            List {
                 Text("write-issue-report")
                     .font(.title2)
                     .fontWeight(.medium)
-                HStack{
-                    TextField("write-here", text: $errorText, axis: .vertical)
-                        .lineLimit(5)
-                        .frame(alignment: .topLeading)
-                        .onSubmit {
-                            viewModel.shakeReport(anonymously, errorText: errorText)
-                            self.errorText = ""
-                        }
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
+                    .listRowSeparator(.hidden, edges: .all)
+                    Section {
+                        TextField("write-here", text: $errorText, axis: .vertical)
+                            .lineLimit(10)
+                            .onSubmit {
+                                viewModel.shakeReport(anonymously, errorText: errorText)
+                                self.errorText = ""
+                            }
+                    }
+                    .listSectionSpacing(5)
+                Section {
+                    HStack{
+                        Image(systemName: anonymously ? "checkmark.square.fill" : "square")
+                            .contentTransition(.symbolEffect(.replace))
+                            .onTapGesture {
+                                self.anonymously.toggle()
+                            }
+                        Text("write-anonymously")
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
+                    .listRowSeparator(.hidden, edges: .all)
+                        Text("report")
+                        .disabled(errorText.isEmpty)
+                            .foregroundColor(Color.white)
+                    .padding(10)
+                    .frame(maxWidth: .infinity)
+                    .background(K.Colors.mainColor)
+                    .cornerRadius(10)
+                    .onTapGesture {
+                        viewModel.shakeReport(anonymously, errorText: errorText)
+                        self.errorText = ""
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
+                    .listRowSeparator(.hidden, edges: .all)
                 }
-                .padding(10)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 5.0).stroke(Color(K.Colors.gray), lineWidth: 1)
-                )
-                HStack{
-                    Image(systemName: anonymously ? "checkmark.square.fill" : "square")
-                        .contentTransition(.symbolEffect(.replace))
-                        .onTapGesture {
-                            self.anonymously.toggle()
-                        }
-                    Text("write-anonymously")
-                }
-                Button(action: {
-                    viewModel.shakeReport(anonymously, errorText: errorText)
-                    self.errorText = ""
-                }){
-                    Text("report")
-                        .foregroundColor(Color.white)
-                }
-                .padding(.vertical, 10)
-                .frame(maxWidth: .infinity)
-                .background(K.Colors.mainColor)
-                .cornerRadius(7)
             }
-            .padding(15)
-        Spacer()
-        }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

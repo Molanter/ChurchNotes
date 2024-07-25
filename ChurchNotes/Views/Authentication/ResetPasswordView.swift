@@ -6,8 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ResetPasswordView: View{
+    @EnvironmentObject var published: PublishedVariebles
+    @EnvironmentObject var viewModel: AppViewModel
+    @Environment(\.dismiss) private var dismiss
+    
+    @Query var strings: [StringDataModel]
+
     @State var email: String = ""
     
     var loginEmail: String
@@ -15,9 +22,13 @@ struct ResetPasswordView: View{
     let restrictedEmaileSet = "!#$%^&*()?/>,<~`±§}{[]|\"÷≥≤µ˜∫√ç≈Ω`åß∂ƒ©˙∆˚¬…æ«‘“πøˆ¨¥†®´∑œ§¡™£¢∞§¶•ªº≠"
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
-    @EnvironmentObject var published: PublishedVariebles
-    @EnvironmentObject var viewModel: AppViewModel
-    @Environment(\.dismiss) private var dismiss
+    var backgroundType: String {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            return strModel.string
+        }else {
+            return "none"
+        }
+    }
     
     var body: some View {
         NavigationStack{
@@ -38,7 +49,10 @@ struct ResetPasswordView: View{
                         Image(systemName: "envelope")
                     }
                     }
-                    Section{
+                .listRowBackground(
+                    GlassListRow()
+                )
+                Section{
                         Text(published.sended ? "send-again-after: \(published.minute)s" : "send")
                             .foregroundStyle(published.sended ? Color(K.Colors.lightGray) : Color.white)
                             .padding()
@@ -69,6 +83,13 @@ struct ResetPasswordView: View{
                             .fontWeight(.bold)
                         }
                     }
+                .listRowBackground(
+                    GlassListRow()
+                )
+            }
+            .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+            .background {
+                ListBackground()
             }
             .navigationTitle("send-reset-password-email")
             .onAppear {

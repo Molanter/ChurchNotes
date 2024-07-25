@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AllPeopleView: View {
     @EnvironmentObject var viewModel: AppViewModel
 
-    let notify = NotificationHandler()
+    @Query var strings: [StringDataModel]
     
     @State private var searchText = ""
     @State private var currentItem: Person?
@@ -18,10 +19,20 @@ struct AllPeopleView: View {
     @State private var isShowingDeleteAlert = false
     @State var sheetPesonInfo = false
     
+    let notify = ReminderHandler()
+
     private var items : [Person]{
         return viewModel.peopleArray.sorted(by: { $0.name < $1.name })
     }
     
+    var backgroundType: String {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            return strModel.string
+        }else {
+            return "none"
+        }
+    }
+
     var body: some View {
         NavigationStack{
                 List{
@@ -112,6 +123,10 @@ struct AllPeopleView: View {
                                     }
                                 }
                             }
+                            
+                            .listRowBackground(
+                                GlassListRow()
+                            )
                             .actionSheet(isPresented: $isShowingDeleteAlert) {
                                 ActionSheet(title: Text("delete-person"),
                                             message: Text("do-you-really-want-to-delete-this-person"),
@@ -158,6 +173,10 @@ struct AllPeopleView: View {
     //
     //                }
                 }
+                .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+                .background {
+                    ListBackground()
+                }
                 .refreshable{
                     viewModel.fetchPeople()
                 }
@@ -173,6 +192,7 @@ struct AllPeopleView: View {
                 .frame(maxHeight: .infinity)
         }
         .navigationTitle("all-people")
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 

@@ -295,10 +295,7 @@ struct ResizableHeader: View {
             }
             if !item.phone.isEmpty{
                 NavigationLink{
-                    GeometryReader{ proxy in
-                        let size = proxy
-                        CameraView(recipients: [item.phone], message: "", size: size, item: item)
-                    }
+                        CameraView(recipients: [item.phone], message: "", item: item)
                 } label:{
                     HStack(spacing: 20){
                         ZStack{

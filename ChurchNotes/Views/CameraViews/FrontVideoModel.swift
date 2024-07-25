@@ -23,6 +23,7 @@ class FrontCameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecording
     @Published var recordedDuration: CGFloat = 0
     @Published var maxDuration: CGFloat = 30
     @Published var camera: Int = 0
+    
     func check(){
         
         switch AVCaptureDevice.authorizationStatus(for: .video){
@@ -32,8 +33,9 @@ class FrontCameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecording
         case .notDetermined:
             // retusting for permission...
             AVCaptureDevice.requestAccess(for: .video){(status) in
-                if status{
+                if status {
                     self.setUp ()
+                    print("notDetermined")
                 }
             }
         case .denied:
@@ -52,16 +54,16 @@ class FrontCameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecording
         } else {
             self.camera = 0
         }
-
+        
         // Stop and reconfigure the session with the new camera input
         self.session.stopRunning()
-
+        
         // Remove the current camera input
         if self.session.inputs.count > 0 {
-            let currentInput = self.session.inputs[0] as! AVCaptureInput
+            let currentInput = self.session.inputs[0]
             self.session.removeInput(currentInput)
         }
-
+        
         // Add the new camera input
         if let cameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: self.camera == 0 ? .front : .back) {
             let cameraInput = try? AVCaptureDeviceInput(device: cameraDevice)
@@ -71,48 +73,50 @@ class FrontCameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecording
                 }
             }
         }
-
+        
         // Restart the session
-        self.session.startRunning()
+        DispatchQueue.global(qos: .background).async {
+            self.session.startRunning()
+        }
     }
     
     func deleteAllVideos() {
-           // Delete all videos in the array
-           for url in recordedURLs {
-               do {
-                   try FileManager.default.removeItem(at: url)
-               } catch {
-                   print("Error deleting video file: \(error.localizedDescription)")
-               }
-           }
-
-           // Clear the recordedURLs array
-           recordedURLs.removeAll()
-
-           // Set previewURL to nil
-           previewURL = nil
-       }
-    
-    func deleteVideo(at index: Int) {
-            guard index >= 0, index < recordedURLs.count else {
-                return
-            }
-
-            let deletedURL = recordedURLs.remove(at: index)
-
-            // Update the preview URL if it was the deleted video
-            if previewURL == deletedURL {
-                previewURL = nil
-            }
-
-            // Optional: Delete the file from the file system
+        // Delete all videos in the array
+        for url in recordedURLs {
             do {
-                try FileManager.default.removeItem(at: deletedURL)
-                print("ok")
+                try FileManager.default.removeItem(at: url)
             } catch {
                 print("Error deleting video file: \(error.localizedDescription)")
             }
         }
+        
+        // Clear the recordedURLs array
+        recordedURLs.removeAll()
+        
+        // Set previewURL to nil
+        previewURL = nil
+    }
+    
+    func deleteVideo(at index: Int) {
+        guard index >= 0, index < recordedURLs.count else {
+            return
+        }
+        
+        let deletedURL = recordedURLs.remove(at: index)
+        
+        // Update the preview URL if it was the deleted video
+        if previewURL == deletedURL {
+            previewURL = nil
+        }
+        
+        // Optional: Delete the file from the file system
+        do {
+            try FileManager.default.removeItem(at: deletedURL)
+            print("ok")
+        } catch {
+            print("Error deleting video file: \(error.localizedDescription)")
+        }
+    }
     
     func setUp(){
         print("setUPP")
@@ -120,8 +124,6 @@ class FrontCameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecording
         do{
             
             self.session.beginConfiguration ()
-            
-            
             if let cameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera,
                                                           for: .video, position: .front) {
                 let cameraInput = try AVCaptureDeviceInput (device: cameraDevice)
@@ -152,11 +154,26 @@ class FrontCameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecording
                     self.session.addOutput (self.output)
                 }
                 self.session.commitConfiguration ()
-            } else {
+            } else if let cameraDevice = AVCaptureDevice.default(.builtInUltraWideCamera,
+                                                                 for: .video, position: .front){
+                let cameraInput = try AVCaptureDeviceInput (device: cameraDevice)
+                let audioDevice = AVCaptureDevice.default(for: .audio)
+                let audioInput = try AVCaptureDeviceInput (device: audioDevice!)
+                
+                if self.session.canAddInput (cameraInput) && self.session.canAddInput (audioInput){
+                    self.session.addInput (cameraInput)
+                    self.session.addInput (audioInput)
+                }
+                
+                if self.session.canAddOutput (self.output) {
+                    self.session.addOutput (self.output)
+                }
+                self.session.commitConfiguration ()
+            }else {
                 fatalError("Missing expected back camera device.")
             }
         }
-            
+        
         catch{
             print(error.localizedDescription)
         }
@@ -233,7 +250,7 @@ class FrontCameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecording
             lastTime = CMTimeAdd (lastTime, asset.duration)
         }
         let tempURL = URL(fileURLWithPath: NSTemporaryDirectory() + "Reel-\(Date()).mp4")
-
+        
         let layerInstructions = AVMutableVideoCompositionLayerInstruction(assetTrack: videoTrack)
         
         var transform = CGAffineTransform.identity
@@ -247,12 +264,12 @@ class FrontCameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecording
         
         let videoComposition = AVMutableVideoComposition()
         videoComposition.renderSize = CGSize(width: videoTrack.naturalSize.height, height:
-        videoTrack.naturalSize.width)
+                                                videoTrack.naturalSize.width)
         videoComposition.instructions = [instructions]
         videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 30)
         
         guard let exporter = AVAssetExportSession (asset: compostion, presetName:
-        AVAssetExportPresetHighestQuality) else{return}
+                                                    AVAssetExportPresetHighestQuality) else{return}
         exporter.outputFileType = .mp4
         exporter.outputURL = tempURL
         exporter.videoComposition = videoComposition
@@ -262,25 +279,30 @@ class FrontCameraModel: NSObject, ObservableObject, AVCaptureFileOutputRecording
 
 struct FrontCameraPreview: UIViewRepresentable {
     @EnvironmentObject var camera : FrontCameraModel
-    var size: GeometryProxy
     
     func makeUIView(context: Context) -> UIView {
-        let view = UIView()
-            camera.preview = AVCaptureVideoPreviewLayer (session: camera.session)
-            camera.preview.frame.size = UIScreen.screenSize
+            let view = UIView()
+            camera.setUp()
             
-            camera.preview.videoGravity = .resizeAspectFill
-            view.layer.addSublayer (camera.preview)
-            
-            camera.session.startRunning()
-        return view
-    }
-    
-    func updateUIView(_ uiView: UIView, context: Context) {
+            DispatchQueue.global(qos: .background).async {
+                camera.session.startRunning()
+            }
+            return view
+        }
         
-            
-    }
+        func updateUIView(_ uiView: UIView, context: Context) {
+            // Update the AVCaptureVideoPreviewLayer's frame size
+            if let previewLayer = camera.preview {
+                DispatchQueue.main.async {
+                    previewLayer.frame = uiView.bounds
+                }
+            } else {
+                camera.preview = AVCaptureVideoPreviewLayer(session: camera.session)
+                camera.preview?.videoGravity = .resizeAspectFill
+                camera.preview?.frame = uiView.bounds
+                uiView.layer.addSublayer(camera.preview!)
+            }
+        }
 }
-
 
 

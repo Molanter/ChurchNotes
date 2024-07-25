@@ -7,7 +7,6 @@ target 'ChurchNotes' do
 
   # Pods for ChurchNotes
 
-
 pod 'FirebaseFirestore'	
 pod 'FirebaseAuth'	
 pod 'FirebaseStorage'	
@@ -19,7 +18,6 @@ pod 'Firebase/Messaging'
 pod 'GoogleSignIn'
 pod 'GoogleSignInSwift'
 pod 'Firebase/Functions'
-
 
 end
 

@@ -6,9 +6,7 @@
 //
 
 import SwiftUI
-import FirebaseAuth
-import FirebaseStorage
-import FirebaseFirestore
+import SwiftData
 
 
 struct ItemView: View {
@@ -17,19 +15,16 @@ struct ItemView: View {
     @Environment(\.isSearching) private var isSearching
     @Environment(\.dismissSearch) private var dismissSearch
     
+    @Query var strings: [StringDataModel]
+
     @State var showAddPersonView = false
-    @State var presentSheet = false
-    @State var finishImage: Data?
-    @State var sheetPesonInfo = false
-    @State var searchTab: Int = 0
     @State private var lastItem: Person?
     @State private var isShowingDeleteAlert = false
     @State var presentStageSheet = false
-    @State var showActionSheet = false
-    @State var deleteItem: Notifics?
     @State private var arrayToDelete: [String] = []
     @State private var showDeleteToast = false
-    let notify = NotificationHandler()
+    @State private var arrayToSharePeople: [Person] = []
+    @State private var showSearchView = false
     
     private var sortedAppStages: [AppStage]{
         return K.AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })
@@ -45,16 +40,16 @@ struct ItemView: View {
         return viewModel.peopleArray.filter { $0.title.contains(itemTitles) }.sorted(by: { $0.orderIndex < $1.orderIndex }).sorted(by: { $0.isLiked && !$1.isLiked })
     }
     
-    //        init() {
-    //                let appearance = UINavigationBarAppearance()
-    //                appearance.shadowColor = .clear
-    //                UINavigationBar.appearance().standardAppearance = appearance
-    //                UINavigationBar.appearance().scrollEdgeAppearance = appearance
-    //        }
-    
+    private var backgroundType: String {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            return strModel.string
+        }else {
+            return "none"
+        }
+    }
     
     var body: some View{
-        NavigationView{
+        NavigationStack {
             ZStack{
                 if isSearching{
                     SearchView()
@@ -68,52 +63,13 @@ struct ItemView: View {
                             }
                         }
                 }else{
-//                    List(selection: $published.deletePeopleArray){
-                        if published.nowStage == 0{
-                            appStages
-                        }else if published.nowStage == 1{
-                            if !sortedStages.isEmpty{
-                                youStages
-                            }else{
-                                VStack(alignment: .leading, spacing: 10, content: {
-                                    Image(systemName: "questionmark.folder")
-                                        .font(.largeTitle)
-                                    Text("you-do-not-have-your-own-stages-yet")
-                                        .font(.title)
-                                        .bold()
-                                    Text("create-your-first-stage-to-see-it-here")
-                                        .font(.title2)
-                                    Button(action: {
-                                        self.presentStageSheet.toggle()
-                                    }){
-                                        HStack{
-                                            Spacer()
-                                            Text("create")
-                                                .foregroundColor(Color.white)
-                                                .padding(.vertical, 10)
-                                                .padding(.leading)
-                                            Image(systemName: "folder.badge.plus")
-                                                .foregroundColor(Color.white)
-                                                .padding(.leading)
-                                            Spacer()
-                                        }
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .background(K.Colors.mainColor)
-                                    .cornerRadius(7)
-                                })
-                                .padding(.horizontal, 15)
-                            }
+                    if !filteredItems.isEmpty {
+                            stages
+                        }else if sortedStages.isEmpty, published.nowStage == 1{
+                            NoStageView(presentStageSheet: $presentStageSheet)
+                        }else if viewModel.peopleArray.isEmpty {
+                            NoPeopleView(presentStageSheet: $showAddPersonView)
                         }
-//                    }
-//                    .refreshable{
-//                        viewModel.fetchPeople()
-//                    }
-//                    .scrollContentBackground(.hidden)
-//                    .listStyle(.plain)
-//                    .environment(\.editMode, .constant(published.isEditing ? EditMode.active : EditMode.inactive)).animation(Animation.default)
-                    
-
                 }
                 VStack{
                     Spacer()
@@ -132,11 +88,9 @@ struct ItemView: View {
                                 }
                         }
                         .foregroundStyle(Color(K.Colors.blackAndWhite))
-                        .padding(.horizontal,10)
-                        .padding(.vertical, 10)
+                        .padding([.horizontal, .vertical],10)
                         .background(RoundedRectangle(cornerRadius: 10).fill(Color(K.Colors.text)))
-                        .padding(.horizontal, 15)
-                        .padding(.bottom, 15)
+                        .padding([.horizontal, .bottom], 15)
                         .transition(.offset(y: 200))
                     }
                 }
@@ -165,11 +119,22 @@ struct ItemView: View {
                     })
                 }
                 if !filteredItems.isEmpty{
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button(published.isEditing ? "Done" : "Edit"){
-                            withAnimation{
-                                published.isEditing.toggle()
+                    if published.device == .phone {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button(published.isEditing ? "done" : "edit"){
+                                withAnimation{
+                                    published.isEditing.toggle()
+                                }
                             }
+                        }
+                    }else {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button(published.isEditing ? "done" : "edit"){
+                                withAnimation{
+                                    published.isEditing.toggle()
+                                }
+                            }
+                            .foregroundStyle(K.Colors.mainColor)
                         }
                     }
                 }
@@ -181,34 +146,86 @@ struct ItemView: View {
                 if published.isEditing{
                     ToolbarItem(placement: .bottomBar) {
                         HStack{
-                                Button{
-                                    published.isEditing = false
-                                    if !published.deletePeopleArray.isEmpty{
-                                        showDeletingToast()
-                                    }
-                                    arrayToDelete = Array(published.deletePeopleArray)
-                                    print(published.deletePeopleArray)
-                                }label: {
-                                    Text("delete")
+                            Button{
+                                published.isEditing = false
+                                if !published.selectPeopleArray.isEmpty{
+                                    showDeletingToast()
                                 }
-                                .disabled(published.deletePeopleArray.isEmpty)
-                                Spacer()
+                                arrayToDelete = Array(published.selectPeopleArray)
+                                print(published.selectPeopleArray)
+                            }label: {
+                                Label("delete", systemImage: "trash.fill")
+                            }
+                            .disabled(published.selectPeopleArray.isEmpty)
+                            Button{
+                                let peopleArray = viewModel.peopleArray.filter { person in
+                                    published.selectPeopleArray.contains(person.id)
+                                }
+                                if moreFavourite(Array(published.selectPeopleArray)) {
+                                    for person in peopleArray {
+                                        viewModel.likePerson(documentId: person.documentId, isLiked: false)
+                                        withAnimation{
+                                            viewModel.fetchPeople()
+                                        }
+                                    }
+                                }else {
+                                    for person in peopleArray {
+                                        viewModel.likePerson(documentId: person.documentId, isLiked: true)
+                                        withAnimation{
+                                            viewModel.fetchPeople()
+                                        }
+                                    }
+                                }
+                                published.isEditing = false
+                            }label: {
+                                Label("favourite", systemImage: moreFavourite(Array(published.selectPeopleArray)) ? "heart" : "heart.fill")
+                            }
+                            .disabled(published.selectPeopleArray.isEmpty)
+                            Spacer()
                             HStack{
-                                Text("\(published.deletePeopleArray.count) ")
+                                Text("\(published.selectPeopleArray.count) ")
                                 Text("people-selected")
                             }
-                                .foregroundStyle(Color.white)
-                                Spacer()
-                                Button{
-                                    self.published.deletePeopleArray.removeAll()
-                                }label: {
-                                    Text("un-select")
+                            .foregroundStyle(Color(K.Colors.text))
+                            Spacer()
+                            Button{
+                                self.arrayToSharePeople = viewModel.peopleArray.filter { person in
+                                    published.selectPeopleArray.contains(person.id)
                                 }
-                                .disabled(published.deletePeopleArray.isEmpty)
+                                self.showSearchView.toggle()
+                            }label: {
+                                Label("share-people", systemImage: "square.and.arrow.up")
+                            }
+                            .disabled(published.selectPeopleArray.isEmpty)
+                            Button{
+                                self.published.selectPeopleArray.removeAll()
+                            }label: {
+                                Label("un-select", systemImage: "person.2.slash.fill")
+                            }
+                            .disabled(published.selectPeopleArray.isEmpty)
                         }
                     }
                 }
             })
+            .navigationDestination(isPresented: $showSearchView) {
+                SearchPersonView()
+                    .navigationBarBackButtonHidden()
+                    .accentColor(Color(K.Colors.text))
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button {
+                                self.showSearchView = false
+                            }label: {
+                                HStack(spacing: 10){
+                                    Image(systemName: "chevron.left")
+                                    Text("back")
+                                    Spacer()
+                                }
+                                .foregroundStyle(Color(K.Colors.text))
+                            }
+                        }
+                    }
+            }
             .toolbarTitleMenu {
                 Button("app-stages") {
                     if published.nowStage == 1{
@@ -236,75 +253,60 @@ struct ItemView: View {
                 .presentationDetents([.medium])
             }
             .sheet(isPresented: $showAddPersonView){
-                NavigationStack{
                     AddPersonView(showAddPersonView: $showAddPersonView, createName: self.published.createPersonName, offset: filteredItems.startIndex, stageName: itemTitles, titleNumber: published.currentTab, count: viewModel.peopleArray.count)
-                        .toolbar{
-                            ToolbarItem(placement: .topBarLeading){
-                                Button(action: {
-                                    self.showAddPersonView.toggle()
-                                }){
-                                    Text("cancel")
-                                }
-                            }
-                        }
-                }
-                .accentColor(K.Colors.mainColor)
-                .edgesIgnoringSafeArea(.bottom)
                 .presentationDetents([.large])
             }
             .sheet(item: $published.currentItem, onDismiss: nil){ item in
-                NavigationStack{
-                    ItemPersonView(item: item, currentItem: $published.currentItem)
-                        .onDisappear(perform: {
-                            if viewModel.moved == 1{
-                                withAnimation{
-                                    published.currentTab += 1
-                                    viewModel.moved = 0
-                                }
-                            }else if viewModel.moved == 2{
-                                withAnimation{
-                                    published.currentTab -= 1
-                                    viewModel.moved = 0
-                                }
-                            }
-                        })
-                        .toolbar{
-                            ToolbarItem(placement: .topBarLeading){
-                                Button(action: {
-                                    published.currentItem = nil
-                                }){
-                                    Text("cancel")
-                                }
-                            }
-                        }
-                }
-                .accentColor(Color.white)
+                ItemPersonView(item: item, currentItem: $published.currentItem)
             }
+            .sheet(isPresented: $published.showShare, content: {
+                SharePersonView(people: arrayToSharePeople)                        
+            })
             .navigationBarTitleDisplayMode(.inline)
         }
     }
     
-    var appStages: some View {
-        List(selection: $published.deletePeopleArray){
-            Section(header: TopBarView(currentTab: self.$published.currentTab, showAddStage: false, array: sortedStages, appArray: sortedAppStages, app: true)){
+    var stages: some View {
+        List(selection: $published.selectPeopleArray){
+            Section(header: published.nowStage == 0 ? TopBarView(currentTab: self.$published.currentTab, showAddStage: false, array: sortedStages, appArray: sortedAppStages, app: true) : TopBarView(currentTab: self.$published.currentTab, showAddStage: false, array: sortedStages, appArray: sortedAppStages, app: false)) {
                 ForEach(filteredItems){ item in
                     if item.isCheked == false && item.isDone == false{
-                        RowPersonModel(item: item)
+                        ZStack {
+                            if published.device == .phone {
+                                RowPersonModel(item: item)
+                            }else {
+                                NavigationLink(
+                                    destination: ItemPersonView(item: item, currentItem: $published.currentSplitItem),
+                                    isActive: Binding(
+                                    get: { published.currentSplitItem == item },
+                                    set: { newValue in
+                                        published.currentSplitItem = newValue ? item : nil
+                                     }
+                                )){
+                                    RowPersonModel(item: item)
+                                }
+                            }
+                        }
+                        .listRowBackground(
+                            GlassListRow(people: true)
+                        )
                             .swipeActions(edge: .leading) {
-                                Button(action: {
-                                    self.lastItem = item
-                                    self.nextStage()
-                                } ) {
-                                    Label("next-stage", systemImage: "arrowshape.turn.up.right")
+                                if published.nowStage == 0 {
+                                    Button(action: {
+                                        self.lastItem = item
+                                        self.nextStage()
+                                    } ) {
+                                        Label("next-stage", systemImage: "arrowshape.turn.up.right")
+                                    }
                                 }
                             }
                             .swipeActions(edge: .trailing){
-                                Button(role: .destructive){
-                                    self.lastItem = item
-                                    self.isShowingDeleteAlert = true
-                                }label: {
-                                    Label("delete", systemImage: "trash")
-                                }
+                                    Button(role: .destructive){
+                                        self.lastItem = item
+                                        self.isShowingDeleteAlert = true
+                                    }label: {
+                                        Label("delete", systemImage: "trash")
+                                    }
                             }
                             .actionSheet(isPresented: Binding(
                                 get: { self.isShowingDeleteAlert && lastItem != nil },
@@ -324,6 +326,7 @@ struct ItemView: View {
                                                     withAnimation{
                                                         viewModel.deletePerson(documentId: lastItem?.documentId ?? item.documentId)
                                                         isShowingDeleteAlert = false
+                                                        viewModel.fetchPeople()
                                                     }
                                                 }
                                             ]
@@ -337,46 +340,55 @@ struct ItemView: View {
                                         }else{
                                             viewModel.likePerson(documentId: item.documentId, isLiked: true)
                                         }
+                                        viewModel.fetchPeople()
                                     }
                                 } label: {
                                     Label("favourite", systemImage: item.isLiked ? "\(K.favouriteSign).fill" : "\(K.favouriteSign)")
                                         .accentColor(Color(K.Colors.favouriteSignColor))
                                         .contentTransition(.symbolEffect(.replace))
                                 }
-                                if published.currentTab != 0{
-                                    Button{
-                                        self.lastItem = item
-                                        previousStage()
-                                    } label: {
-                                        Label("previous-stage", systemImage: "arrowshape.turn.up.left")
+                                if published.nowStage == 0 {
+                                    if published.currentTab != 6{
+                                        Button{
+                                            self.lastItem = item
+                                            self.nextStage()
+                                        } label: {
+                                            Label("next-stage", systemImage: "arrowshape.turn.up.right")
+                                        }
                                     }
-                                    
+                                    if published.currentTab != 0{
+                                        Button{
+                                            self.lastItem = item
+                                            previousStage()
+                                        } label: {
+                                            Label("previous-stage", systemImage: "arrowshape.turn.up.left")
+                                        }
+                                        
+                                    }
                                 }
-                                if published.currentTab != 6{
-                                    Button{
-                                        self.lastItem = item
-                                        self.nextStage()
-                                    } label: {
-                                        Label("next-stage", systemImage: "arrowshape.turn.up.right")
-                                    }
+                                Button {
+                                    self.arrayToSharePeople = []
+                                    arrayToSharePeople.append(item)
+                                    self.showSearchView.toggle()
+                                }label: {
+                                    Label("share-person", systemImage: "square.and.arrow.up")
                                 }
-                                
-                                Button(role: .destructive) {
-                                    self.lastItem = item
-                                    withAnimation{
-                                        self.isShowingDeleteAlert = true
+                                Section {
+                                    Button(role: .destructive) {
+                                        self.lastItem = item
+                                        withAnimation{
+                                            self.isShowingDeleteAlert = true
+                                        }
+                                    } label: {
+                                        Label("delete", systemImage: "trash")
                                     }
-                                } label: {
-                                    Label("delete", systemImage: "trash")
                                 }
                             }
                     }
                 }
                 .onMove(perform: { index, int in
                     var updatedItems = filteredItems
-                    
                     updatedItems.move(fromOffsets: index, toOffset: int)
-                    
                     for (index, item) in updatedItems.enumerated() {
                         updatedItems[index].orderIndex = index
                         viewModel.changeorderIndex(documentId: item.documentId, orderIndex: index)
@@ -389,81 +401,10 @@ struct ItemView: View {
         .refreshable{
             viewModel.fetchPeople()
         }
-        .scrollContentBackground(.hidden)
-        .listStyle(.plain)
-    }
-    
-    var youStages: some View {
-        List(selection: $published.deletePeopleArray){
-            Section(header: TopBarView(currentTab: self.$published.currentTab, showAddStage: false, array: sortedStages, appArray: sortedAppStages, app: false)){
-                ForEach(filteredItems){ item in
-                    if item.isCheked == false && item.isDone == false{
-                        RowPersonModel(item: item)
-                            .swipeActions(edge: .trailing){
-                                Button(role: .destructive){
-                                    self.lastItem = item
-                                    self.isShowingDeleteAlert = true
-                                }label: {
-                                    Label("delete", systemImage: "trash")
-                                }
-                            }
-                            .actionSheet(isPresented: Binding(
-                                get: { self.isShowingDeleteAlert && lastItem != nil },
-                                set: { newValue in
-                                    if !newValue {
-                                        self.isShowingDeleteAlert = false
-                                    }
-                                }
-                            )) {
-                                ActionSheet(title: Text("delete-person"),
-                                            message: Text("do-you-really-want-to-delete-this-person"),
-                                            buttons: [
-                                                .cancel(),
-                                                .destructive(
-                                                    Text("delete")
-                                                ){
-                                                    withAnimation{
-                                                        viewModel.deletePerson(documentId: lastItem?.documentId ?? item.documentId)
-                                                        isShowingDeleteAlert = false
-                                                    }
-                                                }
-                                            ]
-                                )
-                            }
-                            .contextMenu {
-                                Button{
-                                    withAnimation{
-                                        if item.isLiked{
-                                            viewModel.likePerson(documentId: item.documentId, isLiked: false)
-                                        }else{
-                                            viewModel.likePerson(documentId: item.documentId, isLiked: true)
-                                        }
-                                    }
-                                } label: {
-                                    Label("favourite", systemImage: item.isLiked ? "\(K.favouriteSign).fill" : "\(K.favouriteSign)")
-                                        .accentColor(Color(K.Colors.favouriteSignColor))
-                                        .contentTransition(.symbolEffect(.replace))
-                                }
-                                Button(role: .destructive) {
-                                    self.lastItem = item
-                                    withAnimation{
-                                        self.isShowingDeleteAlert = true
-                                    }
-                                } label: {
-                                    Label("delete", systemImage: "trash")
-                                }
-                            }
-                    }
-                }
-                .padding(.horizontal, 0)
-            }
-            .frame(maxHeight: .infinity)
+        .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+        .background {
+            ListBackground()
         }
-        .environment(\.editMode, .constant(published.isEditing ? EditMode.active : EditMode.inactive))
-        .refreshable{
-            viewModel.fetchPeople()
-        }
-        .scrollContentBackground(.hidden)
         .listStyle(.plain)
     }
     
@@ -472,6 +413,10 @@ struct ItemView: View {
         self.viewModel.addAchiv(name: "next", int: num + 1)
         print(num + 0)
         viewModel.nextStage(documentId: lastItem?.documentId ?? "", titleNumber: published.currentTab)
+        
+        let newName = K.AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })[(self.lastItem?.titleNumber ?? 0) + 1].name
+        self.lastItem?.title = newName
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             if viewModel.moved == 1{
                 withAnimation {
@@ -509,6 +454,10 @@ struct ItemView: View {
         self.viewModel.addAchiv(name: "next", int: num != 0 ? num - 1 : 0)
         print(num + 0)
         viewModel.previousStage(documentId: lastItem?.documentId ?? "", titleNumber: published.currentTab)
+        
+        let newName = K.AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })[(self.lastItem?.titleNumber ?? 0) - 1].name
+        self.lastItem?.title = newName
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             if viewModel.moved == 2{
                 withAnimation {
@@ -530,6 +479,7 @@ struct ItemView: View {
             }
             if !published.deleteCanceled{
                 deleteSelectedSet()
+                viewModel.fetchPeople()
             }else {
                 published.deleteCanceled = false
             }
@@ -543,6 +493,24 @@ struct ItemView: View {
             viewModel.deletePerson(documentId: person)
         }
         print("Finished loop")
+        viewModel.fetchPeople()
+    }
+
+    private func moreFavourite(_ array: [String]) -> Bool{
+        let peopleArray = viewModel.peopleArray.filter { person in
+            published.selectPeopleArray.contains(person.id)
+        }
+        let favArray = peopleArray.filter { person in
+            person.isLiked == true
+        }
+        let unFuvArray = peopleArray.filter { person in
+            person.isLiked == false
+        }
+        if favArray.count > unFuvArray.count {
+            return true
+        }else {
+            return false
+        }
     }
 }
 

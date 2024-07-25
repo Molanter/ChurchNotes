@@ -12,17 +12,24 @@ import FirebaseFirestore
 import FirebaseStorage
 import AuthenticationServices
 import Combine
-
+import iPhoneNumberField
+import SwiftData
+import LocalAuthentication
 
 struct LoginPage: View {
-    @EnvironmentObject var viewModel: AppViewModel
-    @EnvironmentObject var googleModel: AuthenticationViewModel
-    @StateObject private var appleModel = AuthenticationViewModel()
+//    @EnvironmentObject var viewModel: AppViewModel
+    @State private var authModel = AuthViewModel()
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var published: PublishedVariebles
+    @Environment(\.modelContext) var modelContext
     
+    @Query var credentials: [Credential]
+    @Query var ints: [IntDataModel]
+    @Query var strings: [StringDataModel]
+    @Query var bools: [BoolDataModel]
+
     @FocusState var focus: FocusedField?
-    
+
     @State var phone = ""
     @State var email = ""
     @State var createPassword = ""
@@ -46,27 +53,50 @@ struct LoginPage: View {
     @State var showWhyAuthInfo = false
     @State var showProgressView = false
     @State var showForgot = false
-    
+    @State private var isAuthorized = false
+    @State private var pass = ""
+    @State private var showAskPass = false
+    @State private var emailToLogin = ""
+    @State private var passToLogin = ""
+    @State var wrongPass = 0
+
     let restrictedUsernameSet = "!@#$%^&*()+?/.>,<~`±§}{[]|\"÷≥≤µ˜∫√ç≈Ω`åß∂ƒ©˙∆˚¬…æ«‘“πøˆ¨¥†®´∑œ§¡™£¢∞§¶•ªº–≠"
     let restrictedEmaileSet = "!#$%^&*()?/>,<~`±§}{[]|\"÷≥≤µ˜∫√ç≈Ω`åß∂ƒ©˙∆˚¬…æ«‘“πøˆ¨¥†®´∑œ§¡™£¢∞§¶•ªº≠"
     let maxLength = 20
     
-    private func signInWithEmailPassword() {
-        Task {
-            if await googleModel.signInWithEmailPassword() == true {
-                dismiss()
-            }
+    let width = UIScreen.screenWidth / 5
+
+    var appPass: String {
+        if let boolModel = strings.first(where: { $0.name == "appPass" }), let str = published.decrypt(boolModel.string) {
+            return str
+        } else {
+            return ""
         }
     }
     
-    private func signInWithGoogle() {
-        Task {
-            if await googleModel.signInWithGoogle() == true {
-                dismiss()
-            }
+    var secure: Bool {
+        if let boolModel = bools.first(where: { $0.name == "appSecure" }) {
+            return boolModel.bool
+        } else {
+            return false
         }
     }
     
+    var appPassType: Int {
+        if let intModel = ints.first(where: { $0.name == "appPassType" }) {
+            return Int(intModel.int)
+        }else {
+            return 1
+        }
+    }
+    
+    var backgroundType: String {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            return strModel.string
+        }else {
+            return "none"
+        }
+    }
     
     var body: some View{
         ZStack(alignment: .center){
@@ -118,134 +148,127 @@ struct LoginPage: View {
                     }
                     .background(K.Colors.mainColor)
                     .cornerRadius(10)
-                    //                Text("or")
-                    //                    .padding(.vertical, 30)
-                    //
-                    //                VStack(spacing: 15){
-                    //                    Button(action:{
-                    //
-                    //                    }){
-                    //                        ZStack{
-                    //                            RoundedRectangle(cornerRadius: 7)
-                    //                                .frame(maxWidth: .infinity)
-                    //                                .foregroundStyle(Color(K.Colors.darkBlue))
-                    //                            HStack{
-                    //                                Image(systemName: "envelope")
-                    //                                    .resizable()
-                    //                                    .aspectRatio(contentMode: .fit)
-                    //                                    .frame(width: 28)
-                    //                                    .foregroundStyle(Color.white)
-                    //                                    .padding()
-                    //                                Rectangle()
-                    //                                    .frame(width: 1, height: 30)
-                    //                                    .foregroundStyle(Color.white)
-                    //                                Spacer()
-                    //                            }
-                    //                            Text("Sign with Email Link")
-                    //                                .foregroundStyle(Color.white)
-                    //                                .padding()
-                    //                                .font(.system(size: 18))
-                    //                        }
-                    //                        .frame(height: 50)
-                    //                    }
-                    //                    VStack(spacing: 15){
-                    //                        Button(action:{
-                    //                            appleModel.reset()
-                    //                            presentingLoginScreen.toggle()
-                    //                        }){
-                    //                            ZStack{
-                    //                                RoundedRectangle(cornerRadius: 7)
-                    //                                    .frame(maxWidth: .infinity)
-                    //                                    .foregroundStyle(Color.black)
-                    //                                HStack{
-                    //                                    Image(systemName: "apple.logo")
-                    //                                        .resizable()
-                    //                                        .aspectRatio(contentMode: .fit)
-                    //                                        .frame(width: 28)
-                    //                                        .foregroundStyle(Color.white)
-                    //                                        .padding()
-                    //                                    Rectangle()
-                    //                                        .frame(width: 1, height: 30)
-                    //                                        .foregroundStyle(Color.white)
-                    //                                    Spacer()
-                    //                                }
-                    //                                Text("Sign In with Apple")
-                    //                                    .foregroundStyle(Color.white)
-                    //                                    .padding()
-                    //                                    .font(.system(size: 18))
-                    //                            }
-                    //                            .frame(height: 50)
-                    //                        }
-                    //
-                    //
-                    //                        SignInWithAppleButton(
-                    //                                        onRequest: { request in
-                    //                                            request.requestedScopes = [.fullName, .email]
-                    //                                        },
-                    //                                        onCompletion: { result in
-                    //                                            switch result {
-                    //                                            case .success(let authResults):
-                    //                                                if let credential = authResults.credential as? ASAuthorizationAppleIDCredential {
-                    //                                                    if let appleIDTokenData = credential.identityToken, let appleIDTokenString = String(data: appleIDTokenData, encoding: .utf8) {
-                    //                                                        // Retrieve the Apple ID token and set it to the state variable
-                    //                                                        appleIDToken = appleIDTokenString
-                    //
-                    //                                                        // Sign in with Firebase using the Apple ID token.
-                    //                                                        let firebaseCredential = OAuthProvider.credential(withProviderID: "apple.com", idToken: appleIDTokenString)
-                    //
-                    //                                                        Auth.auth().signIn(with: firebaseCredential) { authResult, error in
-                    //                                                            if let error = error {
-                    //                                                                print("Error signing in with Apple: \(error.localizedDescription)")
-                    //                                                            } else {
-                    //                                                                // Handle successful sign-in.
-                    //                                                                print("Successfully signed in with Apple.")
-                    //                                                            }
-                    //                                                        }
-                    //                                                    } else {
-                    //                                                        // Handle other cases if needed.
-                    //                                                    }
-                    //                                                } else {
-                    //                                                    // Handle other cases if needed.
-                    //                                                }
-                    //                                            case .failure(let error):
-                    //                                                // Handle the failure case.
-                    //                                                print("Failed to sign in with Apple: \(error.localizedDescription)")
-                    //                                            }
-                    //                                        }
-                    //                                    )
-                    //
-                    //
-                    //
-                    //                        Button(action:{
-                    //                            signInWithGoogle()
-                    //                        }){
-                    //                            ZStack{
-                    //                                RoundedRectangle(cornerRadius: 7)
-                    //                                    .frame(maxWidth: .infinity)
-                    //                                    .foregroundStyle(Color(K.Colors.justLightGray))
-                    //                                HStack{
-                    //                                    Image("google-icon")
-                    //                                        .resizable()
-                    //                                        .aspectRatio(contentMode: .fit)
-                    //                                        .frame(height: 25)
-                    //                                        .foregroundStyle(Color(K.Colors.justDarkGray))
-                    //                                        .padding()
-                    //                                    Rectangle()
-                    //                                        .frame(width: 1, height: 30)
-                    //                                        .foregroundStyle(Color(K.Colors.justDarkGray))
-                    //                                    Spacer()
-                    //                                }
-                    //                                Text("Sign In with Google")
-                    //                                    .foregroundStyle(Color(K.Colors.justDarkGray))
-                    //                                    .padding()
-                    //                                    .font(.system(size: 18))
-                    //                            }
-                    //                            .frame(height: 50)
-                    //                        }
-                    //                    }
+                    if !credentials.isEmpty {
+                        Text("or")
+                            .padding(.vertical, 30)
+                        if credentials.count >= 5 {
+                            ScrollView(.horizontal) {
+                                HStack(alignment: .center) {
+                                    ForEach(credentials, id: \.self) { cred in
+                                        Menu {
+                                            Button(role: .destructive) {
+                                                let array = credentials.filter { cr in
+                                                    cr.email == cred.email
+                                                }
+                                                for model in array {
+                                                    self.modelContext.delete(model)
+                                                }
+                                            }label: {
+                                                Label("delete", systemImage: "trash")
+                                            }
+                                            Button {
+                                                showAskPass = true
+                                                if let email = published.decrypt(cred.email), let pass = published.decrypt(cred.password) {
+                                                    emailToLogin = email
+                                                    passToLogin = pass
+                                                }
+                                            }label: {
+                                                Label("sign-in", systemImage: "arrow.right")
+                                            }
+                                            if let email = published.decrypt(cred.email) {
+                                                Text(email.lowercased())
+                                            }
+                                        }label: {
+                                            VStack(alignment: .center, spacing: 0) {
+                                                if let img = cred.image {
+                                                    Image(uiImage: UIImage(data: img)!)
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .frame(width: 50, height: 50)
+                                                        .clipShape(.circle)
+                                                }else {
+                                                    Image(systemName: "person.crop.circle.fill")
+                                                        .resizable()
+                                                        .symbolRenderingMode(.multicolor)
+                                                        .foregroundStyle(Color(K.Colors.lightGray), .white)
+                                                        .aspectRatio(contentMode: .fit)
+                                                        .frame(width: 50, height: 50)
+                                                        .clipShape(.circle)
+                                                }
+                                                Text("\(cred.username.prefix(10).lowercased())\(cred.username.count > 10 ? "..." : "")")
+                                                    .bold()
+                                                    .foregroundStyle(Color(K.Colors.text))
+                                                    .lineLimit(1)
+                                                    .truncationMode(.tail)
+                                                    .padding()
+                                                
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }else {
+                            HStack(alignment: .center) {
+                                ForEach(credentials, id: \.self) { cred in
+                                    Menu {
+                                        Button(role: .destructive) {
+                                            let array = credentials.filter { cr in
+                                                cr.email == cred.email
+                                            }
+                                            for model in array {
+                                                self.modelContext.delete(model)
+                                            }
+                                        }label: {
+                                            Label("delete", systemImage: "trash")
+                                        }
+                                        Button {
+                                            if let email = published.decrypt(cred.email), let pass = published.decrypt(cred.password) {
+                                                emailToLogin = email
+                                                passToLogin = pass
+                                                if secure {
+                                                    showAskPass = true
+                                                }else {
+                                                    loginAfterAuth()
+                                                }
+                                            }
+                                        }label: {
+                                            Label("sign-in", systemImage: "arrow.right")
+                                        }
+                                        if let email = published.decrypt(cred.email) {
+                                            Text(email.lowercased())
+                                        }
+                                    }label: {
+                                        VStack(alignment: .center, spacing: 0) {
+                                            if let img = cred.image {
+                                                Image(uiImage: UIImage(data: img)!)
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                    .frame(width: 50, height: 50)
+                                                    .clipShape(.circle)
+                                            }else {
+                                                Image(systemName: "person.crop.circle.fill")
+                                                    .resizable()
+                                                    .symbolRenderingMode(.multicolor)
+                                                    .foregroundStyle(Color(K.Colors.lightGray), .white)
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(width: 50, height: 50)
+                                                    .clipShape(.circle)
+                                            }
+                                            Text("\(cred.username.prefix(10).lowercased())\(cred.username.count > 10 ? "..." : "")")
+                                                .bold()
+                                                .foregroundStyle(Color(K.Colors.text))
+                                                .lineLimit(1)
+                                                .truncationMode(.tail)
+                                                .padding()
+                                            
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     Spacer()
                         .frame(maxWidth: .infinity)
-                    //                }
                 }
                 .sheet(isPresented: $showWhyAuthInfo, content: {
                     NavigationStack{
@@ -277,7 +300,18 @@ struct LoginPage: View {
         }
         .accentColor(K.Colors.mainColor)
         .modifier(DismissingKeyboard())
-        .frame(maxWidth: .infinity)
+        .frame(minWidth: 200, idealWidth: 500, maxWidth: 700)
+        .fullScreenCover(isPresented: $showAskPass, content: {
+            PassOrBiometricView(
+                isPresented: $showAskPass,
+                pass: $pass,
+                wrongPass: $wrongPass,
+                appPass: appPass,
+                appPassType: appPassType,
+                width: width,
+                addToCheckPass: addToCheckPass
+            )
+        })
     }
     var register: some View {
         
@@ -296,6 +330,9 @@ struct LoginPage: View {
                     .listRowInsets(EdgeInsets())
                     .frame(maxWidth: .infinity)
                 ){}
+                    .listRowBackground(
+                        GlassListRow()
+                    )
                 Section(header:
                             Button (action: {
                     showImagePicker.toggle()
@@ -331,6 +368,9 @@ struct LoginPage: View {
                     .listRowInsets(EdgeInsets())
                     .frame(maxWidth: .infinity)
                 ){}
+                    .listRowBackground(
+                        GlassListRow()
+                    )
                 Section(header: Text("full-name")){
                     HStack{
                         TextField("name", text: $name)
@@ -343,6 +383,9 @@ struct LoginPage: View {
                         Image(systemName: "person")
                     }
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 Section(header: Text("create-username")){
                     HStack{
                         TextField("username-low", text: $username)
@@ -353,7 +396,7 @@ struct LoginPage: View {
                             .keyboardType(.namePhonePad)
                             .textCase(.lowercase)
                             .textContentType(.username)
-                            .foregroundStyle(username == "" ? Color(K.Colors.text) : (viewModel.isAvailable ? Color( K.Colors.text) : Color(red: 1, green: 0.39, blue: 0.49)))
+                            .foregroundStyle(username == "" ? Color(K.Colors.text) : (authModel.isAvailable ? Color( K.Colors.text) : Color(red: 1, green: 0.39, blue: 0.49)))
                         Spacer()
                         Image(systemName: "at")
                     }
@@ -366,10 +409,13 @@ struct LoginPage: View {
                             if username.count > maxLength {
                                 username = String(newValue.prefix(maxLength))
                             }
-                            viewModel.checkUsernameAvailability(username: newValue)
+                            authModel.checkUsernameAvailability(username: newValue)
                         }
                     })
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 Section(header: Text("eemail")){
                     HStack{
                         TextField(String("email@example.com"), text: $email)
@@ -394,6 +440,9 @@ struct LoginPage: View {
                             }
                     }
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 Section(header: Text("country")){
                     HStack{
                         TextField("country", text: $country)
@@ -413,24 +462,35 @@ struct LoginPage: View {
                             }
                     }
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 Section(header: Text("pphone")){
                     HStack{
-                        TextField("pphone", text: $phone)
-                            .submitLabel(.next)
+                        iPhoneNumberField(String(localized: "pphone"), text: $phone)
+                            .flagHidden(false)
+                            .flagSelectable(true)
+                            .maximumDigits(10)
+                            .prefixHidden(false)
+                            .ignoresSafeArea(.keyboard, edges: .bottom)
                             .focused($focus, equals: .phone)
                             .textInputAutocapitalization(.never)
-                            .disableAutocorrection(true)
+                            .disableAutocorrection(false)
                             .textContentType(.telephoneNumber)
                             .keyboardType(.numberPad)
+                            .textSelection(.enabled)
                         Spacer()
                         Image(systemName: "phone")
                     }
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 Section(header: Text("password")){
                     HStack{
                         Group{
                             if !showPassword{
-                                SecureField("∙∙∙∙∙∙∙∙", text: $createPassword)
+                                SecureField("••••••••", text: $createPassword)
                                     .submitLabel(.next)
                                     .focused($focus, equals: .createPass)
                                     .disableAutocorrection(true)
@@ -439,7 +499,7 @@ struct LoginPage: View {
                             }else{
                                 TextField("create-password", text: $createPassword)
                                     .submitLabel(.next)
-                                    .foregroundColor(Color(K.Colors.lightGray))
+                                    .foregroundColor(published.passwordSecure ? Color(K.Colors.lightGray) : Color.red)
                                     .disableAutocorrection(true)
                                     .textInputAutocapitalization(.never)
                                     .textContentType(.newPassword)
@@ -454,10 +514,13 @@ struct LoginPage: View {
                                 }
                             }
                     }
+                    if !createPassword.isEmpty {
+                        PasswordRules(pass: $createPassword)
+                    }
                     HStack{
                         Group{
                             if !showPassword{
-                                SecureField("∙∙∙∙∙∙∙∙", text: $repeatPassword)
+                                SecureField("••••••••", text: $repeatPassword)
                                     .submitLabel(.done)
                                     .focused($focus, equals: .repeatPass)
                                     .disableAutocorrection(true)
@@ -481,23 +544,38 @@ struct LoginPage: View {
                                 }
                             }
                     }
+                    if !createPassword.isEmpty, !repeatPassword.isEmpty {
+                        Label("pass-match", systemImage: createPassword == repeatPassword ? "checkmark" : "xmark")
+                            .foregroundStyle(createPassword == repeatPassword ? Color.green : Color.red)
+                            .font(.caption)
+                    }
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 Section{
                     Text("sign-up")
-                        .foregroundStyle(Color.white)
+                        .foregroundStyle(email.isEmpty && username.isEmpty && !published.passwordSecure && createPassword != repeatPassword ? Color.white : Color.black)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(K.Colors.mainColor)
+                        .background(!email.isEmpty && !username.isEmpty && published.passwordSecure && createPassword == repeatPassword ? K.Colors.mainColor : Color.secondary)
                         .cornerRadius(10)
                         .onTapGesture {
-                            registerFunc()
+                            if !email.isEmpty,!username.isEmpty, published.passwordSecure, createPassword == repeatPassword {
+                                registerFunc()
+                            }
                         }
                         .listRowInsets(EdgeInsets())
                     Section{
-                        if viewModel.err != ""{
-                            Text(viewModel.err)
+                        if authModel.errorMessage != "" {
+                            Text(authModel.errorMessage)
                                 .foregroundStyle(Color(K.Colors.red))
                                 .padding(.horizontal, 15)
+                                .listRowBackground(Color.clear)
+                                .textCase(nil)
+                                .listRowInsets(EdgeInsets())
+                                .frame(maxWidth: .infinity)
+                            
                         }
                     }footer: {
                         HStack{
@@ -508,17 +586,23 @@ struct LoginPage: View {
                                 .onTapGesture {
                                     self.showRegister = false
                                     self.showLogin = true
-                                    viewModel.err = ""
+                                    authModel.errorMessage = ""
                                 }
                             Spacer()
                         }
-                        .listRowInsets(EdgeInsets())
                         .listRowBackground(Color.clear)
                         .textCase(nil)
                         .listRowInsets(EdgeInsets())
                         .frame(maxWidth: .infinity)
                     }
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
+            }
+            .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+            .background {
+                ListBackground()
             }
             .onSubmit {
                 switch focus {
@@ -566,9 +650,9 @@ struct LoginPage: View {
     }
     
     private func registerFunc(){
-        if createPassword == repeatPassword && viewModel.isAvailable == true{
-            viewModel.register(email: email, password: createPassword, image: image, name: name, userName: username.lowercased(), country: country, phone: phone)
-            errReg = viewModel.err
+        if createPassword == repeatPassword, authModel.isAvailable == true, published.passwordSecure {
+            authModel.register(email: email, password: createPassword, image: image, name: name, userName: username.lowercased(), country: country, phone: phone, modelContext: modelContext)
+            errReg = authModel.errorMessage
             self.showProgressView = true
         }else if name == ""{
             //            viewModel.err = "name-field-is-empty"
@@ -578,7 +662,7 @@ struct LoginPage: View {
                 isUserInteractionEnabled: true,
                 timing: .long
             )
-        }else if viewModel.isAvailable == false{
+        }else if authModel.isAvailable == false{
             //            viewModel.err = "username-is-not-available"
             Toast.shared.present(
                 title: String(localized: "username-is-not-available"),
@@ -593,6 +677,13 @@ struct LoginPage: View {
                 symbol: "lock.rectangle.on.rectangle",
                 isUserInteractionEnabled: true,
                 timing: .long
+            )
+        }else if !published.passwordSecure {
+            Toast.shared.present(
+                title: String(localized: "passwords-is-not-secure"),
+                symbol: "exclamationmark.lock",
+                isUserInteractionEnabled: true,
+                timing: .medium
             )
         }
     }
@@ -612,6 +703,9 @@ struct LoginPage: View {
                     .listRowInsets(EdgeInsets())
                     .frame(maxWidth: .infinity)
                 ){}
+                    .listRowBackground(
+                        GlassListRow()
+                    )
                 Section(header: Text("eemail")){
                     HStack{
                         TextField(String("email@example.com"), text: $email)
@@ -631,11 +725,14 @@ struct LoginPage: View {
                             }
                     }
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 Section(header: Text("password")){
                     HStack{
                         Group{
                             if !showPassword{
-                                SecureField("∙∙∙∙∙∙∙∙", text: $password)
+                                SecureField("••••••••", text: $password)
                                     .submitLabel(.done)
                                     .focused($focus, equals: .loginPass)
                                     .disableAutocorrection(true)
@@ -657,43 +754,55 @@ struct LoginPage: View {
                         }
                     }
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 Section(header:
                             HStack{
-                                Spacer()
-                                    Text("forgot-password")
-                                        .font(.subheadline)
-                                        .foregroundStyle(K.Colors.mainColor)
-                                        .onTapGesture {
-                                            self.showForgot.toggle()
-                                        }
-                            }
+                    Spacer()
+                    Text("forgot-password")
+                        .font(.subheadline)
+                        .foregroundStyle(K.Colors.mainColor)
+                        .onTapGesture {
+                            self.showForgot.toggle()
+                        }
+                }
                     .padding(.bottom, 10)
-                            .navigationDestination(isPresented: $showForgot) {
-                                ResetPasswordView(loginEmail: email)
-                            }
+                    .navigationDestination(isPresented: $showForgot) {
+                        ResetPasswordView(loginEmail: email)
+                    }
                     .textCase(nil)
                     .listRowInsets(EdgeInsets())
                     .frame(maxWidth: .infinity)
                 ){
                     Text("log-in")
-                        .foregroundStyle(Color.white)
+                        .foregroundStyle(email.isEmpty && password.isEmpty ? Color.black : Color.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(K.Colors.mainColor)
+                        .background(email.isEmpty && password.isEmpty ? Color.secondary : K.Colors.mainColor)
                         .cornerRadius(10)
                         .onTapGesture {
-                            viewModel.login(email: email, password: password)
-                            errLog = viewModel.err
-                            if viewModel.err == ""{
-                                self.showProgressView = true
+                            if !email.isEmpty, !password.isEmpty {
+                                authModel.login(email: email, password: password, modelContext: modelContext)
+                                errLog = authModel.errorMessage
+                                if authModel.errorMessage == ""{
+                                    self.showProgressView = true
+                                }
                             }
                         }
                         .listRowInsets(EdgeInsets())
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 Section{
-                    if viewModel.err != ""{
-                        Text(viewModel.err)
+                    if authModel.errorMessage != ""{
+                        Text(authModel.errorMessage)
                             .foregroundStyle(Color(K.Colors.pink))
+                            .listRowBackground(Color.clear)
+                            .textCase(nil)
+                            .listRowInsets(EdgeInsets())
+                            .frame(maxWidth: .infinity)
                     }
                 }footer: {
                     HStack{
@@ -704,7 +813,7 @@ struct LoginPage: View {
                             .onTapGesture {
                                 self.showLogin = false
                                 self.showRegister = true
-                                viewModel.err = ""
+                                authModel.errorMessage = ""
                             }
                         Spacer()
                     }
@@ -714,15 +823,22 @@ struct LoginPage: View {
                     .listRowInsets(EdgeInsets())
                     .frame(maxWidth: .infinity)
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
+            }
+            .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+            .background {
+                ListBackground()
             }
             .onSubmit {
                 switch focus {
                 case .loginEmail:
                     focus = .loginPass
                 case .loginPass:
-                    viewModel.login(email: email, password: password)
-                    errLog = viewModel.err
-                    if viewModel.err == ""{
+                    authModel.login(email: email, password: password, modelContext: modelContext)
+                    errLog = authModel.errorMessage
+                    if authModel.errorMessage == ""{
                         self.showProgressView = true
                     }
                 default:
@@ -737,17 +853,82 @@ struct LoginPage: View {
                     }
                 }
             })
-            .onChange(of: viewModel.err) {
-                errReg = viewModel.err
+            .onChange(of: authModel.errorMessage) {
+                errReg = authModel.errorMessage
+                if !errLog.isEmpty || !errReg.isEmpty {
+                    self.showProgressView = false
+                }
             }
             .modifier(DismissingKeyboard())
         }
     }
     
-    
-    
     enum FocusedField:Hashable{
         case name, username, loginEmail, registerEmail, phone, country, loginPass, createPass, repeatPass
+    }
+    
+    func addToCheckPass(_ str: String) {
+        print("cheekiing...")
+        let limit = appPassType == 1 ? 4 : (appPassType == 2 ? 6 : 100)
+        if limit == 100 || str == "123" {
+            if pass == appPass {
+                print("here 2")
+                pass = ""
+                wrongPass = 0
+                showAskPass = false
+                loginAfterAuth()
+            }else {
+                if wrongPass <= 9 {
+                    wrongPass += 1
+                    Toast.shared.present(
+                        title: String(localized: "wrong-current-pass"),
+                        symbol: "wrongwaysign",
+                        isUserInteractionEnabled: true,
+                        timing: .short
+                    )
+                }else {
+//                    if let userId = viewModel.currentUser?.uid {
+//                        viewModel.updateStatus(status: "block", uid: userId)
+//                    }
+                }
+            }
+        }else {
+            if pass.count < limit - 1 {
+                pass += str
+            }else if pass.count == limit - 1 {
+                pass += str
+                if pass == appPass {
+                    print("here 1")
+                    pass = ""
+                    wrongPass = 0
+                    showAskPass = false
+                    loginAfterAuth()
+                }else {
+                    print(wrongPass + 1)
+                    if wrongPass <= 9 {
+                        wrongPass += 1
+                        Toast.shared.present(
+                            title: String(localized: "wrong-current-pass"),
+                            symbol: "wrongwaysign",
+                            isUserInteractionEnabled: true,
+                            timing: .short
+                        )
+                    }else {
+//                        if let userId = viewModel.currentUser?.uid {
+//                            viewModel.updateStatus(status: "block", uid: userId)
+//                        }
+                    }
+                }
+            }
+        }
+    }
+
+    
+    
+    
+    private func loginAfterAuth() {
+        print("here 3")
+        authModel.login(email: emailToLogin, password: passToLogin, createIcon: false, modelContext: modelContext)
     }
 }
 

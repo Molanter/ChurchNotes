@@ -9,9 +9,13 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseStorage
 import FirebaseFirestore
+import SwiftData
 
 struct PeopleView: View {
     @EnvironmentObject var viewModel: AppViewModel
+    
+    @Query var strings: [StringDataModel]
+
     @State var showAddPersonView = false
     @State private var searchText = ""
     @State var presentSheet = false
@@ -21,16 +25,15 @@ struct PeopleView: View {
     @State private var currentItem: Person?
     @State private var lastItem: Person?
     @State private var isShowingDeleteAlert = false
-    let notify = NotificationHandler()
+    
+    let notify = ReminderHandler()
    
-    
-    
-    
     var itemTitles: String
     
     private var people: [Person] {
         return viewModel.peopleArray.filter { $0.title.contains(itemTitles) }
     }
+    
     private var filteredNames: [Person] {
         if searchText.isEmpty {
             return people.sorted(by: { $0.orderIndex < $1.orderIndex })
@@ -44,6 +47,14 @@ struct PeopleView: View {
             return filteredNames.sorted(by: { $0.isLiked && !$1.isLiked })
         } else {
             return filteredNames.filter { $0.name.contains(searchText) }
+        }
+    }
+    
+    var backgroundType: String {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            return strModel.string
+        }else {
+            return "none"
         }
     }
     
@@ -150,7 +161,6 @@ struct PeopleView: View {
                                     } message: {
                                         Text("do-you-really-want-to-delete-this-person")
                                     }
-                                    
                                     .contextMenu {
                                         Button{
                                             withAnimation{
@@ -175,7 +185,10 @@ struct PeopleView: View {
                                         }
                                     }
                                 }
-                                
+                            
+                            .listRowBackground(
+                                GlassListRow()
+                            )
                                 .sheet(item: $currentItem, onDismiss: nil){ item in
                                     NavigationStack{
                                         ItemPersonView(item: item, currentItem: $currentItem)
@@ -205,10 +218,14 @@ struct PeopleView: View {
                     .padding(.horizontal, 0)
 //                }
             }
+            .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+            .background {
+                ListBackground()
+            }
             .toolbar(content: {
                 ToolbarItem(placement: .topBarTrailing, content: {
                     Button(action: {self.showAddPersonView.toggle()}){
-                        Image(systemName: "person.badge.plus")
+                        Label("add-person", systemImage: "person.badge.plus")
                             .foregroundStyle(K.Colors.mainColor)
                     }
                 })
@@ -222,10 +239,6 @@ struct PeopleView: View {
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "search-name")
             .tabViewStyle(.page(indexDisplayMode: .never))
         }
-        
-        
-        
-
         .sheet(isPresented: $showAddPersonView){
             NavigationStack{
                 AddPersonView(showAddPersonView: $showAddPersonView, offset: filteredItems.startIndex, stageName: itemTitles, titleNumber: currentTab, count: filteredItems.count)
@@ -245,6 +258,7 @@ struct PeopleView: View {
         }
         .frame(maxHeight: .infinity)
         .navigationTitle(itemTitles)
+        .navigationBarTitleDisplayMode(.large)
     }
     
     

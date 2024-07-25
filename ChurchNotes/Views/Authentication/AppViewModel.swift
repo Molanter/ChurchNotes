@@ -12,43 +12,54 @@ import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
 import FirebaseFunctions
+import SwiftData
 
+final
 class AppViewModel: ObservableObject{
+    @Published var credentials: [Credential] = []
+    
     //    var ref: DatabaseReference! = Database.database().reference()
     @Published var errorMessage = ""
     @Published var peopleArray = [Person]()
+    @Published var peopleaskToShareArray = [Person]()
     @Published var stagesArray = [Stage]()
+    @Published var prayingWithArray = [User]()
     @Published var messagesArray = [MessageModel]()
     @Published var supportMessageArray = [LastMessageModel]()
-    @Published var tokensArray: [String] = []
+    @Published var notificationArray = [NotificationModel]()
+    @Published var tokensArray = [String]()
     @Published var badgesArray: [String] = []
+    @Published var firebadgesArray: [FireBadge] = []
+
     @Published var achievementsArray = [Achievements]()
-    @Published var notificationsArray = [Notifics]()
     @Published var usernameIsTaken = false
-    @Published var isAvailable = false
     @Published var signedIn = false
     @Published var isAuthenticated = false
     @Published var isProfileFinished = false
     @Published var passwordReseted: String?
-    @Published var currentUser: Users?
+    @Published var currentUser: User?
     @Published var moved: Int = 0
+
+    
+    @Published var isAvailable = false
+
     var db = Firestore.firestore()
     var storage = Storage.storage().reference(forURL: "gs://curchnote.appspot.com")
     var auth = Auth.auth()
     @Published var err = ""
     @State var profileImage = ""
+    let deviceName = "\(UIDevice.current.name) \(UIDevice.current.systemName) \(UIDevice.current.systemVersion)"
     
     var published = PublishedVariebles()
+    private var authModel = AuthViewModel()
     
     var isSignedIn: Bool{
         return auth.currentUser != nil
     }
     
-    private var sortedStages: [AppStage]{
+    var sortedStages: [AppStage]{
         return K.AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })
     }
-    
-    
     
     
     //MARK: Reports
@@ -154,6 +165,8 @@ class AppViewModel: ObservableObject{
     
     //MARK: People
     
+    
+    
     func nextStage(documentId: String, titleNumber: Int){
         let ref = db.collection("people").document(documentId)
         
@@ -170,6 +183,7 @@ class AppViewModel: ObservableObject{
                     print("Error while updating profile:  -\(error)")
                 }else{
                     self.moved = 1
+                    self.fetchPeople()
                     print("profile is updated! \(newName) \(titleNumber)")
                 }
             }
@@ -192,6 +206,7 @@ class AppViewModel: ObservableObject{
                         print("Error while updating profile:  -\(error)")
                     }else{
                         self.moved = 2
+                        self.fetchPeople()
                         print("profile is updated! \(newName) \(titleNumber)")
                     }
                 }
@@ -203,9 +218,11 @@ class AppViewModel: ObservableObject{
         
         // Atomically update the userId dictionary by adding a new entry
         documentRef.setData([
-            "userId.\(newuserId)": [
-                "isLiked": false,
-                "orderIndex": 0
+            "userId": [
+                newuserId: [
+                    "isLiked": false,
+                    "orderIndex": 0
+                ]
             ]
         ], merge: true) { error in
             if let error = error {
@@ -255,34 +272,65 @@ class AppViewModel: ObservableObject{
     }
     
     func fetchPeople(){
-        print("fetch")
-        guard let userId = auth.currentUser?.uid else { return }
-        db.collection("people")
-            .whereField("userId.\(userId)", isNotEqualTo: [])
-            .addSnapshotListener { [self] querySnapshot, error in
-                if let err = error {
-                    self.errorMessage = err.localizedDescription
-                    print("Error: \(err.localizedDescription)")
-                } else {
-                    peopleArray.removeAll()
-                    querySnapshot?.documents.forEach { queryDocumentSnapshot in
-                        let data = queryDocumentSnapshot.data()
-                        let docId = queryDocumentSnapshot.documentID
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+        
+        let peopleRef = Firestore.firestore().collection("people")
+        peopleRef
+            .whereField("userId.\(userId)", isNotEqualTo: NSNull())
+            .getDocuments { [weak self] (querySnapshot, error) in
+                if let error = error {
+                    print("Error fetching documents: \(error)")
+                } else if let documents = querySnapshot?.documents {
+                    var processedPeopleArray: [Person] = []
+                    
+                    for document in documents {
+                        let data = document.data()
+                        let docId = document.documentID
                         
-                        if let userIdsDict = data["userId"] as? [String: [String: Any]],
-                           let userDict = userIdsDict[userId],
+                        // Assuming 'userId' is a map within each 'people' document
+                        if let userIdMap = data["userId"] as? [String: Any],
+                           let userDict = userIdMap[userId] as? [String: Any],
                            let isLiked = userDict["isLiked"] as? Bool,
-                           var orderIndex = userDict["orderIndex"] as? Int {
-                            var personModel = Person(documentId: docId, data: data, isLiked: isLiked, orderIndex: orderIndex)
-                            self.peopleArray.append(personModel)
+                           let orderIndex = userDict["orderIndex"] as? Int {
+                            
+                            let personModel = Person(
+                                documentId: docId,
+                                data: data, // Pass the entire data if needed
+                                isLiked: isLiked,
+                                orderIndex: orderIndex,
+                                userId: Array(userIdMap.keys) // Assuming keys are user IDs you're interested in
+                            )
+                            processedPeopleArray.append(personModel)
                         } else {
-                            print("userId or isLiked not found in the document")
+                            print("userId map or its properties not found in the document")
                         }
                     }
+                    
+                    self?.peopleArray = processedPeopleArray
+                } else {
+                    print("No documents found")
                 }
             }
     }
     
+    
+    func fethPrayingWith(userId: String){
+        db.collection("users").document(userId).getDocument { querySnapshot, err in
+            if let err = err {
+                print("Error getting documents: \(err)")
+                self.err = err.localizedDescription
+            } else {
+                self.currentUser = nil
+                if let  document = querySnapshot {
+                    let dictionary = document.data()
+                    if let dictionary = dictionary{
+                        let curUser = User(data: dictionary)
+                        self.prayingWithArray.append(curUser)
+                    }
+                }
+            }
+        }
+    }
     
     func handleSend(name: String, notes: String, email: String, title: String, phone: String, imageData: UIImage?, orderIndex: Int, isCheked: Bool, isLiked: Bool, isDone: Bool, birthDay: Date, timestamp: Date, titleNumber: Int) {
         guard let userId = auth.currentUser?.uid else {
@@ -308,8 +356,6 @@ class AppViewModel: ObservableObject{
                     "orderIndex": orderIndex
                 ]
             ]
-            //            "userId": [userId],
-            //            "isLiked": [false]
         ]
         
         if let imageData = imageData, let imageDat = imageData.jpegData(compressionQuality: 0.4) {
@@ -571,7 +617,16 @@ class AppViewModel: ObservableObject{
                                 if let error = error{
                                     print("Error while updating profile:  -\(error)")
                                 }else{
-                                    
+                                    if let encryptedEmail = self.published.encrypt(Auth.auth().currentUser?.email ?? "", key: K.key()) {
+                                        let modelsWithSameEmail = self.credentials.filter { $0.email == encryptedEmail }
+                                        if !modelsWithSameEmail.isEmpty {
+                                            for model in modelsWithSameEmail {
+                                                if let newPass = self.published.encrypt(newEmail, key: K.key()) {
+                                                    model.password = newPass
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         self.logOut()
@@ -616,17 +671,78 @@ class AppViewModel: ObservableObject{
                         let dictionary = document.data()
                         if let dictionary = dictionary{
                             
-                            let curUser = Users(data: dictionary)
+                            let curUser = User(data: dictionary)
                             self.currentUser = curUser
+                            for model in self.credentials {
+                                if let decryptedEmail = self.published.decrypt(model.email) {
+                                    if decryptedEmail == curUser.email {
+                                        print("Models with the same email exist")
+                                        
+                                        if let url = URL(string: curUser.profileImageUrl), let img = self.published.getImageData(url: url) {
+                                            model.image = img
+                                            model.username = curUser.username
+                                        }
+                                    }
+                                } else {
+                                    print("No models with the same email exist")
+                                }
+                            }
+                            print(self.credentials.count)
                         }
                     }
                 }
             }
-            
         }
-        
     }
     
+    func fetchAppSecure(completion: @escaping (Bool) -> Void) {
+        if let userID = Auth.auth().currentUser?.uid {
+            db.collection("users").document(userID).getDocument { querySnapshot, err in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                    completion(false) // Return false in case of an error
+                } else {
+                    if let document = querySnapshot, let dictionary = document.data() {
+                        if let secureApp = dictionary["secureApp"] as? Bool {
+                            completion(secureApp)
+                        }else {
+                            let ref = self.db.collection("users").document(userID)
+                            
+                            ref.updateData(
+                                ["secureApp": false
+                                ]){error in
+                                    if let error = error{
+                                        print("Error while updating profile:  -\(error)")
+                                    }else{
+                                        print("secureApp is updated!")
+                                    }
+                                }
+                        }
+                    } else {
+                        completion(false) // Return false if no document is found
+                    }
+                }
+            }
+        } else {
+            completion(false) // Return false if userID is nil
+        }
+    }
+    
+    func changeAppSecure(_ bool: Bool) {
+        if let userID = Auth.auth().currentUser?.uid {
+            let ref = self.db.collection("users").document(userID)
+            
+            ref.updateData(
+                ["secureApp": bool
+                ]){error in
+                    if let error = error{
+                        print("Error while updating profile:  -\(error)")
+                    }else{
+                        print("secureApp is updated!")
+                    }
+                }
+        }
+    }
     
     //MARK: Password
     
@@ -655,6 +771,16 @@ class AppViewModel: ObservableObject{
                 if let error = error {
                     self.err = "password-update-failed: \(error.localizedDescription)"
                 } else {
+                    if let encryptedEmail = self.published.encrypt(Auth.auth().currentUser?.email ?? "", key: K.key()) {
+                        let modelsWithSameEmail = self.credentials.filter { $0.email == encryptedEmail }
+                        if !modelsWithSameEmail.isEmpty {
+                            for model in modelsWithSameEmail{
+                                if let password = self.published.encrypt(newPassword, key: K.key()){
+                                    model.password = password
+                                }
+                            }
+                        }
+                    }
                     self.err = "password-updated-successfully"
                 }
             }
@@ -730,188 +856,90 @@ class AppViewModel: ObservableObject{
     
     
     //MARK: Acount
+    
+    func deleteUserAccount() {
+        let user = Auth.auth().currentUser
+        
+        user?.delete { error in
+            if let error = error {
+                
+            } else {
+                
+            }
+        }
+    }
+    func deleteProfile(modelContext: ModelContext){
+        guard let userId = auth.currentUser?.uid else {
+            return
+        }
+        
+        db.collection("users")
+            .document(userId)
+            .delete() { err in
+                if let err = err {
+                    print("Error removing document: \(err)")
+                } else {
+                    if let encryptedEmail = self.published.encrypt(Auth.auth().currentUser?.email ?? "", key: K.key()) {
+                        let modelsWithSameEmail = self.credentials.filter { $0.email == encryptedEmail }
+                        if !modelsWithSameEmail.isEmpty {
+                            for model in modelsWithSameEmail {
+                                modelContext.delete(model)
+                            }
+                        }
+                    }
+                    print("Profile successfully removed!")
+                }
+            }
+    }
+    
     func logOut(){
         do {
+            removeDeviceFromUser()
             try Auth.auth().signOut()
-            self.signedIn = false
-            self.isProfileFinished = false
+            authModel.signedIn = false
         } catch let signOutError as NSError {
             print("Error signing out: %@", signOutError)
         }
     }
     
-    func login(email: String, password: String){
-        auth.signIn(withEmail: email, password: password) { [weak self] authResult, error in
-            if error != nil {
-                self?.err = error!.localizedDescription
-            }else{
-                self?.signedIn = true
-                self?.err = ""
-                print("User logined succesfuly!")
-            }
-        }
-        self.isProfileFinished = true
-    }
-    
-    func register(email: String, password: String, image: UIImage?, name: String, userName: String, country: String, phone: String){
-        auth.createUser(withEmail: email, password: password) { [weak self] authResult, error in
-            if error != nil{
-                self?.err = error!.localizedDescription
-            }else{
-                if image == nil{
-                    print("image == nil")
-                    self?.profileImage = ""
-                    guard let uid = Auth.auth().currentUser?.uid else { return }
-                    let dictionary: Dictionary <String, Any> = [
-                        "uid": uid,
-                        "email": email,
-                        "name": name,
-                        "timeStamp": Date.now,
-                        "username": userName,
-                        "notifications": false,
-                        "notificationTime": Date.now,
-                        "notes": "",
-                        //                        "dateOfBirth": dateOfBirth,
-                        "country": country,
-                        "profileImageUrl": "",
-                        "phoneNumber": phone,
-                        "status": "",
-                        "role": "user"
-                    ]
-                    self!.db.collection("users").document(uid).setData(dictionary) { err in
-                        if let err = err {
-                            print("Error writing document: \(err.localizedDescription)")
-                        } else {
-                            self?.err = ""
-                            self?.signedIn = true
-                            print("Document successfully written!")
-                        }
-                        
-                        
-                    }
-                    self!.db.collection("usernames").document(userName).setData(
-                        ["username": userName,
-                         "uid": uid
-                        ]) { error in
-                            if let error = error {
-                                print("Error adding document: \(error)")
-                            } else {
-                                print("Document added with ID: \(userName)")
-                            }
-                        }
-                    print("User created succesfuly! with no image!)")
-                    self!.isProfileFinished = true
-                    
-                }else{
-                    guard let imageSelected = image else{
-                        return
-                    }
-                    
-                    guard let imageData = imageSelected.jpegData(compressionQuality: 0.4) else{
-                        return
-                    }
-                    guard let uid = Auth.auth().currentUser?.uid else { return }
-                    var dictionary: Dictionary <String, Any> = [
-                        "uid": uid,
-                        "email": email,
-                        "name": name,
-                        "timeStamp": Date.now,
-                        "mainColor": "blue-purple",
-                        "username": userName,
-                        "notifications": false,
-                        "notificationTime": Date.now,
-                        "notes": "",
-                        //                        "dateOfBirth": dateOfBirth,
-                        "country": country,
-                        "profileImageUrl": "",
-                        "phoneNumber": phone,
-                        "status": ""
-                    ]
-                    let storegeProfileRef = self!.storage.child("users").child(self!.auth.currentUser!.uid)
-                    let metadata = StorageMetadata()
-                    metadata.contentType = "image/jpg"
-                    storegeProfileRef.putData(imageData, metadata: metadata, completion: { (storageMetaData, error) in
-                        if let error = error{
-                            print(error.localizedDescription)
-                            self?.err = error.localizedDescription
-                            return
-                        }
-                        storegeProfileRef.downloadURL { url, error in
-                            if let metaImageUrl = url?.absoluteString{
-                                
-                                if image != nil{
-                                    dictionary["profileImageUrl"] = metaImageUrl
-                                    self?.profileImage = metaImageUrl
-                                }else{
-                                    self?.profileImage = ""
-                                    dictionary["profileImageUrl"] = self?.profileImage
-                                }
-                            }
-                            
-                            self!.db.collection("users").document(uid).setData(dictionary) { err in
-                                if let err = err {
-                                    print("Error writing document: \(err.localizedDescription)")
-                                } else {
-                                    self?.err = ""
-                                    self?.signedIn = true
-                                    print("Document successfully written!")
-                                }
-                                self!.db.collection("usernames").document(userName).setData(
-                                    ["username": userName,
-                                     "uid": uid
-                                    ]) { error in
-                                        if let error = error {
-                                            print("Error adding document: \(error)")
-                                        } else {
-                                            print("Document added with ID: \(userName)")
-                                        }
-                                    }
-                                
-                            }
-                        }
-                    })
-                    print("User created succesfuly!")
-                    self!.isProfileFinished = true
+    func checkDeviceForUser(completion: @escaping (Bool, Error?) -> Void) {
+        guard let userId = auth.currentUser?.uid else {return}
+        
+        let docRef = db.collection("users").document(userId)
+        
+        docRef.getDocument { (document, error) in
+            if let error = error {
+                completion(false, error)
+            } else if let document = document, document.exists {
+                if let devices = document.get("devices") as? [String] {
+                    // Check if the devices array contains the deviceName
+                    completion(devices.contains(self.deviceName), nil)
+                } else {
+                    // The document does not have a "devices" field or it's not an array
+                    completion(false, nil)
                 }
+            } else {
+                // The document does not exist
+                completion(false, nil)
             }
         }
     }
     
-    //    func createProfileStore(email: String, image: String, name: String, country: String, phone: String, username: String){
-    //            self.profileImage = ""
-    //            guard let uid = Auth.auth().currentUser?.uid else { return }
-    //                let dictionary: Dictionary <String, Any> = [
-    //                    "uid": uid,
-    //                    "email": email,
-    //                    "name": name,
-    //                    "timeStamp": Date.now,
-    //                    "username": username,
-    //                    "notifications": false,
-    //                    "notificationTime": Date.now,
-    //                    "notes": "",
-    ////                        "dateOfBirth": dateOfBirth,
-    //                    "country": country,
-    //                    "profileImageUrl": image,
-    //                    "phoneNumber": phone,
-    //                    "status": "",
-    //                    "role": "user"
-    //                ]
-    //                        self.db.collection("users").document(uid).setData(dictionary, merge: true) { err in
-    //                            if let err = err {
-    //                                print("Error writing document: \(err.localizedDescription)")
-    //                            } else {
-    //                                print("Document successfully written!")
-    //                            }
-    //
-    //
-    //                        }
-    //
-    //            print("User created succesfuly!)")
-    //            self.saveStages(true)
-    //        self.signedIn = true
-    //
-    //
-    //    }
+    func removeDeviceFromUser(device: String = K.deviceName) {
+        guard let userId = auth.currentUser?.uid else {return}
+        let db = Firestore.firestore()
+        db.collection("users").document(userId).updateData([
+            "devices": FieldValue.arrayRemove([device])
+        ]) { error in
+            if let error = error {
+                // Handle the error
+                print("Error removing device: \(error.localizedDescription)")
+            } else {
+                // The device was removed
+                print("Device removed successfully.")
+            }
+        }
+    }
     
     func addAchiv(name: String, int: Int){
         guard let userId = auth.currentUser?.uid else{return}
@@ -984,16 +1012,6 @@ class AppViewModel: ObservableObject{
                                     })
                                 }
                             }
-                        //                            db.collection("usernames").document(username).setData(
-                        //                                ["username": userName,
-                        //                                 "uid": uid
-                        //                                ]) { error in
-                        //                                if let error = error {
-                        //                                    print("Error adding document: \(error)")
-                        //                                } else {
-                        //                                    print("Document added with ID: \(userName)")
-                        //                                }
-                        //                            }
                         if username != ""{
                             self.db.collection("usernames").document(username).setData(
                                 ["username": username,
@@ -1005,6 +1023,14 @@ class AppViewModel: ObservableObject{
                                         print("Document added with ID: \(username)")
                                     }
                                 }
+                        }
+                        if let encryptedEmail = self.published.encrypt(Auth.auth().currentUser?.email ?? "", key: K.key()) {
+                            let modelsWithSameEmail = self.credentials.filter { $0.email == encryptedEmail }
+                            if !modelsWithSameEmail.isEmpty {
+                                for model in modelsWithSameEmail {
+                                    model.username = username
+                                }
+                            }
                         }
                         print("profile is updated!")
                     }
@@ -1046,6 +1072,18 @@ class AppViewModel: ObservableObject{
                                 if let error = error{
                                     print("Error while updating profile with image:  -\(error)")
                                 }else{
+                                    if let encryptedEmail = self.published.encrypt(Auth.auth().currentUser?.email ?? "", key: K.key()) {
+                                        let modelsWithSameEmail = self.credentials.filter { $0.email == encryptedEmail }
+                                        if !modelsWithSameEmail.isEmpty {
+                                            for model in modelsWithSameEmail {
+                                                if let url = URL(string: metaImageUrl) {
+                                                    model.image = self.published.getImageData(url: url)
+                                                    model.username = username
+                                                }
+                                            }
+                                        }
+                                    }
+                                    
                                     print("profile is updated! with image!)")
                                 }
                             }
@@ -1054,118 +1092,6 @@ class AppViewModel: ObservableObject{
             })
         }
     }
-    
-    
-    
-    //MARK: Username
-    
-    func checkUsernameAvailability(username: String) {
-        isUsernameAvailable(username: username) { (available, _) in
-            DispatchQueue.main.async {
-                self.isAvailable = available
-            }
-        }
-    }
-    
-    func isUsernameAvailable(username: String, completion: @escaping (Bool, Error?) -> Void) {
-        let db = Firestore.firestore()
-        let publicUsernamesCollection = db.collection("usernames")
-        
-        // Check if a document with the given username exists in the "PublicUsernames" collection.
-        publicUsernamesCollection.document(username).getDocument { (document, error) in
-            if let document = document, /*document.exists,*/ let userId = Auth.auth().currentUser?.uid, let uid = document["uid"] as? String, userId == uid {
-                // Username is taken by current user.
-                completion(true, nil)
-            }else if let document = document, document.exists {
-                // Username already taken.
-                
-                completion(false, nil)
-            } else if let error = error {
-                // An error occurred while checking the availability.
-                completion(false, error)
-            } else {
-                // Username is available.
-                completion(true, nil)
-            }
-        }
-    }
-    
-    
-    //MARK: Notifications
-    func createNotification(sunday: Bool, monday: Bool, tuesday: Bool, wednsday: Bool, thursday: Bool, friday: Bool, saturday: Bool, date: Date, message: String, count: Int){
-        print(UIDevice.current.name)
-        guard let uid = Auth.auth().currentUser?.uid else{return}
-        let dictionary: Dictionary <String, Any> = [
-            "uid": uid,
-            "sunday": sunday,
-            "monday": monday,
-            "tuesday": tuesday,
-            "wednsday": wednsday,
-            "thursday": thursday,
-            "friday": friday,
-            "saturday": saturday,
-            "date": date,
-            "orderIndex": count,
-            "message": message == "" ? String(localized: "time-to-pray_take-you-time") : message,
-            "device": UIDevice.current.name
-        ]
-        self.db.collection("notifications").document().setData(dictionary) { err in
-            if let err = err {
-                print("Error writing document: \(err.localizedDescription)")
-            } else {
-                print("Document successfully written!")
-            }
-            
-            
-        }
-    }
-    
-    func fetchNotifications(){
-        guard let userId = auth.currentUser?.uid else {return}
-        db.collection("notifications")
-            .whereField("uid", isEqualTo: userId)
-            .addSnapshotListener { [self] querySnapshot, error in
-                if let err = error{
-                    self.errorMessage = err.localizedDescription
-                    print("err l:  _ \(err.localizedDescription)")
-                } else {
-                    notificationsArray.removeAll()
-                    querySnapshot?.documents.forEach({ queryDocumentSnapshot in
-                        let data = queryDocumentSnapshot.data()
-                        let docId = queryDocumentSnapshot.documentID
-                        let personModel = Notifics(documentId: docId, data: data)
-                        self.notificationsArray.append(personModel)
-                    })
-                }
-            }
-    }
-    
-    func removeAllNotifications(){
-        guard let userId = auth.currentUser?.uid else {return}
-        
-        for notific in notificationsArray{
-            db.collection("notifications").document(notific.documentId).delete() { err in
-                if let err = err {
-                    print("Error removing document: \(err)")
-                } else {
-                    print("Document successfully removed!")
-                }
-            }
-        }
-    }
-    
-    func stopNotifing(item: Notifics){
-        guard let userId = auth.currentUser?.uid else {return}
-        db.collection("notifications").document(item.documentId).delete() { err in
-            if let err = err {
-                print("Error removing document: \(err)")
-            } else {
-                print("Document successfully removed!")
-            }
-        }
-    }
-    
-    
     
     //MARK: Achievements
     
@@ -1383,10 +1309,13 @@ class AppViewModel: ObservableObject{
         
     }
     
-    func updateStatus(status: String, uid: String) {
+    func updateStatus(status: String, uid: String, reason: String = "") {
         let ref = db.collection("users").document(uid)
         
-        ref.updateData(["status": status]) { error in
+        ref.updateData([
+            "status": status,
+            "reason": reason
+        ]) { error in
             if let err = error {
                 print("Error while updating status: ", err.localizedDescription)
             } else {
@@ -1477,6 +1406,8 @@ class AppViewModel: ObservableObject{
                 if let badges = document.data()?["badges"] as? [String] {
                     self.badgesArray = badges
                     print("Badges fetched successfully: \(badges)")
+                    self.firebadgesArray.removeAll()
+                    self.loadBadges()
                 } else {
                     print("Badges array not found in the document")
                 }
@@ -1486,7 +1417,28 @@ class AppViewModel: ObservableObject{
         }
     }
     
-    
+    func loadBadges() {
+        self.firebadgesArray.removeAll()
+        for id in badgesArray {
+            db.collection("badges")
+                .whereField("strId", isEqualTo: id)
+                .addSnapshotListener { [weak self] querySnapshot, error in
+                    guard let self = self else { return }
+                    if let error = error {
+                        errorMessage = error.localizedDescription
+                        print("Error: \(error.localizedDescription)")
+                    } else {
+                        querySnapshot?.documents.forEach({ queryDocumentSnapshot in
+                            let data = queryDocumentSnapshot.data()
+                            let docId = queryDocumentSnapshot.documentID
+                            let badgeModel = FireBadge(documentId: docId, data: data)
+                            self.firebadgesArray.append(badgeModel)
+                        })
+                    }
+                }
+        }
+    }
+
     
     //MARK: Support
     
@@ -1595,10 +1547,10 @@ class AppViewModel: ObservableObject{
         db.collection("messages")
             .document(userId)
             .collection("support")
-        //            .whereFilter(Filter.orFilter([
-        //                            Filter.whereField("to", isEqualTo: from),
-        //                            Filter.whereField("from", isEqualTo: from)
-        //                        ]))
+        //                    .whereFilter(Filter.orFilter([
+        //                                    Filter.whereField("to", isEqualTo: from),
+        //                                    Filter.whereField("from", isEqualTo: from)
+        //                                ]))
             .order(by: "time", descending: false)
             .addSnapshotListener { [weak self] querySnapshot, error in
                 guard let self = self else { return }
@@ -1700,10 +1652,90 @@ class AppViewModel: ObservableObject{
                     let dictionary = document.data()
                     if let dictionary = dictionary{
                         
-                        let curUser = Users(data: dictionary)
+                        let curUser = User(data: dictionary)
                         self.published.supportPersonChat = curUser
                     }
                 }
+            }
+        }
+    }
+    
+    //MARK: Notification
+    func createNotification(date: Date, message: String, type: String, people: [String], uid: String, from: String){
+        print(UIDevice.current.name)
+        let dictionary: Dictionary <String, Any> = [
+            "to": uid,
+            "date": date,
+            "type": type,
+            "message": message,
+            "people": people,
+            "from": from
+        ]
+        self.db.collection("notifications").document().setData(dictionary) { err in
+            if let err = err {
+                print("Error writing document: \(err.localizedDescription)")
+            } else {
+                print("Document successfully written!")
+            }
+            
+            
+        }
+    }
+    
+    func fetchNotifications(){
+        guard let userId = auth.currentUser?.uid else {return}
+        db.collection("notifications")
+            .whereField("to", isEqualTo: userId)
+            .addSnapshotListener { [self] querySnapshot, error in
+                if let err = error{
+                    self.errorMessage = err.localizedDescription
+                    print("err l:  _ \(err.localizedDescription)")
+                } else {
+                    print("fetch")
+                    notificationArray.removeAll()
+                    querySnapshot?.documents.forEach({ queryDocumentSnapshot in
+                        let data = queryDocumentSnapshot.data()
+                        let docId = queryDocumentSnapshot.documentID
+                        let notificationModel = NotificationModel(documentId: docId, data: data)
+                        self.notificationArray.append(notificationModel)
+                    })
+                }
+            }
+    }
+    
+    func removeAllNotifications(){
+        guard let userId = auth.currentUser?.uid else {return}
+        
+        for notific in notificationArray{
+            db.collection("notifications").document(notific.documentId).delete() { err in
+                if let err = err {
+                    print("Error removing document: \(err)")
+                } else {
+                    print("Document successfully removed!")
+                }
+            }
+        }
+    }
+    
+    func stopNotifing(item: NotificationModel){
+        guard let userId = auth.currentUser?.uid else {return}
+        db.collection("notifications").document(item.documentId).delete() { err in
+            if let err = err {
+                print("Error removing document: \(err)")
+            } else {
+                print("Document successfully removed!")
+            }
+        }
+    }
+    
+    func updatePeopleList(documentId: String, people: [String]) {
+        let ref = db.collection("notifications").document(documentId)
+        
+        ref.updateData(["people": people]) { error in
+            if let err = error {
+                print("Error while updating notification: ", err.localizedDescription)
+            } else {
+                print("Notification updated")
             }
         }
     }

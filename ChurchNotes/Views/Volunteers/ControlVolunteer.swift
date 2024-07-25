@@ -22,12 +22,8 @@ struct ControlVolunteer: View {
                     .pickerStyle(.segmented)
                     .padding(.horizontal, 15)
                     TabView(selection: $selection){
-                        ScrollView{
-                            Volunteer()
-                        }.tag(0)
-                        ScrollView{
-                            BlockUserView()
-                        }.tag(1)
+                        Volunteer().tag(0)
+                        BlockUserView().tag(1)
                     }
                     .tabViewStyle(.page(indexDisplayMode: .never))
                 }

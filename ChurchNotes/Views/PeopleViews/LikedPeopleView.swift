@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct LikedPeopleView: View {
     @EnvironmentObject var viewModel: AppViewModel
+
+    @Query var strings: [StringDataModel]
 
     @State private var searchText = ""
     @State private var currentItem: Person?
@@ -16,7 +19,15 @@ struct LikedPeopleView: View {
     @State private var lastItem: Person?
     @State private var isShowingDeleteAlert = false
     
-    let notify = NotificationHandler()
+    let notify = ReminderHandler()
+    
+    var backgroundType: String {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            return strModel.string
+        }else {
+            return "none"
+        }
+    }
     
     var body: some View {
         NavigationStack{
@@ -112,6 +123,9 @@ struct LikedPeopleView: View {
                                     }
                                 }
                             }
+                            .listRowBackground(
+                                GlassListRow()
+                            )
                             .actionSheet(isPresented: $isShowingDeleteAlert) {
                                 ActionSheet(title: Text("delete-person"),
                                             message: Text("do-you-really-want-to-delete-this-person"),
@@ -158,6 +172,10 @@ struct LikedPeopleView: View {
     //
     //                }
                 }
+                .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+                .background {
+                    ListBackground()
+                }
                 .refreshable{
                     viewModel.fetchPeople()
                 }
@@ -172,6 +190,7 @@ struct LikedPeopleView: View {
                 .frame(maxHeight: .infinity)
         }
         .navigationTitle("favourite")
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 

@@ -1,15 +1,14 @@
 import SwiftUI
 import FirebaseMessaging
-import GoogleSignIn
 import FirebaseCore
 import FirebaseAuth
 import FirebaseFirestore
 import UserNotifications
 import Combine
-
+import SwiftData
 
 class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate, UNUserNotificationCenterDelegate {
-    var viewModel: AppViewModel!
+    private var viewModel: AppViewModel!
     var published: PublishedVariebles!
 
     
@@ -116,7 +115,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate, UNUserNot
     func applicationWillEnterForeground(_ application: UIApplication) {
         UserDefaults(suiteName: "group.com.yourApp.bundleId")?.set(1, forKey: "count")
         UIApplication.shared.applicationIconBadgeNumber = 0
-        print("foregraund")
+        print("foregraund           ")
     }
     
 }
@@ -131,16 +130,17 @@ struct ChurchNotesApp: App {
     @StateObject private var viewModel: AppViewModel = .init()
 
     var utilities = Utilities()
-    
+    let validTabs = ["profile-info", "people", "achievements", "reminders", "appearance", "settings", "support", "privacy", "devices", "notifications", "appSecure", "app-info", "nonprofit-support"]
+    let validPeopleTabs = ["allpeople-view", "allstages-view", "donepeople-view", "likedpeople-view"]
+
     var body: some Scene {
         WindowGroup {
-            let googleModel = AuthenticationViewModel()
             
             IndexView()
+                .modelContainer(for: [Credential.self, BoolDataModel.self, StringDataModel.self, IntDataModel.self, ReminderDataModel.self, ColorDataModel.self])
                 .accentColor(K.Colors.mainColor)
                 .environmentObject(published)
                 .environmentObject(viewModel)
-                .environmentObject(googleModel)
                 .onAppear{
                     //                    if K.showStatus{
                     //                        viewModel.updateStatus(status: "online", uid: Auth.auth().currentUser?.uid ?? "")
@@ -183,9 +183,9 @@ struct ChurchNotesApp: App {
                                 
                                 // Check if requestedTab is not an empty string
                                 if !requestedTab.isEmpty {
-                                    if requestedTab == "profile-info" || requestedTab == "people" || requestedTab == "achievements" || requestedTab == "notifications" || requestedTab == "appearance" || requestedTab == "settings" || requestedTab == "support"{
+                                    if validTabs.contains(requestedTab) {
                                         published.currentSettingsNavigationLink = requestedTab
-                                    }else if requestedTab == "allpeople-view" || requestedTab == "allstages-view" || requestedTab == "donepeople-view" || requestedTab == "likedpeople-view"{
+                                    }else if validPeopleTabs.contains(requestedTab) {
                                         published.currentSettingsNavigationLink = "people"
                                         published.currentPeopleNavigationLink = requestedTab
                                     } else {

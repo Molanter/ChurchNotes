@@ -6,66 +6,41 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AccountSettingsView: View {
+    @Query var strings: [StringDataModel]
+
     //    @EnvironmentObject var published: PublishedVariebles
     @State var showEdit = false
     
+    var backgroundType: String {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            return strModel.string
+        }else {
+            return "none"
+        }
+    }
+    
     var body: some View {
         List{
-                NavigationLink(destination: ChangePasswordView()){
-                    HStack(spacing: 29){
-                        Image(systemName: "lock.shield")
-                            .font(.system(size: 29))
-                            .fontWeight(.light)
-                        VStack(alignment: .leading, spacing: 5){
-                            Text("change-password")
-                                .fontWeight(.semibold)
-                                .font(.subheadline)
-                                .foregroundStyle(.primary)
-                            Text("old-password-new-password")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    .padding(.leading, 5)
-                }
-                NavigationLink(destination: ChangeEmailView()){
-                    HStack(spacing: 29){
-                        Image(systemName: "envelope.badge.shield.half.filled")
-                            .font(.system(size: 29))
-                            .fontWeight(.light)
-                        VStack(alignment: .leading, spacing: 5){
-                            Text("change-email")
-                                .fontWeight(.semibold)
-                                .font(.subheadline)
-                                .foregroundStyle(.primary)
-                            Text("current-password-new-email")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                }
-            NavigationLink(destination: EditProfileView(showingEditingProfile: $showEdit)){
-                HStack(spacing: 29){
-                    Image(systemName: "square.and.pencil")
-                        .font(.system(size: 29))
-                        .fontWeight(.light)
-                    VStack(alignment: .leading, spacing: 5){
-                        Text("edit-profile")
-                            .fontWeight(.semibold)
-                            .font(.subheadline)
-                            .foregroundStyle(.primary)
-                        Text("change-name-username-phone")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .padding(.leading, 5)
+            Section {
+                AccountSettingsLink(destination: ChangePasswordView(), name: String(localized: "change-password"), info: "old-password-new-password", systemImageName: "lock.shield")
+                AccountSettingsLink(destination: ChangeEmailView(), name: String(localized: "change-email"), info: "current-password-new-email", systemImageName: "envelope.badge.shield.half.filled")
+                AccountSettingsLink(destination: EditProfileView(showingEditingProfile: $showEdit), name: String(localized: "edit-profile"), info: "change-name-username-phone", systemImageName: "square.and.pencil")
+                AccountSettingsLink(destination: DeleteAccountView(), name: String(localized: "delete-account-view"), info: "delete-account-view-info", systemImageName: "person.crop.circle.badge.xmark")
             }
+            .listRowBackground(
+                GlassListRow()
+            )
+        }
+        .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+        .background {
+            ListBackground()
         }
         .accentColor(Color(K.Colors.lightGray))
-    .navigationTitle("settings")
+    .navigationTitle("account-settings")
+    .navigationBarTitleDisplayMode(.large)
     }
 }
 

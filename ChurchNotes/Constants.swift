@@ -9,14 +9,42 @@ import Foundation
 import FirebaseAuth
 import FirebaseFirestore
 import SwiftUI
+import CryptoKit
+import SwiftData
+
 
 struct K{
+    static func key() -> SymmetricKey {
+        // Default key if loading from UserDefaults fails
+        let defaultKey = SymmetricKey(size: .bits256)
+
+        if let k = UserDefaults.standard.data(forKey: "key") {
+            print("Key loaded from UserDefaults")
+            do {
+                let loadedKey = try SymmetricKey(data: k)
+                return loadedKey
+            } catch {
+                print("Failed to load key from UserDefaults:", error)
+                return defaultKey
+            }
+        } else {
+            print("Creating a new key")
+            let keyData = defaultKey.withUnsafeBytes { Data($0) }
+            UserDefaults.standard.set(keyData, forKey: "key")
+            return defaultKey
+        }
+    }
+
+
+//    static var key = SymmetricKey(size: .bits256)
+//    @Query var credentials: [Credential]
+    
     @AppStorage("choosedStages") static var choosedStages: Int = 0
     @AppStorage("favouriteSign") static var favouriteSign: String = "heart"
     @AppStorage("testFeatures") static var testFeatures: Bool = false
     @AppStorage("swipeStage") static var swipeStage: Bool = false
     @AppStorage("showStatus") static var showStatus: Bool = true
-
+    @AppStorage("deviceName") static var deviceName: String = "\(UIDevice.current.name) \(UIDevice.current.systemName) \(UIDevice.current.systemVersion)"
 
     struct Colors{
         static let colorsDictionary: [String: String] = [
@@ -56,6 +84,8 @@ struct K{
         static let blackAndWhite = "blackAndWhite"
         static let whiteGray = "whiteGray"
         static let listBg = "list-bg"
+        static let rowBg = "list-row-bg"
+        static let colorArray: [Color] = [.yellow, .yelloww, .orange, .redd, .pink, .purple, .darkBlue, .bluee, .lightBlue, .lightGreen, .green, .cyan, .indigo, .gray, .mint, .indigo, .teal]
     }
     struct Countries{
         static var countryList = ["Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua &amp; Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia &amp; Herzegovina","Botswana","Brazil","British Virgin Islands","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Cape Verde","Cayman Islands","Chad","Chile","China","Colombia","Congo","Cook Islands","Costa Rica","Cote D Ivoire","Croatia","Cruise Ship","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","French Polynesia","French West Indies","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guam","Guatemala","Guernsey","Guinea","Guinea Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kuwait","Kyrgyz Republic","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Mauritania","Mauritius","Mexico","Moldova","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Namibia","Nepal","Netherlands","Netherlands Antilles","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","Norway","Oman","Pakistan","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Pierre &amp; Miquelon","Samoa","San Marino","Satellite","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","South Africa","South Korea","Spain","Sri Lanka","St Kitts &amp; Nevis","St Lucia","St Vincent","St. Lucia","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor L'Este","Togo","Tonga","Trinidad &amp; Tobago","Tunisia","Turkey","Turkmenistan","Turks &amp; Caicos","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States" ,"Uruguay","Uzbekistan","Venezuela","Vietnam","Virgin Islands (US)","Yemen","Zambia","Zimbabwe"]
@@ -251,23 +281,19 @@ struct K{
             AppStage(name: String(localized: "jjoined-ggroup"), title: "Joined Group", orderIndex: 6)
         ]
     }
-//    struct Languages{
-//    static var languagesArray: [AppLanguage] = [
-//        AppLanguage(name: "English", short: "en", image: "🇺🇸", orderIndex: 0),
-//        AppLanguage(name: "Українська", short: "uk", image: "🇺🇦", orderIndex: 1)
-//    ]
-//    }
+    
     struct Hiden{
-        static let ok:[String] = ["Ok", "ok", "Ok", "Ok"]
+        static let ok: [String] = ["Ok", "ok", "Ok", "Ok"]
+        static let emojiArray: String = "😒😳🥳😡😧😢😁😮💀🙄😍🧐😘🙈😔😻🥰🤒🤢🤕🤧🤮🤔😌😭🙊😜😋😝😉😏😚😞😕😟😱☺️😴😎😿😺😸🙀😹😽😼😾👿😈😀😃😆😅🤣😄🤬😤🤪😛🥵🥶🤯😇😯😦🥱😲😊🙂🙃😷😐🤗🥺👀🥴☠️🤫🤑🤭🤥🤡😗😙🤩😅🤤🥸😬🤓😑😶🙁☹️😰😓😪😫😨💩😖😩🤐😂🤨👹👺👽🫠🫡🫣🥹🫤🫢🫥😠😢😣😮‍💨😶‍🌫️😵😵‍💫🐵🙉💋💎💸💱☃️🦠🧼🚑💊🧽🎊🔥🚕⚰️🕸️👻🗿🎃💤🚗🍾🚓🥂💉💯💥👑🏠🎉🎈🎨🤖🎢👾👣🎵🎶🐾🦷🌡️💣🧨🎩👅🕸️🚀💄👁️🛷👄🫦⚽️🍽️🎓🏛️✈️🎭💰🏕️👤🩺🏀🪖👠🛍️🪙🛥️🪩🚂🔮🔞🧪🛒⛄️🥈🥇🥉👤👥🫂🌈"
     }
     struct Badges{
-        let nNext = Badge(name: "Next", image: "arrowshape.turn.up.right", string: "", color: "", strId: "nNext")
-        let nGoing = Badge(name: "Going", image: "signpost.right", string: "", color: "", strId: "nGoing")
-        let nnext = Badge(name: "next", image: "hand.point.right.fill", string: "", color: "", strId: "nnext")
+        let nNext = Badge(name: "Next", image: "arrowshape.turn.up.right", string: "", color: "", strId: "nNext", type: "sfSymbol")
+        let nGoing = Badge(name: "Going", image: "signpost.right", string: "", color: "", strId: "nGoing", type: "sfSymbol")
+        let nnext = Badge(name: "next", image: "hand.point.right.fill", string: "", color: "", strId: "nnext", type: "sfSymbol")
         
-        let dDone = Badge(name: "Done", image: "checkmark", string: "", color: "", strId: "dDone")
-        let dCongrats = Badge(name: "Congrats", image: "checklist.checked", string: "", color: "", strId: "dCongrats")
-        let ddone = Badge(name: "done", image: "trophy", string: "", color: "", strId: "ddone")
+        let dDone = Badge(name: "Done", image: "checkmark", string: "", color: "", strId: "dDone", type: "sfSymbol")
+        let dCongrats = Badge(name: "Congrats", image: "checklist.checked", string: "", color: "", strId: "dCongrats", type: "sfSymbol")
+        let ddone = Badge(name: "done", image: "trophy", string: "", color: "", strId: "ddone", type: "sfSymbol")
         
         func getBadgeArray() -> [String: Any] {
             return [
@@ -281,6 +307,7 @@ struct K{
         }
         
     }
+    
 }
 
 class Utilities {

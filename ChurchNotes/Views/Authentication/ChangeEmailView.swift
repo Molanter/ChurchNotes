@@ -7,8 +7,13 @@
 
 import SwiftUI
 import FirebaseAuth
+import SwiftData
 
 struct ChangeEmailView: View {
+    @EnvironmentObject var viewModel: AppViewModel
+
+    @Query var strings: [StringDataModel]
+
     @FocusState var focus: FocusedField?
     
     @State var pass = ""
@@ -16,9 +21,17 @@ struct ChangeEmailView: View {
     @State var showPass = false
     @State private var emailLabel = String("email@example.com")
     @State var fieldsEmty = String(localized: "some-fields-are-emty")
+    
     let auth = Auth.auth()
     
-    @EnvironmentObject var viewModel: AppViewModel
+    var backgroundType: String {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            return strModel.string
+        }else {
+            return "none"
+        }
+    }
+
     var body: some View {
         NavigationStack{
             Text("'\(viewModel.currentUser?.email ?? auth.currentUser?.email ?? "")'")
@@ -29,7 +42,7 @@ struct ChangeEmailView: View {
                     HStack{
                         Group{
                             if !showPass{
-                                SecureField("∙∙∙∙∙∙∙∙", text: $pass)
+                                SecureField("••••••••", text: $pass)
                                     .submitLabel(.next)
                                     .focused($focus, equals: .pass)
                                     .disableAutocorrection(true)
@@ -51,6 +64,9 @@ struct ChangeEmailView: View {
                             }
                     }
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 Section(header: Text("new-email")){
                     HStack{
                         TextField(emailLabel, text: $email)
@@ -69,16 +85,18 @@ struct ChangeEmailView: View {
                             }
                     }
                 }
-                
+                .listRowBackground(
+                    GlassListRow()
+                )
                 Section{
                     Text("change")
-                        .foregroundStyle(Color.white)
+                        .foregroundStyle(!pass.isEmpty && !email.isEmpty && email != auth.currentUser?.email ?? "" ? Color.white : Color.black)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(K.Colors.mainColor)
+                        .background(!pass.isEmpty && !email.isEmpty && email != auth.currentUser?.email ?? "" ? K.Colors.mainColor : Color.secondary)
                         .cornerRadius(10)
                         .onTapGesture {
-                            if pass != "" && email != "" && email != auth.currentUser?.email ?? ""{
+                            if !pass.isEmpty, !email.isEmpty, email != auth.currentUser?.email ?? ""{
                                 viewModel.changeEmail(currentPassword: pass, newEmail: email)
                             }else if email == auth.currentUser?.email ?? ""{
                                 viewModel.err = String(localized: "new-email-can-not-equal-to-old")
@@ -88,12 +106,22 @@ struct ChangeEmailView: View {
                         }
                         .listRowInsets(EdgeInsets())
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 if !viewModel.err.isEmpty{
                     Text(viewModel.err)
                         .foregroundStyle(.secondary)
                         .font(.title2)
                         .fontWeight(.bold)
+                        .listRowBackground(
+                            GlassListRow()
+                        )
                 }
+            }
+            .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+            .background {
+                ListBackground()
             }
             .onSubmit {
                 switch focus {

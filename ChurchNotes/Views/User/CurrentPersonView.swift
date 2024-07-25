@@ -6,13 +6,23 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct CurrentPersonView: View {
     @EnvironmentObject var viewModel: AppViewModel
     
+    @Query var strings: [StringDataModel]
+    
+    var backgroundType: String {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            return strModel.string
+        }else {
+            return "none"
+        }
+    }
+    
     var body: some View {
         NavigationStack{
-            
                 List{
                     Section(header: VStack{
                         RectOvalPath()
@@ -71,6 +81,9 @@ struct CurrentPersonView: View {
                     ) {
                         
                     }
+                    .listRowBackground(
+                        GlassListRow()
+                    )
                     .frame(height: 200)
                     .padding(.bottom, 15)
                     Section(header: Text("iinfo")){
@@ -126,6 +139,9 @@ struct CurrentPersonView: View {
                             }
                         }
                     }
+                    .listRowBackground(
+                        GlassListRow()
+                    )
                     Section(header: Text("achievements")){
                         VStack(alignment: .leading){
                             Text("next-low")
@@ -140,6 +156,9 @@ struct CurrentPersonView: View {
                                 .font(.headline)
                         }
                     }
+                    .listRowBackground(
+                        GlassListRow()
+                    )
                     if !(viewModel.currentUser?.email ?? "").isEmpty || !(viewModel.currentUser?.phoneNumber ?? "").isEmpty {
                         Section(header: Text("ccontacts")){
                             VStack(alignment: .leading){
@@ -185,6 +204,9 @@ struct CurrentPersonView: View {
                                 }
                             }
                         }
+                        .listRowBackground(
+                            GlassListRow()
+                        )
                     }
                     //                    if let notes = viewModel.currentUser?.notes{
                     //                        VStack(alignment: .leading, spacing: 15){
@@ -210,7 +232,11 @@ struct CurrentPersonView: View {
                     //                        }
                     //                    }
                 }
-                .background(Color(K.Colors.listBg))
+                .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+                .background {
+                    ListBackground()
+                }
+//                .background(Color(K.Colors.listBg))
                 .navigationBarBackButtonHidden(false)
             }
         

@@ -27,7 +27,7 @@ struct PreviewView: View {
         
         // For Top Buttons...
         
-        NavigationView{
+        NavigationStack{
             
             ZStack{
                 

@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AppearanceView: View {
     @EnvironmentObject var viewModel: AppViewModel
     @Environment(\.colorScheme) var colorScheme: ColorScheme
+    @Query var strings: [StringDataModel]
 
     @State var presentAlert = false
     @State var presentingPreview = false
@@ -39,176 +41,211 @@ struct AppearanceView: View {
     let timeStamp: Date
     var utilities = Utilities()
     
+    var backgroundType: String {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            return strModel.string
+        }else {
+            return "none"
+        }
+    }
+    
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 15) {
-                List {
-                    Section(header: Text("app-appearance")) {
-                        Toggle(isOn: Binding(
-                            get: { !self.showColor },
-                            set: { self.showColor = !$0 }
-                        )) {
-                            Text("system-apearance")
-                        }
-                        Toggle(isOn: $dark) {
-                            Text("dark-appearance")
-                        }
-                        .disabled(!showColor)
-                        .pickerStyle(.segmented)
+            List {
+                Section(header: Text("app-appearance")) {
+                    Toggle(isOn: Binding(
+                        get: { !self.showColor },
+                        set: { self.showColor = !$0 }
+                    )) {
+                        Text("system-apearance")
                     }
-                    
-                    Section(header: Text("accent-color")) {
-                        ScrollViewReader { scrollProxy in
-                            ScrollView(.horizontal) {
-                                HStack {
-                                    ForEach(K.Colors.colorsDictionary.sorted(by: >), id: \.value) { text, value in
-                                        HStack(spacing: 10) {
-                                            Button(action: {
-                                                changeMainColor(value)
-                                            }) {
-                                                VStack(spacing: 15) {
-                                                    RoundedRectangle(cornerRadius: 15)
-                                                        .fill(Color(value))
-                                                        .frame(width: 60, height: 60)
-                                                        .shadow(color: Color(value), radius: 2)
-                                                        .opacity(K.Colors.mainColor == Color(value) ? 1 : 0.3)
-                                                    Text(text)
-                                                        .lineLimit(2)
-                                                        .font(.body)
-                                                        .foregroundStyle(Color(K.Colors.lightGray))
-                                                }
-                                                .frame(height: 100, alignment: .top)
-                                            }
-                                            .frame(width: 100)
-                                            .padding(.vertical, 5)
-                                            .padding(5)
-                                            .disabled(mainColorNow == Color(value))
-                                            Divider()
-                                        }
-                                    }
-                                    .frame(height: 150)
-                                    if K.Colors.color == "color"{
-                                        HStack(spacing: 10) {
-                                                VStack(spacing: 15) {
-                                                    RoundedRectangle(cornerRadius: 15)
-                                                        .fill(K.Colors.mainColor)
-                                                        .frame(width: 60, height: 60)
-                                                        .shadow(color: K.Colors.mainColor, radius: 2)
-                                                        .opacity(K.Colors.color == "color" ? 1 : 0.3)
-                                                    Text("custom-color")
-                                                        .lineLimit(2)
-                                                        .font(.body)
-                                                        .foregroundStyle(Color(K.Colors.lightGray))
-                                                }
-                                                .frame(height: 100, alignment: .top)
-                                            .frame(width: 100)
-                                            .padding(.vertical, 5)
-                                            .padding(5)
-                                        }
-                                        .id("color")
-                                    }
-                                }
-                                .onAppear {
-                                    withAnimation {
-                                        scrollProxy.scrollTo(K.Colors.color, anchor: .center)
-                                    }
-                                }
-                            }
-                        }
-                        .listRowInsets(EdgeInsets())
-                        NavigationLink {
-                            VStack(alignment: .center, spacing: 15){
-                                List{
-                                    Section{
-                                        ColorPicker("choose-yor-own", selection: $pickerColor, supportsOpacity: false)
-                                            .tint(K.Colors.mainColor)
-                                    }
-                                    Section{
-                                        Text("save")
-                                            .foregroundStyle(Color.white)
-                                            .frame(maxWidth: .infinity)
-                                            .padding()
-                                            .background(K.Colors.mainColor)
-                                            .cornerRadius(10)
-                                            .onTapGesture {
-                                                self.oldColor = K.Colors.mainColor
-                                                oldColorValue = K.Colors.color
-                                                print("changed")
-                                                K.Colors.color = "color"
-                                                K.Colors.mainColor = pickerColor
-                                                self.presentingPreview = true
-                                            }
-                                            .listRowInsets(EdgeInsets())
-                                    }
-                                }
-                            }
-                            
-                        } label: {
-                            Text("choose-yor-own")
-                        }
+                    Toggle(isOn: $dark) {
+                        Text("dark-appearance")
                     }
-                    
-                    Section(header: Text("favourite-sign")){
-                        HStack{
-                            Text("favourite-sign")
-                            Spacer()
-                            Menu{
-                                Button{
-                                    K.Colors.favouriteSignColor = "redd"
-                                    favouriteSignNow = "heart"
-                                    K.favouriteSign = favouriteSignNow
-                                    favSignColor = "redd"
-                                }label: {
-                                    Label("heart", systemImage: "heart")
-                                }
-                                Button{
-                                    K.Colors.favouriteSignColor = "yelloww"
-                                    favouriteSignNow = "star"
-                                    K.favouriteSign = favouriteSignNow
-                                    favSignColor = "yelloww"
-                                }label: {
-                                    Label("star", systemImage: "star")
-                                }
-                            }label: {
-                                Image(systemName: "\(favouriteSignNow).fill")
-                            }
-                        }
-                            .accentColor(Color(favSignColor))
-                        
-                        
-                        HStack{
-                            Text("favourite-sign-color")
-                            Spacer()
-                            Menu{
+                    .disabled(!showColor)
+                    .pickerStyle(.segmented)
+                }
+                .listRowBackground(
+                    GlassListRow()
+                )
+                Section(header: Text("accent-color")) {
+                    ScrollViewReader { scrollProxy in
+                        ScrollView(.horizontal) {
+                            HStack {
                                 ForEach(K.Colors.colorsDictionary.sorted(by: >), id: \.value) { text, value in
-                                    Button{
-                                        K.Colors.favouriteSignColor = value
-                                        favSignColor = value
-                                    }label: {
-                                        HStack{
-                                            Text(text)
-                                            Spacer()
-                                            RoundedRectangle(cornerRadius: 2)
-                                                .fill(Color(K.Colors.favouriteSignColor))
+                                    HStack(spacing: 10) {
+                                        Button(action: {
+                                            changeMainColor(value)
+                                        }) {
+                                            VStack(spacing: 15) {
+                                                RoundedRectangle(cornerRadius: 15)
+                                                    .fill(Color(value))
+                                                    .frame(width: 60, height: 60)
+                                                    .shadow(color: Color(value), radius: 2)
+                                                    .opacity(K.Colors.mainColor == Color(value) ? 1 : 0.3)
+                                                Text(text)
+                                                    .lineLimit(2)
+                                                    .font(.body)
+                                                    .foregroundStyle(Color(K.Colors.lightGray))
+                                            }
+                                            .frame(height: 100, alignment: .top)
                                         }
+                                        .frame(width: 100)
+                                        .padding(.vertical, 5)
+                                        .padding(5)
+                                        .disabled(mainColorNow == Color(value))
+                                        Divider()
                                     }
                                 }
-                            }label: {
-                                RoundedRectangle(cornerRadius: 5)
-                                    .fill(Color(favSignColor))
-                                    .frame(width: 20, height: 20)
+                                .frame(height: 150)
+                                if K.Colors.color == "color"{
+                                    HStack(spacing: 10) {
+                                            VStack(spacing: 15) {
+                                                RoundedRectangle(cornerRadius: 15)
+                                                    .fill(K.Colors.mainColor)
+                                                    .frame(width: 60, height: 60)
+                                                    .shadow(color: K.Colors.mainColor, radius: 2)
+                                                    .opacity(K.Colors.color == "color" ? 1 : 0.3)
+                                                Text("custom-color")
+                                                    .lineLimit(2)
+                                                    .font(.body)
+                                                    .foregroundStyle(Color(K.Colors.lightGray))
+                                            }
+                                            .frame(height: 100, alignment: .top)
+                                        .frame(width: 100)
+                                        .padding(.vertical, 5)
+                                        .padding(5)
+                                    }
+                                    .id("color")
+                                }
+                            }
+                            .onAppear {
+                                withAnimation {
+                                    scrollProxy.scrollTo(K.Colors.color, anchor: .center)
+                                }
                             }
                         }
                     }
-                    Section(header: Text("aapp-ssettings")){
-                        HStack{
-                            Text("llanguage")
-                            Spacer()
-                            Link(String(localized: "open-in-settings"), destination: URL(string: UIApplication.openSettingsURLString)!)
-                                .accentColor(mainColorNow)
+                    .listRowInsets(EdgeInsets())
+                    NavigationLink {
+                        List{
+                            Section{
+                                ColorPicker("choose-yor-own", selection: $pickerColor, supportsOpacity: false)
+                                    .tint(K.Colors.mainColor)
+                            }
+                            .listRowBackground(
+                                GlassListRow()
+                            )
+                            Section{
+                                Text("save")
+                                    .foregroundStyle(Color.white)
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(K.Colors.mainColor)
+                                    .cornerRadius(10)
+                                    .onTapGesture {
+                                        self.oldColor = K.Colors.mainColor
+                                        oldColorValue = K.Colors.color
+                                        print("changed")
+                                        K.Colors.color = "color"
+                                        K.Colors.mainColor = pickerColor
+                                        self.presentingPreview = true
+                                    }
+                                    .listRowInsets(EdgeInsets())
+                            }
+                            .listRowBackground(
+                                GlassListRow()
+                            )
+                        }
+                        .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+                        .background {
+                            ListBackground()
+                        }
+                    } label: {
+                        Text("choose-yor-own")
+                    }
+                }
+                .listRowBackground(
+                    GlassListRow()
+                )
+                Section(header: Text("favourite-sign")){
+                    HStack{
+                        Text("favourite-sign")
+                        Spacer()
+                        Menu{
+                            Button{
+                                K.Colors.favouriteSignColor = "redd"
+                                favouriteSignNow = "heart"
+                                K.favouriteSign = favouriteSignNow
+                                favSignColor = "redd"
+                            }label: {
+                                Label("heart", systemImage: "heart")
+                            }
+                            Button{
+                                K.Colors.favouriteSignColor = "yelloww"
+                                favouriteSignNow = "star"
+                                K.favouriteSign = favouriteSignNow
+                                favSignColor = "yelloww"
+                            }label: {
+                                Label("star", systemImage: "star")
+                            }
+                        }label: {
+                            Image(systemName: "\(favouriteSignNow).fill")
+                        }
+                    }
+                        .accentColor(Color(favSignColor))
+                    
+                    
+                    HStack{
+                        Text("favourite-sign-color")
+                        Spacer()
+                        Menu{
+                            ForEach(K.Colors.colorsDictionary.sorted(by: >), id: \.value) { text, value in
+                                Button{
+                                    K.Colors.favouriteSignColor = value
+                                    favSignColor = value
+                                }label: {
+                                    HStack{
+                                        Text(text)
+                                        Spacer()
+                                        RoundedRectangle(cornerRadius: 2)
+                                            .fill(Color(K.Colors.favouriteSignColor))
+                                    }
+                                }
+                            }
+                        }label: {
+                            RoundedRectangle(cornerRadius: 5)
+                                .fill(Color(favSignColor))
+                                .frame(width: 20, height: 20)
                         }
                     }
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
+                Section(header: Text("List")) {
+                    NavigationLink(destination: ListStyles()) {
+                        Text("List settings")
+                    }
+                }
+                .listRowBackground(
+                    GlassListRow()
+                )
+                Section(header: Text("aapp-ssettings")){
+                    HStack{
+                        Text("llanguage")
+                        Spacer()
+                        Link(String(localized: "open-in-settings"), destination: URL(string: UIApplication.openSettingsURLString)!)
+                            .accentColor(mainColorNow)
+                    }
+                }
+                .listRowBackground(
+                    GlassListRow()
+                )
+            }
+            .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+            .background {
+                ListBackground()
             }
             .frame(maxWidth: .infinity)
             .onAppear {
@@ -239,7 +276,7 @@ struct AppearanceView: View {
                             dark = true
                         }
                     }){
-                        Image(systemName: dark || colorScheme == .dark ? "sun.max" : "moon")
+                        Label(dark || colorScheme == .dark ? "Light" : "Dark", systemImage: dark || colorScheme == .dark ? "sun.max" : "moon")
                             .foregroundStyle(Color(mainColorNow))
                             .symbolEffect(.bounce, value: dark)
 
@@ -258,6 +295,7 @@ struct AppearanceView: View {
 //                Text("restart-the-app-to-see-the-changes")
 //            }
             .navigationTitle("appearance")
+            .navigationBarTitleDisplayMode(.large)
             .sheet(isPresented: $presentingPreview) {
                 NavigationStack {
                     CurrentPersonView()
@@ -269,17 +307,19 @@ struct AppearanceView: View {
                                     pickerColor = oldColor
                                     K.Colors.color = oldColorValue
                                 } label: {
-                                    Image(systemName: "xmark.circle")
+                                    Label("cancel", systemImage: "xmark.circle")
+                                        .accentColor(K.Colors.mainColor)
                                 }
-                                .foregroundStyle(K.Colors.mainColor)
+                                .tint(K.Colors.mainColor)
                             }
                             ToolbarItem(placement: .topBarTrailing) {
                                 Button {
                                     colorChanged()
                                 } label: {
-                                    Image(systemName: "checkmark.circle")
+                                    Label("save", systemImage: "checkmark.circle")
+                                        .accentColor(K.Colors.mainColor)
                                 }
-                                .foregroundStyle(K.Colors.mainColor)
+                                .tint(K.Colors.mainColor)
                             }
                         }
                 }

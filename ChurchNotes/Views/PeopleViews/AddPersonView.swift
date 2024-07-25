@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+import Contacts
+import SwiftData
+import iPhoneNumberField
 
 struct AddPersonView: View {
     @Binding var showAddPersonView: Bool
@@ -15,6 +18,8 @@ struct AddPersonView: View {
     @EnvironmentObject var published: PublishedVariebles
     @EnvironmentObject var viewModel: AppViewModel
     
+    @Query var strings: [StringDataModel]
+
     @FocusState var focus: FocusedField?
     @State var shouldShowImagePicker = false
     @State var name: String = ""
@@ -26,14 +31,22 @@ struct AddPersonView: View {
     @State var image: UIImage?
     @State private var nameIsEmpty = false
     @State var errorText = ""
+    @State private var showAddFromContacts = false
     
     var createName: String?
-    let notify = NotificationHandler()
+    let notify = ReminderHandler()
     var offset: Int
     var stageName: String
     var titleNumber: Int
     var count: Int
     
+    var backgroundType: String {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            return strModel.string
+        }else {
+            return "none"
+        }
+    }
     
     var body: some View {
 //        NavigationView{
@@ -74,6 +87,49 @@ struct AddPersonView: View {
                 ){
                     
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
+                Label("add-from-contacts", systemImage: "person.crop.circle.badge.plus")
+                    .listRowBackground(
+                        GlassListRow()
+                    )
+                    .foregroundStyle(K.Colors.mainColor)
+                    .onTapGesture {
+                        requestContactsAccess { granted in
+                            if granted {
+                                self.showAddFromContacts.toggle()
+                            }
+                        }
+                    }
+                    .navigationDestination(isPresented: $showAddFromContacts) {
+                        ContactsListView()
+                            .onAppear{
+                                published.contactToAdd = nil
+                            }
+                            .onDisappear{
+                                if let contact = published.contactToAdd{
+                                    name = ""
+                                    phoneNumber = ""
+                                    email = ""
+                                    image = nil
+                                    name = "\(contact.givenName) \(contact.familyName)"
+                                    if let number = contact.phoneNumbers.first(where: { $0.label == CNLabelPhoneNumberMobile }){
+                                        phoneNumber = number.value.stringValue
+                                    }else if let number = contact.phoneNumbers.first{
+                                        phoneNumber = number.value.stringValue
+                                    }
+                                    if let email = contact.emailAddresses.first{
+                                        self.email = email.value.lowercased
+                                    }
+                                    if contact.imageDataAvailable{
+                                        if let imageData = contact.imageData, let uiImage = UIImage(data: imageData) {
+                                            image = uiImage
+                                        }
+                                    }
+                                }
+                            }
+                    }
                 Section{
                     HStack{
                         TextField("name", text: $name, axis: .horizontal)
@@ -91,6 +147,9 @@ struct AddPersonView: View {
                 }footer: {
                     Text(name.isEmpty ? "rrequired" : "")
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 Section(header: Text("eemail")){
                     HStack{
                         TextField("eemail", text: $email)
@@ -105,13 +164,20 @@ struct AddPersonView: View {
                         Image(systemName: "envelope")
                     }
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 Section(header: Text("pphone")){
                     HStack{
-                        TextField("pphone", text: $phoneNumber)
-                            .offset(y: -keyboard.keyboardHeight / 2)
+                        iPhoneNumberField(String(localized: "pphone"), text: $phoneNumber)
+                            .flagHidden(false)
+                            .flagSelectable(true)
+                            .maximumDigits(10)
+                            .prefixHidden(false)
+                            .ignoresSafeArea(.keyboard, edges: .bottom)
                             .focused($focus, equals: .phone)
                             .textInputAutocapitalization(.never)
-                            .disableAutocorrection(true)
+                            .disableAutocorrection(false)
                             .textContentType(.telephoneNumber)
                             .keyboardType(.numberPad)
                             .textSelection(.enabled)
@@ -119,6 +185,9 @@ struct AddPersonView: View {
                         Image(systemName: "phone")
                     }
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 Section(header: Text("notes")){
                     HStack{
                         TextField("notes", text: $notes, axis: .vertical)
@@ -133,17 +202,22 @@ struct AddPersonView: View {
                         Image(systemName: "list.bullet")
                     }
                 }
-                Section(header: Text("bbirthday")){
-                    DatePicker(
-                        String(localized: "long-press"),
-                        selection: $birthDay,
-                        displayedComponents: [.date]
-                    )
-                    .datePickerStyle(.compact)
-                    .padding(.vertical, 1)
-                }
+                .listRowBackground(
+                    GlassListRow()
+                )
+//                Section(header: Text("bbirthday")){
+//                    DatePicker(
+//                        String(localized: "long-press"),
+//                        selection: $birthDay,
+//                        displayedComponents: [.date]
+//                    )
+//                    .datePickerStyle(.compact)
+//                    .padding(.vertical, 1)
+//                }
+//                .listRowBackground(
+//                    GlassListRow()
+//                )
                 Section{
-                    
                         Text("add")
                             .foregroundColor(Color.white)
                             .padding(.vertical, 10)
@@ -161,6 +235,13 @@ struct AddPersonView: View {
                         }
                     }
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
+            }
+            .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+            .background {
+                ListBackground()
             }
             .onSubmit {
                 switch focus {
@@ -213,7 +294,8 @@ struct AddPersonView: View {
                     }
                 }
             }
-//        }
+            .accentColor(K.Colors.mainColor)
+            .edgesIgnoringSafeArea(.bottom)
     }
     
     func showError(_ name: Bool = true){
@@ -252,17 +334,15 @@ struct AddPersonView: View {
     enum FocusedField:Hashable{
         case name,email,phone,notes,birthday
     }
+    
+    func requestContactsAccess(completion: @escaping (Bool) -> Void) {
+        let store = CNContactStore()
+        store.requestAccess(for: .contacts) { granted, error in
+            completion(granted)
+        }
+    }
 }
 
 //#Preview {
 //    AddPersonView()
-//}
-
-
-//extension [Person] {
-//    func updateOrderIndices() {
-//        for (index, item) in enumerated() {
-//            item.orderIndex = index
-//        }
-//    }
 //}

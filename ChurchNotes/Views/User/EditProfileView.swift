@@ -9,14 +9,24 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 import Combine
+import iPhoneNumberField
+import SwiftData
 
 struct EditProfileView: View {
+    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var published: PublishedVariebles
+    @EnvironmentObject var viewModel: AppViewModel
+    @State private var authModel = AuthViewModel()
+
+    @Query var strings: [StringDataModel]
+
     @FocusState var focus: FocusedField?
     
+    @Binding var showingEditingProfile: Bool
+
     @State var name = ""
     @State var phone = ""
     @State var email = ""
-    @Binding var showingEditingProfile: Bool
     @State var width = false
     @State var username = ""
     @State var country = ""
@@ -40,7 +50,13 @@ struct EditProfileView: View {
     var db = Firestore.firestore()
     var auth = Auth.auth()
     
-    @EnvironmentObject var viewModel: AppViewModel
+    var backgroundType: String {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            return strModel.string
+        }else {
+            return "none"
+        }
+    }
     
     var body: some View {
         NavigationStack{
@@ -95,6 +111,9 @@ struct EditProfileView: View {
                         .listRowInsets(EdgeInsets())
                         .frame(maxWidth: .infinity)
                     ){}
+                        .listRowBackground(
+                            GlassListRow()
+                        )
                     Section{
                         HStack{
                             TextField("name", text: $name)
@@ -112,6 +131,9 @@ struct EditProfileView: View {
                     }footer: {
                         Text(name.isEmpty ? "rrequired" :"")
                     }
+                    .listRowBackground(
+                        GlassListRow()
+                    )
                     Section(header: Text("username")){
                         HStack{
                             TextField("username", text: $username)
@@ -123,7 +145,7 @@ struct EditProfileView: View {
                                 .textCase(.lowercase)
                                 .textContentType(.username)
                                 .textSelection(.enabled)
-                                .foregroundStyle(username == "" ? Color(K.Colors.text) : (viewModel.isAvailable ? Color( K.Colors.text) : Color(red: 1, green: 0.39, blue: 0.49)))
+                                .foregroundStyle(username == "" ? Color(K.Colors.text) : (authModel.isAvailable ? Color( K.Colors.text) : Color(red: 1, green: 0.39, blue: 0.49)))
                             Spacer()
                             Image(systemName: "at")
                         }
@@ -136,10 +158,13 @@ struct EditProfileView: View {
                                 if username.count > maxLength {
                                     username = String(newValue.prefix(maxLength))
                                 }
-                                viewModel.checkUsernameAvailability(username: newValue)
+                                authModel.checkUsernameAvailability(username: newValue)
                             }
                         })
                     }
+                    .listRowBackground(
+                        GlassListRow()
+                    )
                     Section(header: Text("country")){
                         HStack{
                             TextField("country", text: $country)
@@ -150,16 +175,30 @@ struct EditProfileView: View {
                                 .textContentType(.countryName)
                                 .textSelection(.enabled)
                             Spacer()
-                            Image(systemName: "globe")
+                            Image(systemName: "flag")
+                                .onTapGesture{
+                                    if let countryCode = Locale.current.region?.identifier {
+                                        let country = NSLocale.current.localizedString(forRegionCode: countryCode)
+                                        let i = K.Countries.countryList.firstIndex(of: country!) ?? 0
+                                        self.country = K.Countries.countryList[i]
+                                    }
+                                }
                         }
                     }
+                    .listRowBackground(
+                        GlassListRow()
+                    )
                     Section(header: Text("pphone")){
                         HStack{
-                            TextField("pphone", text: $phone)
+                            iPhoneNumberField(String(localized: "pphone"), text: $phone)
+                                .flagHidden(false)
+                                .flagSelectable(true)
+                                .maximumDigits(10)
+                                .prefixHidden(false)
                                 .ignoresSafeArea(.keyboard, edges: .bottom)
                                 .focused($focus, equals: .phone)
                                 .textInputAutocapitalization(.never)
-                                .disableAutocorrection(true)
+                                .disableAutocorrection(false)
                                 .textContentType(.telephoneNumber)
                                 .keyboardType(.numberPad)
                                 .textSelection(.enabled)
@@ -169,6 +208,9 @@ struct EditProfileView: View {
                         
                         
                     }
+                    .listRowBackground(
+                        GlassListRow()
+                    )
                     if !(viewModel.currentUser?.profileImageUrl ?? "").isEmpty{
                         Section{
                             HStack{
@@ -180,19 +222,29 @@ struct EditProfileView: View {
                                 anonymously.toggle()
                             }
                         }
+                        .listRowBackground(
+                            GlassListRow()
+                        )
                     }
                     Section{
                         Text("save")
-                            .foregroundStyle(Color.white)
+                            .foregroundStyle(!name.isEmpty && !username.isEmpty ? Color.white : Color.black)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(K.Colors.mainColor)
+                            .background(!name.isEmpty && !username.isEmpty ? K.Colors.mainColor : Color.secondary)
                             .cornerRadius(10)
                             .onTapGesture(perform: {
                                 updateFunc()
                             })
                             .listRowInsets(EdgeInsets())
                     }
+                    .listRowBackground(
+                        GlassListRow()
+                    )
+                }
+                .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+                .background {
+                    ListBackground()
                 }
                 .onSubmit {
                     switch focus {
@@ -218,8 +270,6 @@ struct EditProfileView: View {
                 fetchDictionary()
             })
             .modifier(DismissingKeyboard())
-            .navigationTitle("editing-profile")
-            .navigationBarTitleDisplayMode(.large)
             .toolbar(content: {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {updateFunc()}){
@@ -234,6 +284,14 @@ struct EditProfileView: View {
             .sheet(isPresented: $showImagePicker) {
                 ImagePicker(image: $image)
             }
+            .onAppear(perform: {
+                if let countryCode = Locale.current.region?.identifier {
+                    phone = "+\(K.CountryCodes.countryPrefixes[countryCode] ?? "US")"
+                    let country = NSLocale.current.localizedString(forRegionCode: countryCode)
+                    let i = K.Countries.countryList.firstIndex(of: country!) ?? 0
+                    self.country = K.Countries.countryList[i]
+                }
+            })
         }
     }
     
@@ -257,8 +315,6 @@ struct EditProfileView: View {
                             let notes = dictionary["notes"] as! String
                             let phone = dictionary["phoneNumber"] as! String
                             let country = dictionary["country"] as! String
-                            let notifications = dictionary["notifications"] as! Bool
-                            let notificationTime = (dictionary["notificationTime"] as? Timestamp)?.dateValue() ?? Date()
                             let timeStamp = (dictionary["timeStamp"] as? Timestamp)?.dateValue() ?? Date()
                             
                             if self.username != ""{
@@ -299,7 +355,7 @@ struct EditProfileView: View {
     
     private func updateFunc(){
         
-        if name != "" && username != "" && viewModel.isAvailable{
+        if name != "" && username != "" && authModel.isAvailable{
             if anonymously{
                 viewModel.deleteImageFromCurrentUser()
                 viewModel.currentUser?.profileImageUrl = ""
@@ -312,7 +368,11 @@ struct EditProfileView: View {
             if errReg == ""{
                 self.showingEditingProfile = false
             }
-        }else if !viewModel.isAvailable{
+            self.showingEditingProfile = false
+            viewModel.currentUser?.name = name
+            viewModel.currentUser?.username = username
+            self.dismiss()
+        }else if !authModel.isAvailable{
             //            showError(error: String(localized: "username-is-not-available"))
             Toast.shared.present(
                 title: String(localized: "username-is-not-available"),

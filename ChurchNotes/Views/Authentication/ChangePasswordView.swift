@@ -7,9 +7,15 @@
 
 import SwiftUI
 import FirebaseAuth
+import SwiftData
 
 struct ChangePasswordView: View {
+    @EnvironmentObject var viewModel: AppViewModel
+
+    @Query var strings: [StringDataModel]
+
     @FocusState var focus: FocusedField?
+    
     @State var oldPassword = ""
     @State var newPassword = ""
     @State var repeatPassword = ""
@@ -18,7 +24,13 @@ struct ChangePasswordView: View {
     @State var fieldsEmty = String(localized: "some-fields-are-emty")
     let auth = Auth.auth()
     
-    @EnvironmentObject var viewModel: AppViewModel
+    var backgroundType: String {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            return strModel.string
+        }else {
+            return "none"
+        }
+    }
     
     var body: some View {
         NavigationStack{
@@ -30,7 +42,7 @@ struct ChangePasswordView: View {
                     HStack{
                         Group{
                             if !showOldPassword{
-                                SecureField("∙∙∙∙∙∙∙∙", text: $oldPassword)
+                                SecureField("••••••••", text: $oldPassword)
                                     .submitLabel(.next)
                                     .disableAutocorrection(true)
                                     .textInputAutocapitalization(.never)
@@ -51,11 +63,14 @@ struct ChangePasswordView: View {
                             }
                     }
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 Section(header: Text("new-password")){
                     HStack{
                         Group{
                             if !showNewPassword{
-                                SecureField("∙∙∙∙∙∙∙∙", text: $newPassword)
+                                SecureField("••••••••", text: $newPassword)
                                     .submitLabel(.next)
                                     .disableAutocorrection(true)
                                     .textInputAutocapitalization(.never)
@@ -75,10 +90,13 @@ struct ChangePasswordView: View {
                                 self.showNewPassword.toggle()
                             }
                     }
+                    if !newPassword.isEmpty {
+                        PasswordRules(pass: $newPassword)
+                    }
                     HStack{
                         Group{
                             if !showNewPassword{
-                                SecureField("∙∙∙∙∙∙∙∙", text: $repeatPassword)
+                                SecureField("••••••••", text: $repeatPassword)
                                     .submitLabel(.next)
                                     .disableAutocorrection(true)
                                     .textInputAutocapitalization(.never)
@@ -98,16 +116,24 @@ struct ChangePasswordView: View {
                                 self.showNewPassword.toggle()
                             }
                     }
+                    if !newPassword.isEmpty, !repeatPassword.isEmpty {
+                        Label("pass-match", systemImage: newPassword == repeatPassword ? "checkmark" : "xmark")
+                            .foregroundStyle(newPassword == repeatPassword ? Color.green : Color.red)
+                            .font(.caption)
+                    }
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 Section{
                     Text("change")
-                        .foregroundStyle(Color.white)
+                        .foregroundStyle(!oldPassword.isEmpty && !newPassword.isEmpty && !repeatPassword.isEmpty ? Color.white : Color.black)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(K.Colors.mainColor)
+                        .background(!oldPassword.isEmpty && !newPassword.isEmpty && !repeatPassword.isEmpty ? K.Colors.mainColor : Color.secondary)
                         .cornerRadius(10)
                         .onTapGesture {
-                            if oldPassword != "" && newPassword != "" && repeatPassword != ""{
+                            if !oldPassword.isEmpty, !newPassword.isEmpty, !repeatPassword.isEmpty {
                                 viewModel.changePassword(currentPassword: oldPassword, newPassword: newPassword, confirmPassword: repeatPassword)
                             }else{
                                 viewModel.err = fieldsEmty
@@ -115,13 +141,23 @@ struct ChangePasswordView: View {
                         }
                         .listRowInsets(EdgeInsets())
                 }
+                .listRowBackground(
+                    GlassListRow()
+                )
                 
                 if !viewModel.err.isEmpty{
                     Text(viewModel.err)
                         .foregroundStyle(.secondary)
                         .font(.title2)
                         .fontWeight(.bold)
+                        .listRowBackground(
+                            GlassListRow()
+                        )
                 }
+            }
+            .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+            .background {
+                ListBackground()
             }
             .onSubmit {
                 switch focus {
