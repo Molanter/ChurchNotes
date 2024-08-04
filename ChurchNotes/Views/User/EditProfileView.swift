@@ -16,7 +16,7 @@ struct EditProfileView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var published: PublishedVariebles
     @EnvironmentObject var viewModel: AppViewModel
-    @State private var authModel = AuthViewModel()
+//    @State private var authModel = AuthViewModel()
 
     @Query var strings: [StringDataModel]
 
@@ -145,7 +145,7 @@ struct EditProfileView: View {
                                 .textCase(.lowercase)
                                 .textContentType(.username)
                                 .textSelection(.enabled)
-                                .foregroundStyle(username == "" ? Color(K.Colors.text) : (authModel.isAvailable ? Color( K.Colors.text) : Color(red: 1, green: 0.39, blue: 0.49)))
+                                .foregroundStyle(username == "" ? Color(K.Colors.text) : (viewModel.isAvailable ? Color( K.Colors.text) : Color(red: 1, green: 0.39, blue: 0.49)))
                             Spacer()
                             Image(systemName: "at")
                         }
@@ -158,7 +158,7 @@ struct EditProfileView: View {
                                 if username.count > maxLength {
                                     username = String(newValue.prefix(maxLength))
                                 }
-                                authModel.checkUsernameAvailability(username: newValue)
+                                viewModel.checkUsernameAvailability(username: newValue)
                             }
                         })
                     }
@@ -355,7 +355,7 @@ struct EditProfileView: View {
     
     private func updateFunc(){
         
-        if name != "" && username != "" && authModel.isAvailable{
+        if name != "" && username != "" && viewModel.isAvailable {
             if anonymously{
                 viewModel.deleteImageFromCurrentUser()
                 viewModel.currentUser?.profileImageUrl = ""
@@ -372,7 +372,7 @@ struct EditProfileView: View {
             viewModel.currentUser?.name = name
             viewModel.currentUser?.username = username
             self.dismiss()
-        }else if !authModel.isAvailable{
+        }else if !viewModel.isAvailable {
             //            showError(error: String(localized: "username-is-not-available"))
             Toast.shared.present(
                 title: String(localized: "username-is-not-available"),

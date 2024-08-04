@@ -15,8 +15,8 @@ pod 'Firebase'
 pod 'Firebase/Auth'
 
 pod 'Firebase/Messaging'
-pod 'GoogleSignIn'
-pod 'GoogleSignInSwift'
+#pod 'GoogleSignIn'
+#pod 'GoogleSignInSwift'
 pod 'Firebase/Functions'
 
 end

@@ -2,14 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSCameraUsageDescription</key>
-	<string>We need to use your camera to record videos and take photos.</string>
-	<key>NSIdentityUsageDescription</key>
-	<string></string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Unable to authenticate you in our app faster!</string>
-	<key>NSContactsUsageDescription</key>
-	<string>Allow app access to contacts.</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.molanter.PrayerNavigator</string>
@@ -33,6 +25,8 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSIdentityUsageDescription</key>
+	<string></string>
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>Allow app to send you notifications.</string>
 	<key>UIApplicationSceneManifest</key>

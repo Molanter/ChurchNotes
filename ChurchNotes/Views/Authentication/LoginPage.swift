@@ -17,8 +17,8 @@ import SwiftData
 import LocalAuthentication
 
 struct LoginPage: View {
-//    @EnvironmentObject var viewModel: AppViewModel
-    @State private var authModel = AuthViewModel()
+    @EnvironmentObject var viewModel: AppViewModel
+//    @State private var authModel = AuthViewModel()
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var published: PublishedVariebles
     @Environment(\.modelContext) var modelContext
@@ -396,7 +396,7 @@ struct LoginPage: View {
                             .keyboardType(.namePhonePad)
                             .textCase(.lowercase)
                             .textContentType(.username)
-                            .foregroundStyle(username == "" ? Color(K.Colors.text) : (authModel.isAvailable ? Color( K.Colors.text) : Color(red: 1, green: 0.39, blue: 0.49)))
+                            .foregroundStyle(username == "" ? Color(K.Colors.text) : (viewModel.isAvailable ? Color( K.Colors.text) : Color(red: 1, green: 0.39, blue: 0.49)))
                         Spacer()
                         Image(systemName: "at")
                     }
@@ -409,7 +409,7 @@ struct LoginPage: View {
                             if username.count > maxLength {
                                 username = String(newValue.prefix(maxLength))
                             }
-                            authModel.checkUsernameAvailability(username: newValue)
+                            viewModel.checkUsernameAvailability(username: newValue)
                         }
                     })
                 }
@@ -567,8 +567,8 @@ struct LoginPage: View {
                         }
                         .listRowInsets(EdgeInsets())
                     Section{
-                        if authModel.errorMessage != "" {
-                            Text(authModel.errorMessage)
+                        if viewModel.err != "" {
+                            Text(viewModel.err)
                                 .foregroundStyle(Color(K.Colors.red))
                                 .padding(.horizontal, 15)
                                 .listRowBackground(Color.clear)
@@ -586,7 +586,7 @@ struct LoginPage: View {
                                 .onTapGesture {
                                     self.showRegister = false
                                     self.showLogin = true
-                                    authModel.errorMessage = ""
+                                    viewModel.err = ""
                                 }
                             Spacer()
                         }
@@ -650,9 +650,9 @@ struct LoginPage: View {
     }
     
     private func registerFunc(){
-        if createPassword == repeatPassword, authModel.isAvailable == true, published.passwordSecure {
-            authModel.register(email: email, password: createPassword, image: image, name: name, userName: username.lowercased(), country: country, phone: phone, modelContext: modelContext)
-            errReg = authModel.errorMessage
+        if createPassword == repeatPassword, viewModel.isAvailable == true, published.passwordSecure {
+            viewModel.register(email: email, password: createPassword, image: image, name: name, userName: username.lowercased(), country: country, phone: phone, modelContext: modelContext)
+            errReg = viewModel.err
             self.showProgressView = true
         }else if name == ""{
             //            viewModel.err = "name-field-is-empty"
@@ -662,7 +662,7 @@ struct LoginPage: View {
                 isUserInteractionEnabled: true,
                 timing: .long
             )
-        }else if authModel.isAvailable == false{
+        }else if viewModel.isAvailable == false{
             //            viewModel.err = "username-is-not-available"
             Toast.shared.present(
                 title: String(localized: "username-is-not-available"),
@@ -783,9 +783,9 @@ struct LoginPage: View {
                         .cornerRadius(10)
                         .onTapGesture {
                             if !email.isEmpty, !password.isEmpty {
-                                authModel.login(email: email, password: password, modelContext: modelContext)
-                                errLog = authModel.errorMessage
-                                if authModel.errorMessage == ""{
+                                viewModel.login(email: email, password: password, modelContext: modelContext)
+                                errLog = viewModel.err
+                                if viewModel.err == ""{
                                     self.showProgressView = true
                                 }
                             }
@@ -796,8 +796,8 @@ struct LoginPage: View {
                     GlassListRow()
                 )
                 Section{
-                    if authModel.errorMessage != ""{
-                        Text(authModel.errorMessage)
+                    if viewModel.err != ""{
+                        Text(viewModel.err)
                             .foregroundStyle(Color(K.Colors.pink))
                             .listRowBackground(Color.clear)
                             .textCase(nil)
@@ -813,7 +813,7 @@ struct LoginPage: View {
                             .onTapGesture {
                                 self.showLogin = false
                                 self.showRegister = true
-                                authModel.errorMessage = ""
+                                viewModel.err = ""
                             }
                         Spacer()
                     }
@@ -836,9 +836,9 @@ struct LoginPage: View {
                 case .loginEmail:
                     focus = .loginPass
                 case .loginPass:
-                    authModel.login(email: email, password: password, modelContext: modelContext)
-                    errLog = authModel.errorMessage
-                    if authModel.errorMessage == ""{
+                    viewModel.login(email: email, password: password, modelContext: modelContext)
+                    errLog = viewModel.err
+                    if viewModel.err == ""{
                         self.showProgressView = true
                     }
                 default:
@@ -853,8 +853,8 @@ struct LoginPage: View {
                     }
                 }
             })
-            .onChange(of: authModel.errorMessage) {
-                errReg = authModel.errorMessage
+            .onChange(of: viewModel.err) {
+                errReg = viewModel.err
                 if !errLog.isEmpty || !errReg.isEmpty {
                     self.showProgressView = false
                 }
@@ -928,7 +928,7 @@ struct LoginPage: View {
     
     private func loginAfterAuth() {
         print("here 3")
-        authModel.login(email: emailToLogin, password: passToLogin, createIcon: false, modelContext: modelContext)
+        viewModel.login(email: emailToLogin, password: passToLogin, createIcon: false, modelContext: modelContext)
     }
 }
 

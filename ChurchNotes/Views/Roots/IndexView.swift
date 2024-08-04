@@ -20,7 +20,7 @@ struct IndexView: View {
     @Query var strings: [StringDataModel]
     @Query var ints: [IntDataModel]
 
-    @State private var authModel = AuthViewModel()
+//    @State private var viewModel = AuthViewModel()
     @State private var isUnlocked = false
     @State private var closed = true
     @State var wrongPass = 0
@@ -87,7 +87,7 @@ struct IndexView: View {
     var body: some View {
 //        NavigationStack {
             ZStack {
-                if authModel.signedIn {
+                if viewModel.signedIn {
                     if isUnlocked || !secureApp {
                         ContentView()
                     }else {
@@ -134,7 +134,7 @@ struct IndexView: View {
                 print("viewModel.credentials.count: \(credentials.count)")
                 utilities.overrideDisplayMode()
                 print("apeaaarssss")
-                authModel.signedIn = authModel.isSignedIn
+                viewModel.signedIn = viewModel.isSignedIn
             }
 //        }
     }

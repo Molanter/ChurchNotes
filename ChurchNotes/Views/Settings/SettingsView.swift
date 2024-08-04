@@ -16,7 +16,7 @@ struct SettingsView: View {
     @EnvironmentObject var networkMonitor: NetworkMonitor
     @Environment(\.modelContext) var modelContext
     
-    @State private var authModel = PeopleViewModel()
+//    @State private var viewModel = PeopleViewModel()
 
     @StateObject var manager = ReminderManager()
 
@@ -702,7 +702,7 @@ struct SettingsView: View {
         viewModel.logOut()
         print("here 3")
 //        DispatchQueue.main.async {
-            authModel.login(email: emailToLogin, password: passToLogin, createIcon: false, modelContext: modelContext)
+            viewModel.login(email: emailToLogin, password: passToLogin, createIcon: false, modelContext: modelContext)
             print("here 4")
             Toast.shared.present(
                 title: String(localized: "logged-in"),
