@@ -17,7 +17,7 @@ struct PeopleSplitView: View {
     @State var showAddPersonView = false
 
     private var sortedAppStages: [AppStage]{
-        return K.AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })
+        return AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })
     }
     private var sortedStages: [Stage]{
         return viewModel.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })
@@ -46,6 +46,7 @@ struct PeopleSplitView: View {
                           NavigationSplitViewColumn.content
                       }label: {
                           Text("app-stages")
+                              .foregroundStyle(K.Colors.mainColor)
                       }
                       Button{
                           published.currentTab = 0
@@ -56,6 +57,7 @@ struct PeopleSplitView: View {
                           NavigationSplitViewColumn.content
                       }label: {
                           Text("my-stages")
+                              .foregroundStyle(K.Colors.mainColor)
                       }
                   } header: {
                     Text("People List")
@@ -67,6 +69,7 @@ struct PeopleSplitView: View {
                           NavigationSplitViewColumn.content
                       }label: {
                           Label("settings", systemImage: "gearshape")
+                              .foregroundStyle(K.Colors.mainColor)
                       }
                       Button(role: .destructive) {
                           self.logoutAlert.toggle()

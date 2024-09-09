@@ -101,6 +101,7 @@ struct AddPersonView: View {
                                 self.showAddFromContacts.toggle()
                             }
                         }
+                        print("Add from contacts pressed")
                     }
                     .navigationDestination(isPresented: $showAddFromContacts) {
                         ContactsListView()

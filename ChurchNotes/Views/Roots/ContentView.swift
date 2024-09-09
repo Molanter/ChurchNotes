@@ -16,10 +16,10 @@ struct ContentView: View {
     var body: some View {
 //            NavigationStack {
                 ZStack {
-                    if published.device == .phone {
-                        AppView()
-                    }else {
+                    if published.device != .phone {
                         PeopleSplitView()
+                    }else {
+                        AppView()
                     }
                 }
                     .blur(radius: (published.currentBadge != nil) ? 5 : 0)

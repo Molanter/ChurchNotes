@@ -142,6 +142,7 @@ struct ChurchNotesApp: App {
                 .environmentObject(published)
                 .environmentObject(viewModel)
                 .onAppear{
+                    print(Auth.auth().currentUser?.uid)
                     //                    if K.showStatus{
                     //                        viewModel.updateStatus(status: "online", uid: Auth.auth().currentUser?.uid ?? "")
                     //                        print("ok")

@@ -54,7 +54,7 @@ struct SearchPersonView: View {
                                     .frame(width: 35, height: 35)
                             }
                             ZStack{
-                                    if let b = K.Badges().getBadgeArray()[person.badge] as? Badge{
+                                    if let b = Badges().getBadgeArray()[person.badge] as? Badge{
                                         if b.string != ""{
                                             Text(b.string)
                                                 .foregroundStyle(Color.white)

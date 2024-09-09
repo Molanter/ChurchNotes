@@ -14,7 +14,7 @@ struct BadgeView: View {
     
     var body: some View {
         if let badg = viewModel.currentUser?.badge{
-            if let b = K.Badges().getBadgeArray()[badg] as? Badge{
+            if let b = Badges().getBadgeArray()[badg] as? Badge{
                 if b.type == "string" {
                     Text(b.string)
                         .foregroundStyle(Color.white)

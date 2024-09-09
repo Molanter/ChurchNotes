@@ -179,8 +179,8 @@ struct EditProfileView: View {
                                 .onTapGesture{
                                     if let countryCode = Locale.current.region?.identifier {
                                         let country = NSLocale.current.localizedString(forRegionCode: countryCode)
-                                        let i = K.Countries.countryList.firstIndex(of: country!) ?? 0
-                                        self.country = K.Countries.countryList[i]
+                                        let i = Countries.countryList.firstIndex(of: country!) ?? 0
+                                        self.country = Countries.countryList[i]
                                     }
                                 }
                         }
@@ -286,10 +286,10 @@ struct EditProfileView: View {
             }
             .onAppear(perform: {
                 if let countryCode = Locale.current.region?.identifier {
-                    phone = "+\(K.CountryCodes.countryPrefixes[countryCode] ?? "US")"
+                    phone = "+\(CountryCodes.countryPrefixes[countryCode] ?? "US")"
                     let country = NSLocale.current.localizedString(forRegionCode: countryCode)
-                    let i = K.Countries.countryList.firstIndex(of: country!) ?? 0
-                    self.country = K.Countries.countryList[i]
+                    let i = Countries.countryList.firstIndex(of: country!) ?? 0
+                    self.country = Countries.countryList[i]
                 }
             })
         }

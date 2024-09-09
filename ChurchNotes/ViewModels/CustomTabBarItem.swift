@@ -71,8 +71,12 @@ struct CustomTabBarItem: View {
                     
                 }
             }
-            Text(label)
-                .font(published.device != .phone ? .caption : .footnote)
+            if published.device == .phone {
+                Text(label)
+                    .font(published.device != .phone ? .caption : .footnote)
+            }else {
+                Spacer()
+            }
         }
         .foregroundColor(fgColor())
         .padding(5)

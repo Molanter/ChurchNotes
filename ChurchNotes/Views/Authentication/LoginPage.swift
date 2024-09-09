@@ -158,7 +158,7 @@ struct LoginPage: View {
                                         Menu {
                                             Button(role: .destructive) {
                                                 let array = credentials.filter { cr in
-                                                    cr.email == cred.email
+                                                cr.email == cred.email
                                                 }
                                                 for model in array {
                                                     self.modelContext.delete(model)
@@ -456,8 +456,8 @@ struct LoginPage: View {
                             .onTapGesture{
                                 if let countryCode = Locale.current.region?.identifier {
                                     let country = NSLocale.current.localizedString(forRegionCode: countryCode)
-                                    let i = K.Countries.countryList.firstIndex(of: country!) ?? 0
-                                    self.country = K.Countries.countryList[i]
+                                    let i = Countries.countryList.firstIndex(of: country!) ?? 0
+                                    self.country = Countries.countryList[i]
                                 }
                             }
                     }
@@ -629,10 +629,10 @@ struct LoginPage: View {
             }
             .onAppear(perform: {
                 if let countryCode = Locale.current.region?.identifier {
-                    phone = "+\(K.CountryCodes.countryPrefixes[countryCode] ?? "US")"
+                    phone = "+\(CountryCodes.countryPrefixes[countryCode] ?? "US")"
                     let country = NSLocale.current.localizedString(forRegionCode: countryCode)
-                    let i = K.Countries.countryList.firstIndex(of: country!) ?? 0
-                    self.country = K.Countries.countryList[i]
+                    let i = Countries.countryList.firstIndex(of: country!) ?? 0
+                    self.country = Countries.countryList[i]
                 }
             })
             .toolbar(content: {
@@ -766,22 +766,25 @@ struct LoginPage: View {
                         .onTapGesture {
                             self.showForgot.toggle()
                         }
+                        .navigationDestination(isPresented: $showForgot) {
+                            ResetPasswordView(loginEmail: email)
+                        }
                 }
                     .padding(.bottom, 10)
-                    .navigationDestination(isPresented: $showForgot) {
-                        ResetPasswordView(loginEmail: email)
-                    }
                     .textCase(nil)
                     .listRowInsets(EdgeInsets())
                     .frame(maxWidth: .infinity)
                 ){
-                    Text("log-in")
-                        .foregroundStyle(email.isEmpty && password.isEmpty ? Color.black : Color.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(email.isEmpty && password.isEmpty ? Color.secondary : K.Colors.mainColor)
+                        Text("log-in")
+                            .foregroundStyle(Color.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                    .background(email.isEmpty && password.isEmpty ? .secondary : K.Colors.mainColor)
                         .cornerRadius(10)
+                        .listRowInsets(EdgeInsets())
+                        .disabled(email.isEmpty && password.isEmpty)
                         .onTapGesture {
+                            print("Login pressed")
                             if !email.isEmpty, !password.isEmpty {
                                 viewModel.login(email: email, password: password, modelContext: modelContext)
                                 errLog = viewModel.err
@@ -790,7 +793,6 @@ struct LoginPage: View {
                                 }
                             }
                         }
-                        .listRowInsets(EdgeInsets())
                 }
                 .listRowBackground(
                     GlassListRow()

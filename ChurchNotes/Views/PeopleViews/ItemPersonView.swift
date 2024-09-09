@@ -50,13 +50,6 @@ struct ItemPersonView: View {
             .edgesIgnoringSafeArea(.top)
             .modifier(DismissingKeyboard())
             .toolbar{
-                ToolbarItem(placement: .topBarLeading){
-                    Button(action: {
-                        published.currentItem = nil
-                    }){
-                        Text("cancel")
-                    }
-                }
                 ToolbarItem(placement: .topBarTrailing){
                     if published.showEditButtonInIPV{
                         Button(action: {
@@ -79,7 +72,7 @@ struct ItemPersonView: View {
                         if item.title == "Joined Group" && item.isDone == false {
                             Spacer()
                         }
-                        if item.title != "New Friend" && item.isDone == false && !K.AppStages.stagesArray.filter({$0.name.contains(item.title)}).isEmpty {
+                        if item.title != "New Friend" && item.isDone == false && !AppStages.stagesArray.filter({$0.name.contains(item.title)}).isEmpty {
                             Label("previous-stage", systemImage: "arrowshape.turn.up.left.fill")
                                 .foregroundStyle(K.Colors.mainColor)
                                 .onTapGesture {
@@ -120,7 +113,7 @@ struct ItemPersonView: View {
                                 }
                             }
                         Spacer()
-                        if item.title != "Joined Group" && item.isDone == false && !K.AppStages.stagesArray.filter({$0.name.contains(item.title)}).isEmpty {
+                        if item.title != "Joined Group" && item.isDone == false && !AppStages.stagesArray.filter({$0.name.contains(item.title)}).isEmpty {
                             Label("next-stage", systemImage: "arrowshape.turn.up.right.fill")
                                 .foregroundStyle(K.Colors.mainColor)
                                 .onTapGesture {
@@ -389,33 +382,35 @@ struct ItemPersonView: View {
                                     GlassListRow()
                                 )
                             }
-                            Section {
-                                if item.phone.isEmpty{
-                                    Label("record-video-for \(Text(item.name.capitalized).bold())", systemImage: "video.fill")
-                                        .foregroundStyle(K.Colors.mainColor)
-                                        .onTapGesture {
-                                            phoneIsEmpty()
-                                        }
-                                }else {
+                            if published.device == .phone {
+                                Section {
+                                    if item.phone.isEmpty{
                                         Label("record-video-for \(Text(item.name.capitalized).bold())", systemImage: "video.fill")
                                             .foregroundStyle(K.Colors.mainColor)
                                             .onTapGesture {
-                                                self.showRecord.toggle()
+                                                phoneIsEmpty()
                                             }
-                                            .navigationDestination(isPresented: $showRecord) {
-                                                CameraView(recipients: [item.phone], message: "", item: item)
-                                            }
+                                    }else {
+                                            Label("record-video-for \(Text(item.name.capitalized).bold())", systemImage: "video.fill")
+                                                .foregroundStyle(K.Colors.mainColor)
+                                                .onTapGesture {
+                                                    self.showRecord.toggle()
+                                                }
+                                                .navigationDestination(isPresented: $showRecord) {
+                                                    CameraView(recipients: [item.phone], message: "", item: item)
+                                                }
+                                    }
+                                } header: {
+                                    Text("video")
                                 }
-                            } header: {
-                                Text("video")
+                                .listRowBackground(
+                                    GlassListRow()
+                                )
                             }
-                            .listRowBackground(
-                                GlassListRow()
-                            )
-                            if !K.AppStages.stagesArray.filter({$0.name.contains(item.title)}).isEmpty && !item.isDone{
+                            if !AppStages.stagesArray.filter({$0.name.contains(item.title)}).isEmpty && !item.isDone{
                                 Section {
                                     HStack{
-                                        if item.title != "New Friend" && item.isDone == false && !K.AppStages.stagesArray.filter({$0.name.contains(item.title)}).isEmpty{
+                                        if item.title != "New Friend" && item.isDone == false && !AppStages.stagesArray.filter({$0.name.contains(item.title)}).isEmpty{
                                             HStack {
                                                 Image(systemName: "arrowshape.turn.up.backward.fill")
                                                 Text("Previous")
@@ -425,7 +420,7 @@ struct ItemPersonView: View {
                                             }
                                         }
                                         Spacer()
-                                        if item.isDone == false && !K.AppStages.stagesArray.filter({$0.name.contains(item.title)}).isEmpty{
+                                        if item.isDone == false && !AppStages.stagesArray.filter({$0.name.contains(item.title)}).isEmpty{
                                             HStack {
                                                 Text(item.title == "Joined Group" ? "Done" : "Next")
                                                 Image(systemName: item.title == "Joined Group" ? "person.fill.checkmark" : "arrowshape.turn.up.forward.fill")
@@ -473,7 +468,7 @@ struct ItemPersonView: View {
                                                     .font(.largeTitle)
                                                     .frame(width: 35, height: 35)                                        }
                                         ZStack{
-                                                if let b = K.Badges().getBadgeArray()[person.badge] as? Badge{
+                                                if let b = Badges().getBadgeArray()[person.badge] as? Badge{
                                                     if b.string != ""{
                                                         Text(b.string)
                                                             .foregroundStyle(Color.white)
@@ -670,25 +665,25 @@ struct ItemPersonView: View {
         self.viewModel.addAchiv(name: "next", int: num + 1)
         print(num + 0)
         viewModel.nextStage(documentId: item.documentId, titleNumber: item.titleNumber)
-        let newName = K.AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })[item.titleNumber + 1].name
+        let newName = AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })[item.titleNumber + 1].name
         item.title = newName
         if let user = viewModel.currentUser{
             if user.next == 4{
                 viewModel.addBadge(name: "nNext")
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.published.currentBadge = K.Badges().nNext
+                    self.published.currentBadge = Badges().nNext
                 }
                 viewModel.getFcmByEmail(email: user.email, messageText: "You received a new badge 'Next'", subtitle: "Congratulations", title: "New Badge", imageURL: "", link: "", badgeCount: 5)
             }else if user.next == 19{
                 viewModel.addBadge(name: "nGoing")
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.published.currentBadge = K.Badges().nGoing
+                    self.published.currentBadge = Badges().nGoing
                 }
                 viewModel.getFcmByEmail(email: user.email, messageText: "You received a new badge 'Going'", subtitle: "Congratulations", title: "New Badge", imageURL: "", link: "", badgeCount: 5)
             }else if user.next == 49{
                 viewModel.addBadge(name: "nnext")
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.published.currentBadge = K.Badges().nnext
+                    self.published.currentBadge = Badges().nnext
                 }
                 viewModel.getFcmByEmail(email: user.email, messageText: "You received a new badge 'next'", subtitle: "Congratulations", title: "New Badge", imageURL: "", link: "", badgeCount: 5)
             }
@@ -701,7 +696,7 @@ struct ItemPersonView: View {
         self.viewModel.addAchiv(name: "next", int: num != 0 ? num - 1 : 0)
         print(num + 0)
         viewModel.previousStage(documentId: item.documentId, titleNumber: item.titleNumber)
-        let newName = K.AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })[item.titleNumber - 1].name
+        let newName = AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })[item.titleNumber - 1].name
         item.title = newName
         self.currentItem = nil
     }
@@ -713,20 +708,20 @@ struct ItemPersonView: View {
             if user.done == 0{
                 viewModel.addBadge(name: "dDone")
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.published.currentBadge = K.Badges().dDone
+                    self.published.currentBadge = Badges().dDone
                 }
                 viewModel.getFcmByEmail(email: user.email, messageText: "You received a new badge 'Done'", subtitle: "Congratulations", title: "New Badge", imageURL: "", link: "", badgeCount: 5)
             }else if user.done == 4{
                 viewModel.addBadge(name: "dCongrats")
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.published.currentBadge = K.Badges().dCongrats
+                    self.published.currentBadge = Badges().dCongrats
                 }
                 viewModel.getFcmByEmail(email: user.email, messageText: "You received a new badge 'Congrats'", subtitle: "Congratulations", title: "New Badge", imageURL: "", link: "", badgeCount: 5)
                 
             }else if user.done == 14{
                 viewModel.addBadge(name: "ddone")
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.published.currentBadge = K.Badges().ddone
+                    self.published.currentBadge = Badges().ddone
                 }
                 viewModel.getFcmByEmail(email: user.email, messageText: "You received a new badge 'done'", subtitle: "Congratulations", title: "New Badge", imageURL: "", link: "", badgeCount: 5)
                 

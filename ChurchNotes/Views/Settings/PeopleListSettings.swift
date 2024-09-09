@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct PeopleListSettings: View {
+    @EnvironmentObject var viewModel: AppViewModel
     @Environment(\.modelContext) var modelContext
 
     @Query var bools: [BoolDataModel]
@@ -18,12 +19,10 @@ struct PeopleListSettings: View {
         return bools.first(where: { $0.name == "blurPeopleRow" })?.bool ?? false
     }
     
-    var peopleRowStyle: Int {
-        if let intModel = ints.first(where: { $0.name == "peopleRowStyle" }) {
-            return intModel.int
-        }else {
-            return 0
-        }
+    @State var peopleRowStyle: Int = 0
+    
+    var peopleList: [Person] {
+        return viewModel.peopleArray.sorted(by: { $0.orderIndex < $1.orderIndex }).sorted(by: { $0.isLiked && !$1.isLiked })
     }
     
     @State var styleSelected = 0
@@ -31,85 +30,75 @@ struct PeopleListSettings: View {
     
     var body: some View {
         NavigationStack {
-            GeometryReader { gr in
-                List {
-                    Section {
-                        ForEach(1..<4) { index in
+            VStack {
+                ScrollViewReader { reader in
+                    ScrollView(.horizontal) {
                             HStack {
-                                Image(systemName: "person.crop.circle")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 40, height: 40)
-                                VStack(alignment: .leading, spacing: 3) {
-                                    Text("Example Name")
-                                        .padding(.vertical, 3)
-                                        .fontWeight(.medium)
-                                        .foregroundStyle(.primary)
-                                        .font(.footnote)
-                                    HStack(spacing: 1) {
-                                        Text(Date.now, format: .dateTime.month(.wide))
-                                        Text(Date.now, format: .dateTime.day())
-                                        Text(", \(Date.now, format: .dateTime.year()), ")
-                                        Text(Date.now, style: .time)
+                                SmallViewForSelecting(view: PlainPeopleList(people: peopleList).disabled(true), isSelected: returnBinding(0), size: 1)
+                                    .onTapGesture {
+                                        setRowStyleType(0)
                                     }
-                                    .font(.caption2)
-                                    .foregroundStyle(Color(K.Colors.lightGray))
-                                }
-                                Spacer()
-                                Image(systemName: "heart.fill")
+                                SmallViewForSelecting(view: GroupedPeopleList(people: peopleList).disabled(true), isSelected: returnBinding(1), size: 1)
+                                    .onTapGesture {
+                                        setRowStyleType(1)
+                                    }
                             }
-                            .padding(.vertical, styleSelected == 0 ? 5 : 0)
-                            .padding(.horizontal, styleSelected == 0 ? 15 : 0)
+    //                        TabView(selection: $peopleRowStyle) {
+    //                            PlainPeopleList(people: peopleList)
+    //                                .disabled(true)
+    ////                                .onTapGesture {
+    ////                                    setRowStyleType(0)
+    ////                                }
+    //                                .tag(0)
+    //                            GroupedPeopleList(people: peopleList)
+    //                                .disabled(true)
+    ////                                .onTapGesture {
+    ////                                    setRowStyleType(1)
+    ////                                }
+    //                                .tag(1)
+    //                        }
+    //                        .indexViewStyle(.page(backgroundDisplayMode: .always))
+    //                        .frame(width: 500)
                         }
-                        .listRowInsets(styleSelected == 0 ? .init() : .none)
-                        .frame(width: gr.size.width)
-                        
-                    }header: {
-                        Text("Example")
-                    }
-                    
-                    Section {
-                        HStack {
-                            Text("Defult section")
-                            Spacer()
-                            Image(systemName: styleSelected == 0 ? "checkmark" : "xmark")
-                                .foregroundStyle(styleSelected == 0 ? K.Colors.mainColor : Color.clear)
-                                .symbolEffect(.bounce, value: styleSelected == 0)                    }
-                        .onTapGesture {
-                            withAnimation {
-                                styleSelected = 0
-                            }
-                        }
-                        HStack {
-                            Text("Round section")
-                            Spacer()
-                            Image(systemName: styleSelected == 1 ? "checkmark" : "xmark")
-                                .foregroundStyle(styleSelected == 1 ? K.Colors.mainColor : Color.clear)
-                                .symbolEffect(.bounce, value: styleSelected == 1)
-                        }
-                        .onTapGesture {
-                            withAnimation {
-                                styleSelected = 1
-                            }
-                        }
-                    }header: {
-                        Text("Settings")
-                    }
-                    Section {
-                        Toggle(isOn: $blur, label: {
-                            Text("Blur")
-                        })
-                    }
-                    .listSectionSpacing(10)
                 }
-                .navigationTitle("People List Settings")
-                .navigationBarTitleDisplayMode(.large)
+                Spacer()
             }
+                .navigationTitle("people-list-settings")
+                .navigationBarTitleDisplayMode(.large)
+                .onAppear {
+                    loadListPowStyle()
+                }
         }
+    }
+    
+    func loadListPowStyle() {
+        if let intModel = ints.first(where: { $0.name == "peopleListStyle" }) {
+            self.peopleRowStyle = intModel.int
+        }else {
+            self.peopleRowStyle = 0
+        }
+    }
+    
+    func returnBinding(_ int: Int) -> Binding<Bool> {
+        return Binding(
+            get: { peopleRowStyle == int },
+            set: { newValue in
+                self.peopleRowStyle = newValue ? int : 0
+            }
+        )
+    }
+    
+    func setRowStyleType(_ int: Int) {
+        if let intModel = ints.first(where: { $0.name == "peopleListStyle" }) {
+            intModel.int = int
+        }else {
+            modelContext.insert(IntDataModel(name: "peopleListStyle", int: int))
+        }
+        loadListPowStyle()
     }
 }
 
-#Preview {
-    PeopleListSettings()
-        .modelContainer(for: [Credential.self, BoolDataModel.self, StringDataModel.self, IntDataModel.self, ReminderDataModel.self])
-}
+//#Preview {
+//    PeopleListSettings()
+//        .modelContainer(for: [BoolDataModel.self, StringDataModel.self, IntDataModel.self])
+//}

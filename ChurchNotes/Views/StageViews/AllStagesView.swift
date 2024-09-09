@@ -30,7 +30,7 @@ struct AllStagesView: View {
         return searchText.isEmpty ? viewModel.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex }) : viewModel.stagesArray.filter { $0.name.contains(searchText)}
     }
     private var appStages: [AppStage]{
-        return searchText.isEmpty ? K.AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex }) : K.AppStages.stagesArray.filter { $0.name.contains(searchText)}
+        return searchText.isEmpty ? AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex }) : AppStages.stagesArray.filter { $0.name.contains(searchText)}
     }
     
     var rowStyle: Int {

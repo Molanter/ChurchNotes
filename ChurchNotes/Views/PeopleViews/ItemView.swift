@@ -13,7 +13,6 @@ struct ItemView: View {
     @EnvironmentObject var viewModel: AppViewModel
     @EnvironmentObject var published: PublishedVariebles
     @Environment(\.isSearching) private var isSearching
-    @Environment(\.dismissSearch) private var dismissSearch
     
     @Query var strings: [StringDataModel]
 
@@ -27,7 +26,7 @@ struct ItemView: View {
     @State private var showSearchView = false
     
     private var sortedAppStages: [AppStage]{
-        return K.AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })
+        return AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })
     }
     private var sortedStages: [Stage]{
         return viewModel.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })
@@ -63,12 +62,12 @@ struct ItemView: View {
                             }
                         }
                 }else{
-                    if !filteredItems.isEmpty {
+                    if !viewModel.peopleArray.isEmpty {
                             stages
                         }else if sortedStages.isEmpty, published.nowStage == 1{
-                            NoStageView(presentStageSheet: $presentStageSheet)
+                            NoViewWithAction(image: "questionmark.folder", title: "you-do-not-have-your-own-stages-yet", description: "create-your-first-stage-to-see-it-here", buttonText: "create", buttonAction:{ self.presentStageSheet.toggle()}, buttonImage: "folder.badge.plus")
                         }else if viewModel.peopleArray.isEmpty {
-                            NoPeopleView(presentStageSheet: $showAddPersonView)
+                            NoViewWithAction(image: "person.fill.questionmark", title: "you-do-not-have-people-yet", description: "add-your-first-person", buttonText: "add", buttonAction: {self.showAddPersonView.toggle()}, buttonImage: "person.fill.badge.plus")
                         }
                 }
                 VStack{
@@ -253,11 +252,35 @@ struct ItemView: View {
                 .presentationDetents([.medium])
             }
             .sheet(isPresented: $showAddPersonView){
-                    AddPersonView(showAddPersonView: $showAddPersonView, createName: self.published.createPersonName, offset: filteredItems.startIndex, stageName: itemTitles, titleNumber: published.currentTab, count: viewModel.peopleArray.count)
+                    NavigationStack {
+                        AddPersonView(showAddPersonView: $showAddPersonView, createName: self.published.createPersonName, offset: filteredItems.startIndex, stageName: itemTitles, titleNumber: published.currentTab, count: viewModel.peopleArray.count)
+                            .toolbar {
+                                ToolbarItem(placement: .topBarLeading){
+                                    Button(action: {
+                                        showAddPersonView = false
+                                    }){
+                                        Text("cancel")
+                                            .foregroundStyle(K.Colors.mainColor)
+                                    }
+                                }
+                            }
+                    }
                 .presentationDetents([.large])
             }
             .sheet(item: $published.currentItem, onDismiss: nil){ item in
-                ItemPersonView(item: item, currentItem: $published.currentItem)
+                NavigationStack {
+                    ItemPersonView(item: item, currentItem: $published.currentItem)
+                        .toolbar {
+                            ToolbarItem(placement: .topBarLeading){
+                                Button(action: {
+                                    published.currentItem = nil
+                                }){
+                                    Text("cancel")
+                                        .foregroundStyle(Color.white)
+                                }
+                            }
+                        }
+                }
             }
             .sheet(isPresented: $published.showShare, content: {
                 SharePersonView(people: arrayToSharePeople)                        
@@ -267,145 +290,146 @@ struct ItemView: View {
     }
     
     var stages: some View {
-        List(selection: $published.selectPeopleArray){
-            Section(header: published.nowStage == 0 ? TopBarView(currentTab: self.$published.currentTab, showAddStage: false, array: sortedStages, appArray: sortedAppStages, app: true) : TopBarView(currentTab: self.$published.currentTab, showAddStage: false, array: sortedStages, appArray: sortedAppStages, app: false)) {
-                ForEach(filteredItems){ item in
-                    if item.isCheked == false && item.isDone == false{
-                        ZStack {
-                            if published.device == .phone {
-                                RowPersonModel(item: item)
-                            }else {
-                                NavigationLink(
-                                    destination: ItemPersonView(item: item, currentItem: $published.currentSplitItem),
-                                    isActive: Binding(
-                                    get: { published.currentSplitItem == item },
-                                    set: { newValue in
-                                        published.currentSplitItem = newValue ? item : nil
-                                     }
-                                )){
-                                    RowPersonModel(item: item)
-                                }
-                            }
-                        }
-                        .listRowBackground(
-                            GlassListRow(people: true)
-                        )
-                            .swipeActions(edge: .leading) {
-                                if published.nowStage == 0 {
-                                    Button(action: {
-                                        self.lastItem = item
-                                        self.nextStage()
-                                    } ) {
-                                        Label("next-stage", systemImage: "arrowshape.turn.up.right")
-                                    }
-                                }
-                            }
-                            .swipeActions(edge: .trailing){
-                                    Button(role: .destructive){
-                                        self.lastItem = item
-                                        self.isShowingDeleteAlert = true
-                                    }label: {
-                                        Label("delete", systemImage: "trash")
-                                    }
-                            }
-                            .actionSheet(isPresented: Binding(
-                                get: { self.isShowingDeleteAlert && lastItem != nil },
-                                set: { newValue in
-                                    if !newValue {
-                                        self.isShowingDeleteAlert = false
-                                    }
-                                }
-                            )) {
-                                ActionSheet(title: Text("delete-person"),
-                                            message: Text("do-you-really-want-to-delete-this-person"),
-                                            buttons: [
-                                                .cancel(),
-                                                .destructive(
-                                                    Text("delete")
-                                                ){
-                                                    withAnimation{
-                                                        viewModel.deletePerson(documentId: lastItem?.documentId ?? item.documentId)
-                                                        isShowingDeleteAlert = false
-                                                        viewModel.fetchPeople()
-                                                    }
-                                                }
-                                            ]
-                                )
-                            }
-                            .contextMenu {
-                                Button{
-                                    withAnimation{
-                                        if item.isLiked{
-                                            viewModel.likePerson(documentId: item.documentId, isLiked: false)
-                                        }else{
-                                            viewModel.likePerson(documentId: item.documentId, isLiked: true)
-                                        }
-                                        viewModel.fetchPeople()
-                                    }
-                                } label: {
-                                    Label("favourite", systemImage: item.isLiked ? "\(K.favouriteSign).fill" : "\(K.favouriteSign)")
-                                        .accentColor(Color(K.Colors.favouriteSignColor))
-                                        .contentTransition(.symbolEffect(.replace))
-                                }
-                                if published.nowStage == 0 {
-                                    if published.currentTab != 6{
-                                        Button{
-                                            self.lastItem = item
-                                            self.nextStage()
-                                        } label: {
-                                            Label("next-stage", systemImage: "arrowshape.turn.up.right")
-                                        }
-                                    }
-                                    if published.currentTab != 0{
-                                        Button{
-                                            self.lastItem = item
-                                            previousStage()
-                                        } label: {
-                                            Label("previous-stage", systemImage: "arrowshape.turn.up.left")
-                                        }
-                                        
-                                    }
-                                }
-                                Button {
-                                    self.arrayToSharePeople = []
-                                    arrayToSharePeople.append(item)
-                                    self.showSearchView.toggle()
-                                }label: {
-                                    Label("share-person", systemImage: "square.and.arrow.up")
-                                }
-                                Section {
-                                    Button(role: .destructive) {
-                                        self.lastItem = item
-                                        withAnimation{
-                                            self.isShowingDeleteAlert = true
-                                        }
-                                    } label: {
-                                        Label("delete", systemImage: "trash")
-                                    }
-                                }
-                            }
-                    }
-                }
-                .onMove(perform: { index, int in
-                    var updatedItems = filteredItems
-                    updatedItems.move(fromOffsets: index, toOffset: int)
-                    for (index, item) in updatedItems.enumerated() {
-                        updatedItems[index].orderIndex = index
-                        viewModel.changeorderIndex(documentId: item.documentId, orderIndex: index)
-                    }
-                })
-                .padding(.horizontal, 0)
-            }
-        }
-        .environment(\.editMode, .constant(published.isEditing ? EditMode.active : EditMode.inactive))
-        .refreshable{
-            viewModel.fetchPeople()
-        }
-        .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
-        .background {
-            ListBackground()
-        }
-        .listStyle(.plain)
+        //        List(selection: $published.selectPeopleArray){
+        //            Section(header: published.nowStage == 0 ? TopBarView(currentTab: self.$published.currentTab, showAddStage: false, array: sortedStages, appArray: sortedAppStages, app: true) : TopBarView(currentTab: self.$published.currentTab, showAddStage: false, array: sortedStages, appArray: sortedAppStages, app: false)) {
+        //                ForEach(filteredItems){ item in
+        //                    if item.isCheked == false && item.isDone == false{
+        //                        ZStack {
+        //                            if published.device == .phone {
+        //                                RowPersonModel(item: item)
+        //                            }else {
+        //                                NavigationLink(
+        //                                    destination: ItemPersonView(item: item, currentItem: $published.currentSplitItem),
+        //                                    isActive: Binding(
+        //                                    get: { published.currentSplitItem == item },
+        //                                    set: { newValue in
+        //                                        published.currentSplitItem = newValue ? item : nil
+        //                                     }
+        //                                )){
+        //                                    RowPersonModel(item: item)
+        //                                }
+        //                            }
+        //                        }
+        //                        .listRowBackground(
+        //                            GlassListRow(people: true)
+        //                        )
+        //                            .swipeActions(edge: .leading) {
+        //                                if published.nowStage == 0 {
+        //                                    Button(action: {
+        //                                        self.lastItem = item
+        //                                        self.nextStage()
+        //                                    } ) {
+        //                                        Label("next-stage", systemImage: "arrowshape.turn.up.right")
+        //                                    }
+        //                                }
+        //                            }
+        //                            .swipeActions(edge: .trailing){
+        //                                    Button(role: .destructive){
+        //                                        self.lastItem = item
+        //                                        self.isShowingDeleteAlert = true
+        //                                    }label: {
+        //                                        Label("delete", systemImage: "trash")
+        //                                    }
+        //                            }
+        //                            .actionSheet(isPresented: Binding(
+        //                                get: { self.isShowingDeleteAlert && lastItem != nil },
+        //                                set: { newValue in
+        //                                    if !newValue {
+        //                                        self.isShowingDeleteAlert = false
+        //                                    }
+        //                                }
+        //                            )) {
+        //                                ActionSheet(title: Text("delete-person"),
+        //                                            message: Text("do-you-really-want-to-delete-this-person"),
+        //                                            buttons: [
+        //                                                .cancel(),
+        //                                                .destructive(
+        //                                                    Text("delete")
+        //                                                ){
+        //                                                    withAnimation{
+        //                                                        viewModel.deletePerson(documentId: lastItem?.documentId ?? item.documentId)
+        //                                                        isShowingDeleteAlert = false
+        //                                                        viewModel.fetchPeople()
+        //                                                    }
+        //                                                }
+        //                                            ]
+        //                                )
+        //                            }
+        //                            .contextMenu {
+        //                                Button{
+        //                                    withAnimation{
+        //                                        if item.isLiked{
+        //                                            viewModel.likePerson(documentId: item.documentId, isLiked: false)
+        //                                        }else{
+        //                                            viewModel.likePerson(documentId: item.documentId, isLiked: true)
+        //                                        }
+        //                                        viewModel.fetchPeople()
+        //                                    }
+        //                                } label: {
+        //                                    Label("favourite", systemImage: item.isLiked ? "\(K.favouriteSign).fill" : "\(K.favouriteSign)")
+        //                                        .accentColor(Color(K.Colors.favouriteSignColor))
+        //                                        .contentTransition(.symbolEffect(.replace))
+        //                                }
+        //                                if published.nowStage == 0 {
+        //                                    if published.currentTab != 6{
+        //                                        Button{
+        //                                            self.lastItem = item
+        //                                            self.nextStage()
+        //                                        } label: {
+        //                                            Label("next-stage", systemImage: "arrowshape.turn.up.right")
+        //                                        }
+        //                                    }
+        //                                    if published.currentTab != 0{
+        //                                        Button{
+        //                                            self.lastItem = item
+        //                                            previousStage()
+        //                                        } label: {
+        //                                            Label("previous-stage", systemImage: "arrowshape.turn.up.left")
+        //                                        }
+        //
+        //                                    }
+        //                                }
+        //                                Button {
+        //                                    self.arrayToSharePeople = []
+        //                                    arrayToSharePeople.append(item)
+        //                                    self.showSearchView.toggle()
+        //                                }label: {
+        //                                    Label("share-person", systemImage: "square.and.arrow.up")
+        //                                }
+        //                                Section {
+        //                                    Button(role: .destructive) {
+        //                                        self.lastItem = item
+        //                                        withAnimation{
+        //                                            self.isShowingDeleteAlert = true
+        //                                        }
+        //                                    } label: {
+        //                                        Label("delete", systemImage: "trash")
+        //                                    }
+        //                                }
+        //                            }
+        //                    }
+        //                }
+        //                .onMove(perform: { index, int in
+        //                    var updatedItems = filteredItems
+        //                    updatedItems.move(fromOffsets: index, toOffset: int)
+        //                    for (index, item) in updatedItems.enumerated() {
+        //                        updatedItems[index].orderIndex = index
+        //                        viewModel.changeorderIndex(documentId: item.documentId, orderIndex: index)
+        //                    }
+        //                })
+        //            }
+        //        }
+        //        .environment(\.editMode, .constant(published.isEditing ? EditMode.active : EditMode.inactive))
+        //        .refreshable{
+        //            viewModel.fetchPeople()
+        //        }
+        //        .scrollContentBackground(backgroundType == "none" ? .visible : .hidden)
+        //        .background {
+        //            ListBackground()
+        //        }
+        //        .listStyle(.plain)
+        PeopleList(peopleList: filteredItems)
+            .accentColor(K.Colors.mainColor)
     }
     
     private func nextStage(){
@@ -414,7 +438,7 @@ struct ItemView: View {
         print(num + 0)
         viewModel.nextStage(documentId: lastItem?.documentId ?? "", titleNumber: published.currentTab)
         
-        let newName = K.AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })[(self.lastItem?.titleNumber ?? 0) + 1].name
+        let newName = AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })[(self.lastItem?.titleNumber ?? 0) + 1].name
         self.lastItem?.title = newName
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -429,19 +453,19 @@ struct ItemView: View {
             if user.next == 4{
                 viewModel.addBadge(name: "Next")
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.published.currentBadge = K.Badges().nNext
+                    self.published.currentBadge = Badges().nNext
                 }
                 viewModel.getFcmByEmail(email: user.email, messageText: "You received a new badge 'Next'", subtitle: "Congratulations", title: "New Badge", imageURL: "", link: "", badgeCount: 1)
             }else if user.next == 19{
                 viewModel.addBadge(name: "nGoing")
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.published.currentBadge = K.Badges().nGoing
+                    self.published.currentBadge = Badges().nGoing
                 }
                 viewModel.getFcmByEmail(email: user.email, messageText: "You received a new badge 'Going'", subtitle: "Congratulations", title: "New Badge", imageURL: "", link: "", badgeCount: 3)
             }else if user.next == 49{
                 viewModel.addBadge(name: "nnext")
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.published.currentBadge = K.Badges().nnext
+                    self.published.currentBadge = Badges().nnext
                 }
                 viewModel.getFcmByEmail(email: user.email, messageText: "You received a new badge 'next'", subtitle: "Congratulations", title: "New Badge", imageURL: "", link: "", badgeCount: 5)
             }
@@ -455,7 +479,7 @@ struct ItemView: View {
         print(num + 0)
         viewModel.previousStage(documentId: lastItem?.documentId ?? "", titleNumber: published.currentTab)
         
-        let newName = K.AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })[(self.lastItem?.titleNumber ?? 0) - 1].name
+        let newName = AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })[(self.lastItem?.titleNumber ?? 0) - 1].name
         self.lastItem?.title = newName
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {

@@ -56,6 +56,7 @@ struct SettingsView: View {
     var auth = Auth.auth()
     let buttonWidth = UIScreen.screenWidth / 5
     let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+    let settingsNLs = SettingsNLs()
     
     var appPass: String {
         if let boolModel = strings.first(where: { $0.name == "appPass" }), let str = published.decrypt(boolModel.string) {
@@ -161,7 +162,7 @@ struct SettingsView: View {
                                         BadgeView(width: 11)
                                         Divider()
                                     }
-                                    Text(email)
+                                    Text(username)
                                         .foregroundStyle(K.Colors.mainColor)
                                         .fontWeight(.light)
                                         .font(.body)
@@ -171,7 +172,7 @@ struct SettingsView: View {
                         Spacer()
                     }
                     .padding(.vertical, 5)
-//                    .frame(maxWidth: .infinity)
+                    //                    .frame(maxWidth: .infinity)
                     .listRowBackground(
                         GlassListRow()
                     )
@@ -239,136 +240,20 @@ struct SettingsView: View {
                     .listRowBackground(
                         GlassListRow()
                     )
-                    Section{
-                        NavigationLinkModel(
-                            destination: CurrentPersonView(),
-                            name: String(localized: "profile-info"),
-                            info: String(localized: "info-email-username"),
-                            systemImageName: "person",
-                            currentSettingsNavigationLink: "profile-info",
-                            leading: false
-                        )
-                        NavigationLinkModel(
-                            destination: AccountSettingsView(),
-                            name: String(localized: "account-settings"),
-                            info: String(localized: "change-password-email"),
-                            systemImageName: "gearshape",
-                            currentSettingsNavigationLink: "settings",
-                            leading: false
-                        )
-                        NavigationLinkModel(
-                            destination: DevicesView(),
-                            name: String(localized: "devices"),
-                            info: String(localized: "devices-sessions-info"),
-                            systemImageName: published.deviceImage(K.deviceName),
-                            currentSettingsNavigationLink: "devices",
-                            leading: true
-                        )
-                    }
-                    .listSectionSpacing(30)
-                    .listRowBackground(
-                        GlassListRow()
-                    )
-                    Section{
-                        NavigationLinkModel(
-                            destination: SettingsPeopleView(),
-                            name: String(localized: "people"),
-                            info: String(localized: "all-people-favourite-deleted"),
-                            systemImageName: "person.3",
-                            currentSettingsNavigationLink: "people",
-                            leading: false
-                        )
-                        NavigationLinkModel(
-                            destination: NotificationsView(),
-                            name: String(localized: "notifications-title"),
-                            info: String(localized: "list-of-notifications"),
-                            systemImageName: viewModel.notificationArray.isEmpty ? "bell.badge" : "bell",
-                            currentSettingsNavigationLink: "notifications",
-                            leading: true
-                        )
-                        NavigationLinkModel(
-                            destination: AchievementsMainView(),
-                            name: String(localized: "achievements"),
-                            info: String(localized: "your-achievements-score"),
-                            systemImageName: "medal",
-                            currentSettingsNavigationLink: "achievements",
-                            leading: true
-                        )
-                    }
-                    .listSectionSpacing(20)
-                    .listRowBackground(
-                        GlassListRow()
-                    )
-                    Section{
-                        NavigationLinkModel(
-                            destination: RemindersView(),
-                            name: String(localized: "reminders"),
-                            info: String(localized: "reminders-link-info"),
-                            systemImageName: "calendar.badge.clock",
-                            currentSettingsNavigationLink: "reminders",
-                            leading: true
-                        )
-                        NavigationLinkModel(
-                            destination: AppearanceView(profileImage: profileImage, name: name, email: email, username: username, phone: phone, country: country, notes: notes, timeStamp: timeStamp),
-                            name: String(localized: "appearance"),
-                            info: String(localized: "theme-color"),
-                            systemImageName: "paintbrush",
-                            currentSettingsNavigationLink: "appearance",
-                            leading: true
-                        )
-                        if published.device == .phone {
-                            NavigationLinkModel(
-                                destination: AppSecureView(),
-                                name: String(localized: "app-secure"),
-                                info: String(localized: "app-secure-info"),
-                                systemImageName: "lock",
-                                currentSettingsNavigationLink: "appSecure",
-                                leading: true
-                            )
-                        }
-                    }
-                    .listSectionSpacing(20)
-                    .listRowBackground(
-                        GlassListRow()
-                    )
-                    Section{
-                        NavigationLinkModel(
-                            destination: SupportMainView(),
-                            name: String(localized: "aapp-support"),
-                            info: String(localized: "support-reports-questions"),
-                            systemImageName: "wrench.and.screwdriver",
-                            currentSettingsNavigationLink: "support",
-                            leading: true
-                        )
-                        NavigationLinkModel(
-                            destination: WebView(urlString: "https://prayer-navigator.notion.site/App-Privacy-58bbd4fc83dd404f9f0999df6a587efa"),
-                            name: String(localized: "app-privacy"),
-                            info: String(localized: "app-privacy-info"),
-                            systemImageName: "lock.shield",
-                            currentSettingsNavigationLink: "privacy",
-                            leading: true
-                        )
-                        NavigationLinkModel(
-                            destination: AppInfo(),
-                            name: String(localized: "app-information"),
-                            info: String(localized: "app-info-support"),
-                            systemImageName: "info.circle",
-                            currentSettingsNavigationLink: "app-info",
-                            leading: true
-                        )
-//                        NavigationLinkModel(
-//                            destination: NonProfitSupport(),
-//                            name: String(localized: "nonprofit-support"),
-//                            info: String(localized: "nonprofit-support-info"),
-//                            systemImageName: "dollarsign.circle",
-//                            currentSettingsNavigationLink: "nonprofit-support",
-//                            leading: true
-//                        )
-                    }
-                    .listSectionSpacing(20)
-                    .listRowBackground(
-                        GlassListRow()
-                    )
+                    
+                    ForEach(settingsNLs.nlArray, id: \.self) { array in
+                                    Section {
+                                        ForEach(array, id: \.self) { item in
+                                            NavigationLink(destination: item.destination, label: {
+                                                NavigationLinkModel(name: item.name, info: item.info, systemImageName: item.systemImage, leading: item.leading)
+                                            })
+                                        }
+                                    }
+                                    .listSectionSpacing(15)
+                                    .listRowBackground(
+                                        GlassListRow()
+                                    )
+                                }
                     Section{
                         VStack{
                             Button(action: {
@@ -390,6 +275,7 @@ struct SettingsView: View {
                                         }
                                         Text("log-out")
                                             .font(.body)
+                                            .foregroundStyle(K.Colors.mainColor)
                                     }
                                 }else if rowStyle == 0 {
                                     HStack(alignment: .center, spacing: 29){
@@ -520,7 +406,8 @@ struct SettingsView: View {
                                 }label: {
                                         HStack(spacing: 5) {
                                             if let data = cred.image, let img = UIImage(data: data) {
-                                                CircleImageView(image: img)
+                                                Image(uiImage: img)
+                                                
                                             }else {
                                                 Image(systemName: "person.crop.circle.fill")
                                                     .symbolRenderingMode(.multicolor)
@@ -563,35 +450,39 @@ struct SettingsView: View {
                     ToolbarItem(placement: .topBarTrailing) {
                         NavigationLink(destination: ControlVolunteer()){
                             Image(systemName: "apple.terminal")
+                                .foregroundStyle(K.Colors.mainColor)
                         }
                     }
                 }
-                ToolbarItem(placement: .topBarTrailing, content: {
-                    Button {
-                        published.currentProfileMainView = 2
-                    } label: {
-                        Image(systemName: "bell.fill")
-                            .foregroundStyle(K.Colors.mainColor)
-                            .overlay(viewModel.notificationArray.isEmpty ? nil : BadgeCount(count: viewModel.notificationArray.count).padding(.trailing, 5))
-                    }
-                    .navigationDestination(
-                        isPresented: Binding(
-                            get: { published.currentProfileMainView == 2 },
-                            set: { newValue in
-                                published.currentProfileMainView = newValue ? 2 : nil
-                            }
-                        )
-                    ) {
-                        NotificationsView()
-                            .onAppear(perform: {
-                                published.tabsAreHidden = true
-                            })
-                    }
-                    
-                })
+                if published.device == .phone{
+                    ToolbarItem(placement: .topBarTrailing, content: {
+                        Button {
+                            published.currentProfileMainView = 2
+                        } label: {
+                            Image(systemName: "bell.fill")
+                                .foregroundStyle(K.Colors.mainColor)
+                                .overlay(viewModel.notificationArray.isEmpty ? nil : BadgeCount(count: viewModel.notificationArray.count).padding(.trailing, 5))
+                        }
+                        .navigationDestination(
+                            isPresented: Binding(
+                                get: { published.currentProfileMainView == 2 },
+                                set: { newValue in
+                                    published.currentProfileMainView = newValue ? 2 : nil
+                                }
+                            )
+                        ) {
+                            NotificationsView()
+                                .onAppear(perform: {
+                                    published.tabsAreHidden = true
+                                })
+                        }
+                        
+                    })
+                }
             })
             .frame(maxWidth: .infinity)
             .onAppear{
+                viewModel.fetchUser()
                 print(UUID().uuidString)
                 fetchDictionary()
                 if !manager.hasPermission{

@@ -31,14 +31,7 @@ struct AppearanceView: View {
     
     let restrictedEmaileSet = "" //"!#$%^&*()?/>,<~`±§}{[]|\"÷≥≤µ˜∫√ç≈Ω`åß∂ƒ©˙∆˚¬…æ«‘“πøˆ¨¥†®´∑œ§¡™£¢∞§¶•ªº≠"
 
-    let profileImage: String
-    let name: String
-    let email: String
-    let username: String
-    let phone: String
-    let country: String
-    let notes: String
-    let timeStamp: Date
+    
     var utilities = Utilities()
     
     var backgroundType: String {
@@ -59,11 +52,13 @@ struct AppearanceView: View {
                     )) {
                         Text("system-apearance")
                     }
+                    .tint(K.Colors.mainColor)
                     Toggle(isOn: $dark) {
                         Text("dark-appearance")
                     }
                     .disabled(!showColor)
                     .pickerStyle(.segmented)
+                    .tint(K.Colors.mainColor)
                 }
                 .listRowBackground(
                     GlassListRow()
@@ -191,6 +186,7 @@ struct AppearanceView: View {
                             }
                         }label: {
                             Image(systemName: "\(favouriteSignNow).fill")
+                                .foregroundStyle(Color(K.Colors.favouriteSignColor))
                         }
                     }
                         .accentColor(Color(favSignColor))
@@ -225,7 +221,10 @@ struct AppearanceView: View {
                 )
                 Section(header: Text("List")) {
                     NavigationLink(destination: ListStyles()) {
-                        Text("List settings")
+                        Text("list-settings")
+                    }
+                    NavigationLink(destination: PeopleListSettings()) {
+                        Text("people-list")
                     }
                 }
                 .listRowBackground(
@@ -237,6 +236,7 @@ struct AppearanceView: View {
                         Spacer()
                         Link(String(localized: "open-in-settings"), destination: URL(string: UIApplication.openSettingsURLString)!)
                             .accentColor(mainColorNow)
+                            .foregroundStyle(Color(K.Colors.text))
                     }
                 }
                 .listRowBackground(
@@ -290,7 +290,7 @@ struct AppearanceView: View {
                 updateAppearance()
             }
 //            .alert("color-has-changed", isPresented: $presentAlert) {
-//                Button(K.Hiden.ok.randomElement()!, role: .cancel) {}
+//                Button(Hiden.ok.randomElement()!, role: .cancel) {}
 //            } message: {
 //                Text("restart-the-app-to-see-the-changes")
 //            }

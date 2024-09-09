@@ -25,8 +25,6 @@
 			</array>
 		</dict>
 	</array>
-	<key>NSIdentityUsageDescription</key>
-	<string></string>
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>Allow app to send you notifications.</string>
 	<key>UIApplicationSceneManifest</key>

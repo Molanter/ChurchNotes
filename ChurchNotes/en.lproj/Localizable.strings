@@ -470,3 +470,7 @@
 "bioauth-enabled" = "Biometric authentication";
 "you-do-not-have-people-yet" = "You don't have people yet";
 "add-your-first-person" = "Add you first person";
+"people-list" = "People list";
+"list-settings" = "List settings";
+"people-list-settings" = "People List Settings";
+"list-styles" = "List style";

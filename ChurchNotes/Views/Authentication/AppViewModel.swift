@@ -11,7 +11,7 @@ import FirebaseCore
 import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
-import FirebaseFunctions
+//import FirebaseFunctions
 import SwiftData
 
 final
@@ -58,7 +58,7 @@ class AppViewModel: ObservableObject{
     }
     
     var sortedStages: [AppStage]{
-        return K.AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })
+        return AppStages.stagesArray.sorted(by: { $0.orderIndex < $1.orderIndex })
     }
     
     
@@ -1032,29 +1032,20 @@ class AppViewModel: ObservableObject{
                     }
                 }
                 if createIcon{
-                    if self?.credentials.count ?? 0 <= 4 {
-                        if let encryptedEmail = self?.published.encrypt(email, key: K.key()) {
-                            if self?.credentials.map({ $0.email }).contains(encryptedEmail) == false {
-                                if let em = self?.published.encrypt(email, key: K.key()), let pass = self?.published.encrypt(password, key: K.key()){
-                                    let newCred = Credential(email: em, password: pass, imageData: nil, username: email)
-                                    modelContext.insert(newCred)
-                                }
-                            }
+                    if let encryptedEmail = self?.published.encrypt(email, key: K.key()) {
+                        let array = self?.credentials.filter { cr in
+                            encryptedEmail  == email
                         }
-                    }else {
-                        self?.credentials.remove(at: 0)
-                        if let encryptedEmail = self?.published.encrypt(email, key: K.key()) {
-                            if self?.credentials.map({ $0.email }).contains(encryptedEmail) == false {
-                                if let em = self?.published.encrypt(email, key: K.key()), let pass = self?.published.encrypt(password, key: K.key()){
-                                    let newCred = Credential(email: em, password: pass, imageData: nil, username: email)
-                                    modelContext.insert(newCred)
-                                }
+                        if array == nil {
+                            if let em = self?.published.encrypt(email, key: K.key()), let pass = self?.published.encrypt(password, key: K.key()){
+                                let newCred = Credential(email: em, password: pass, imageData: nil, username: email)
+                                modelContext.insert(newCred)
                             }
                         }
                     }
                 }
                 
-//                self?.fetchUser()
+                self?.fetchUser()
                 print("User logined succesfuly!")
             }
         }
@@ -1563,19 +1554,19 @@ class AppViewModel: ObservableObject{
         }
     }
     
-    func deleteAccount(userId: String, completion: @escaping (Error?) -> Void) {
-        let deleteAccountFunction = Functions.functions().httpsCallable("deleteAccountByuserId")
-        
-        let data = ["userId": userId]
-        
-        deleteAccountFunction.call(data) { (result, error) in
-            if let error = error {
-                completion(error)
-            } else {
-                completion(nil)
-            }
-        }
-    }
+//    func deleteAccount(userId: String, completion: @escaping (Error?) -> Void) {
+//        let deleteAccountFunction = Functions.functions().httpsCallable("deleteAccountByuserId")
+//        
+//        let data = ["userId": userId]
+//        
+//        deleteAccountFunction.call(data) { (result, error) in
+//            if let error = error {
+//                completion(error)
+//            } else {
+//                completion(nil)
+//            }
+//        }
+//    }
     
     
     //MARK: Badges

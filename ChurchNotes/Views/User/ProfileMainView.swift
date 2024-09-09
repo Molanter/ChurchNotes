@@ -80,7 +80,7 @@ struct ProfileMainView: View {
                                         }
                                         ZStack{
                                             if let badg = viewModel.currentUser?.badge{
-                                                if let b = K.Badges().getBadgeArray()[badg] as? Badge{
+                                                if let b = Badges().getBadgeArray()[badg] as? Badge{
                                                     if b.string != ""{
                                                         Text(b.string)
                                                             .foregroundStyle(Color.white)

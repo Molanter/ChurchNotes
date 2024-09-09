@@ -466,3 +466,11 @@
 "bioauth-enabled" = "Біометрична авторизація";
 "you-do-not-have-people-yet" = "Список людей порожній";
 "add-your-first-person" = "Додайте першу людину";
+"people-list" = "Список людей";
+"list-settings" = "налаштування списку";
+"people-list-settings" = "Налаштування списку людей";
+"list-styles" = "Стилі списку";
+
+
+
+//Fixed some styles for non phone, Changed settings link, Badges added to firebase, People style changed

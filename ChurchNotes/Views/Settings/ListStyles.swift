@@ -29,13 +29,7 @@ struct ListStyles: View {
         return bools.first(where: { $0.name == "blurListRow" })?.bool ?? false
     }
     
-    var backgroundType: String {
-        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
-            return strModel.string
-        }else {
-            return "none"
-        }
-    }
+    @State var backgroundType: String = "none"
     
     var rowStyle: Int {
         if let intModel = ints.first(where: { $0.name == "rowStyle" }) {
@@ -126,6 +120,7 @@ struct ListStyles: View {
                     Toggle(isOn: $blur) {
                         Text("Blur list row")
                     }
+                    .tint(K.Colors.mainColor)
                 }
                 .onChange(of: blur) { newValue in
                     setBlur(newValue)
@@ -137,88 +132,21 @@ struct ListStyles: View {
                 Section {
                     ScrollView(.horizontal) {
                         HStack {
-                            VStack {
-                                Rectangle()
-                                    .fill(Color.black)
-                                    .contentShape(RoundedRectangle(cornerRadius: 10))
-                                    .frame(width: 75, height: 150)
-                                    .cornerRadius(10)
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: 15).stroke(Color.secondary, lineWidth: 5)
-                                    }
-                                    .padding(5)
-                                Image(systemName: backgroundType == "none" ? "checkmark.circle.fill" : "circle")
-//                                    .symbolEffect(.bounce, value: backgroundType == "SideGradient")
-                                    .foregroundStyle(backgroundType == "none" ? K.Colors.mainColor : .white)
-
-                            }
+                            SmallViewForSelecting(view: Rectangle().fill(Color.black), isSelected: returnBinding("none"))
                                 .onTapGesture {
-                                    if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
-                                        strModel.string = "none"
-                                    }else {
-                                        modelContext.insert(StringDataModel(name: "backgroundType", string: "none"))
-                                    }
+                                    setBackroundType("none")
                                 }
-                            VStack {
-                                ColorSplash()
-                                    .contentShape(RoundedRectangle(cornerRadius: 10))
-                                    .frame(width: 75, height: 150)
-                                    .cornerRadius(10)
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: 15).stroke(Color.secondary, lineWidth: 5)
-                                    }
-                                    .padding(5)
-                                Image(systemName: backgroundType == "ColorSplash" ? "checkmark.circle.fill" : "circle")
-//                                    .symbolEffect(.bounce, value: backgroundType == "ColorSplash")
-                                    .foregroundStyle(backgroundType == "ColorSplash" ? K.Colors.mainColor : .white)
-                            }
+                            SmallViewForSelecting(view: ColorSplash(), isSelected: returnBinding("ColorSplash"))
                                 .onTapGesture {
-                                    if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
-                                        strModel.string = "ColorSplash"
-                                    }else {
-                                        modelContext.insert(StringDataModel(name: "backgroundType", string: "ColorSplash"))
-                                    }
+                                    setBackroundType("ColorSplash")
                                 }
-                            VStack {
-                                Circles2()
-                                    .contentShape(RoundedRectangle(cornerRadius: 10))
-                                    .frame(width: 75, height: 150)
-                                    .cornerRadius(10)
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: 15).stroke(Color.secondary, lineWidth: 5)
-                                    }
-                                    .padding(5)
-                                Image(systemName: backgroundType == "2Circles" ? "checkmark.circle.fill" : "circle")
-//                                    .symbolEffect(.bounce, value: backgroundType == "2Circles")
-                                    .foregroundStyle(backgroundType == "2Circles" ? K.Colors.mainColor : .white)
+                            SmallViewForSelecting(view: Circles2(), isSelected: returnBinding("2Circles"))
+                            .onTapGesture {
+                                setBackroundType("2Circles")
                             }
+                            SmallViewForSelecting(view: SideGradients(), isSelected: returnBinding("SideGradient"))
                                 .onTapGesture {
-                                    if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
-                                        strModel.string = "2Circles"
-                                    }else {
-                                        modelContext.insert(StringDataModel(name: "backgroundType", string: "2Circles"))
-                                    }
-                                }
-                            VStack {
-                                SideGradients()
-                                    .contentShape(RoundedRectangle(cornerRadius: 10))
-                                    .frame(width: 75, height: 150)
-                                    .cornerRadius(10)
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: 15).stroke(Color.secondary, lineWidth: 5)
-                                    }
-                                    .padding(5)
-                                Image(systemName: backgroundType == "SideGradient" ? "checkmark.circle.fill" : "circle")
-//                                    .symbolEffect(.bounce, value: backgroundType == "SideGradient")
-                                    .foregroundStyle(backgroundType == "SideGradient" ? K.Colors.mainColor : .white)
-
-                            }
-                                .onTapGesture {
-                                    if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
-                                        strModel.string = "SideGradient"
-                                    }else {
-                                        modelContext.insert(StringDataModel(name: "backgroundType", string: "SideGradient"))
-                                    }
+                                    setBackroundType("SideGradient")
                                 }
                         }
                     }
@@ -478,11 +406,21 @@ struct ListStyles: View {
                 blur = blurListRow
                 styleSelected = rowStyle
                 loadColors()
+                loadBackround()
             }
             .navigationTitle("List style")
             .navigationBarTitleDisplayMode(.large)
         }
     }
+    
+    func loadBackround() {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            self.backgroundType = strModel.string
+        }else {
+            self.backgroundType =  "none"
+        }
+    }
+    
     private func loadColors() {
         if let colorModel = colors.first(where: { $0.name == "backColorL" }) {
             pickerColorL1 = Color(red: colorModel.color1.red, green: colorModel.color1.green, blue: colorModel.color1.blue, opacity: colorModel.color1.alpha)
@@ -561,6 +499,24 @@ struct ListStyles: View {
         )
         print(String(localized: "color-has-changed"))
         loadColors()
+    }
+    
+    func returnBinding(_ str: String) -> Binding<Bool> {
+        return Binding(
+            get: { backgroundType == str },
+            set: { newValue in
+                backgroundType = newValue ? str : "none"
+            }
+        )
+    }
+    
+    func setBackroundType(_ str: String) {
+        if let strModel = strings.first(where: { $0.name == "backgroundType" }) {
+            strModel.string = str
+        }else {
+            modelContext.insert(StringDataModel(name: "backgroundType", string: str))
+        }
+        loadBackround()
     }
 }
 

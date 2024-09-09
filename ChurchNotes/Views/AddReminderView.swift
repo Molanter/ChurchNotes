@@ -365,7 +365,7 @@ struct AddReminderView: View {
                         buttons: [
                             //                            .cancel(),
                             .default(
-                                Text(K.Hiden.ok.randomElement()!)
+                                Text(Hiden.ok.randomElement()!)
                             ){
                                 showAlert.toggle()
                             }
